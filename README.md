@@ -11,7 +11,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/projectintel-anon/avdan-os-concept">
+  <a href="https://github.com/avdan-os/AvdanOS">
     <img src="https://yt3.ggpht.com/Y2utyqID6yqk9qCmocYB0yQIIeyutFne9S9Iuzwc1oIcj638T1H78yftOSemdTsx5sprv29TmQ=s88-c-k-c0x00ffffff-no-rj" alt="Logo" width="80" height="80">
   </a>
 
@@ -20,14 +20,14 @@
   <p align="center">
     The OS answer to the OS problem.
     <br />
-    <a href="https://github.com/projectintel-anon/avdan-os-concept"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/avdan-os/AvdanOS"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://dynamicos.netlify.app/">View Demo</a>
     ·
-    <a href="https://github.com/projectintel-anon/avdan-os-concept/issues">Report Bug</a>
+    <a href="https://github.com/avdan-os/AvdanOS/issues">Report Bug</a>
     ·
-    <a href="https://github.com/projectintel-anon/avdan-os-concept/issues">Request Feature</a>
+    <a href="https://github.com/avdan-os/AvdanOS/issues">Request Feature</a>
   </p>
 </div>
 
@@ -147,7 +147,7 @@ _For more examples, please refer to the [Documentation](https://github.com/proje
     - [ ] Chinese
     - [ ] Spanish
 
-See the [open issues](https://github.com/projectintel-anon/avdan-os-concept/projects) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/avdan-os/AvdanOS/projects) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -183,9 +183,9 @@ Only authorized members of this repository/team are allowed to run any code or v
 <!-- CONTACT -->
 ## Contact
 
-Leigh, Senior Developer - [@ep_leigh](https://twitter.com/ep_leigh) - leigh@enigmapr0ject.tech
+Leigh, Senior Developer and Manager - [@ep_leigh](https://twitter.com/ep_leigh) - leigh@enigmapr0ject.tech
 
-Project Link: [https://github.com/projectintel-anon/avdan-os-concept](https://github.com/projectintel-anon/avdan-os-concept)
+Project Link: [https://github.com/avdan-os/AvdanOS](https://github.com/avdan-os/AvdanOS)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -210,15 +210,14 @@ Project Link: [https://github.com/projectintel-anon/avdan-os-concept](https://gi
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/projectintel-anon/avdan-os-concept/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/projectintel-anon/avdan-os-concept/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/projectintel-anon/avdan-os-concept/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/projectintel-anon/avdan-os-concept/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/projectintel-anon/avdan-os-concept/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[contributors-shield]: https://img.shields.io/github/contributors/avdan-os/AvdanOS?style=for-the-badge
+[contributors-url]: https://github.com/avdan-os/AvdanOS/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/avdan-os/AvdanOS?style=for-the-badge
+[forks-url]: https://github.com/avdan-os/AvdanOS/network/members
+[stars-shield]: https://img.shields.io/github/stars/avdan-os/AvdanOS?style=for-the-badge
+[stars-url]: https://github.com/avdan-os/AvdanOS/stargazers
+[issues-shield]: https://img.shields.io/github/issues/avdan-os/AvdanOS?style=for-the-badge
+[issues-url]: https://github.com/avdan-os/AvdanOS/issues
+[license-shield]: https://img.shields.io/github/license/avdan-os/AvdanOS?style=for-the-badge
+[license-url]: https://github.com/avdan-os/AvdanOS/blob/master/LICENSE.txt
 [product-screenshot]: img/logo.jpg
