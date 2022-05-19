@@ -146,6 +146,7 @@ _For more examples, please refer to the [Documentation](https://github.com/proje
 - [ ] Multi-language Support
     - [ ] Chinese
     - [ ] Spanish
+    - [ ] Dutch
 
 See the [open issues](https://github.com/avdan-os/AvdanOS/projects) for a full list of proposed features (and known issues).
 
