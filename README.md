@@ -30,9 +30,9 @@
     <br />
     <a href="https://dynamicos.netlify.app/">View Demo</a>
     ·
-    <a href="https://github.com/avdan-os/AvdanOS/issues">Report Bug</a>
+    <a href="https://github.com/Avdan-OS/AvdanOS/issues/new?assignees=&labels=&template=bug_report.md">Report Bug</a>
     ·
-    <a href="https://github.com/avdan-os/AvdanOS/issues">Request Feature</a>
+    <a href="https://github.com/Avdan-OS/AvdanOS/issues/new?assignees=&labels=&template=feature_request.md">Request Feature</a>
   </p>
 </div>
 
@@ -225,5 +225,5 @@ Project Link: [https://github.com/avdan-os/AvdanOS](https://github.com/avdan-os/
 [issues-shield]: https://img.shields.io/github/issues/avdan-os/AvdanOS?style=for-the-badge
 [issues-url]: https://github.com/avdan-os/AvdanOS/issues
 [license-shield]: https://img.shields.io/github/license/avdan-os/AvdanOS?style=for-the-badge
-[license-url]: https://github.com/avdan-os/AvdanOS/blob/master/LICENSE.txt
+[license-url]: https://github.com/avdan-os/AvdanOS/blob/master/LICENSE
 [product-screenshot]: img/logo.jpg
