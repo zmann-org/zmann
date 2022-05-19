@@ -23,6 +23,8 @@
   <p align="center">
     The OS answer to the OS problem.
     <br />
+    <a href="https://avdan-os.github.io"><ins><strong>Getting Started »</strong></ins></a>
+    ·
     <a href="https://github.com/avdan-os/AvdanOS"><strong>Explore the docs »</strong></a>
     <br />
     <br />
