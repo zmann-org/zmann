@@ -224,6 +224,6 @@ Project Link: [https://github.com/avdan-os/AvdanOS](https://github.com/avdan-os/
 [stars-url]: https://github.com/avdan-os/AvdanOS/stargazers
 [issues-shield]: https://img.shields.io/github/issues/avdan-os/AvdanOS?style=for-the-badge
 [issues-url]: https://github.com/avdan-os/AvdanOS/issues
-[license-shield]: https://img.shields.io/github/license/avdan-os/AvdanOS?style=for-the-badge
+[license-shield]: https://img.shields.io/badge/LICENSE-gnu%20gpl%20v3-blue?style=for-the-badge&logo=github
 [license-url]: https://github.com/avdan-os/AvdanOS/blob/master/LICENSE
 [product-screenshot]: img/logo.jpg
