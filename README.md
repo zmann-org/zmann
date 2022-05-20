@@ -115,7 +115,7 @@ This section should list any major frameworks/libraries used to bootstrap your p
    ```sh
    git clone https://github.com/projectintel-anon/avdan-os-concept
    ```
-3. Install3 packages
+3. Install packages
    ```sh
    npm install
    ```
@@ -144,14 +144,15 @@ _For more examples, please refer to the [Documentation](https://github.com/proje
 
 <b>To be filled in</b>
 
+- [x] Add back to top links
 - [ ] Add Changelog
-- [ ] Add back to top links
 - [ ] Add Additional Templates w/ Examples
 - [ ] Add "components" document to easily copy & paste sections of the readme
 - [ ] Multi-language Support
     - [ ] Chinese
     - [ ] Spanish
     - [ ] Dutch
+- [ ] Create react based component library for the websites.
 
 See the [open issues](https://github.com/avdan-os/AvdanOS/projects) for a full list of proposed features (and known issues).
 
