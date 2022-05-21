@@ -110,7 +110,7 @@ This section should list any major frameworks/libraries used to bootstrap your p
 
 <b>To be filled in</b>
 
-1. Get a free API Key at [https://enigmapr0ject.tech/avdan](https://enigmapr0ject.tech/avdan)
+1. Get your API Key at [https://enigmapr0ject.tech/avdan/login.html](https://enigmapr0ject.tech/avdan/login.html)
 2. Clone the repo
    ```sh
    git clone https://github.com/projectintel-anon/avdan-os-concept
