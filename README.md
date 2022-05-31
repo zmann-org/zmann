@@ -69,7 +69,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://dynamicos.netlify.app/)
+[![Product Name Screen Shot][product-screenshot]](https://avdanos.com/)
 
 Avdan OS is a concept OS taking features from Windows, Mac and Linux alike to combine everything into 1 very simple, sleek and easy-to-use operating system. From flagship features like the windowing/tiling system, down to the customizablity of every integral part; this operating system satisfies that one itch for everything.
 
@@ -133,7 +133,7 @@ This section should list any major frameworks/libraries used to bootstrap your p
 
 <b>To be filled in</b>
 
-_For more examples, please refer to the [Documentation](https://github.com/projectintel-anon/avdan-os-concept/wiki)_
+_For more examples, please refer to the [Documentation](https://github.com/avdan-os/avdanos)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -190,7 +190,7 @@ Only authorized members of this repository/team are allowed to run any code or v
 <!-- CONTACT -->
 ## Contact
 
-Leigh, Senior Developer and Manager - [@ep_leigh](https://twitter.com/ep_leigh) - leigh@enigmapr0ject.tech
+Leigh, Senior Developer/Manager - [@ep_leigh](https://twitter.com/ep_leigh) - leigh@enigmapr0ject.tech
 
 Project Link: [https://github.com/avdan-os/AvdanOS](https://github.com/avdan-os/AvdanOS)
 
