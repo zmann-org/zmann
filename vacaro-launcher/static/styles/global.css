@@ -1,0 +1,39 @@
+/* scrollbar */
+::-webkit-scrollbar {
+	width: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+	/* -webkit-border-radius: 1ex; */
+}
+::-webkit-scrollbar-corner {
+	background: #000;
+}
+
+/* global classes */
+.center {
+	display: flex;
+	justify-content: center;
+}
+.warning-card {
+	margin-top: -20px !important;
+}
+
+/* carbon overrides */
+.bx--side-nav__item.bx--side-nav__item--icon a.bx--side-nav__link {
+	margin-left: -55px;
+}
+
+/* line at documentation dropdown */
+.bx--header__submenu::before {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	display: block;
+	width: 0.0625rem;
+	height: 1.5rem;
+	background-color: #393939;
+	content: '';
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
