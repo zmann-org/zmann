@@ -16,17 +16,15 @@
 	import YT from '../components/home/YT.svelte';
 </script>
 
-<Tile
-	style="height: 400px; background-position: center; background-size: 200rem; background-image: url(https://media.discordapp.net/attachments/281535090134351874/985849155912101939/xxcww.jpg);"
->
-	<Grid narrow>
+<Tile style="height: 400px;">
+	<!-- <Grid narrow>
 		<Row>
 			<Column>
 				<AspectRatio
 					ratio="16x9"
 					style="background-color: #ffffff17; max-height: 368px; backdrop-filter: blur(50px);"
 				>
-					<GlassPanel/>
+					<GlassPanel />
 				</AspectRatio>
 			</Column>
 			<Column sm={{ offset: 10 }}>
@@ -47,6 +45,12 @@
 					/>
 				</ButtonSet>
 			</Column>
+		</Row>
+	</Grid> -->
+	<Grid style="height: 100%;">
+		<Row>
+			<Column aspectRatio="2x1">2x1</Column>
+			<Column aspectRatio="2x1">2x1</Column>
 		</Row>
 	</Grid>
 </Tile>

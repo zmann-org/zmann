@@ -23,7 +23,6 @@
 	import { onMount } from 'svelte';
 	import { appWindow } from '@tauri-apps/api/window';
 	import { goto } from '$app/navigation';
-	import { navigating } from '$app/stores';
 
 	import WindowMinimizeButton from '../components/icon/WindowMinimizeButton.svelte';
 	import WindowCloseButton from '../components/icon/WindowCloseButton.svelte';
@@ -38,6 +37,7 @@
 	import LogoTwitter from 'carbon-icons-svelte/lib/LogoTwitter.svelte';
 	import LogoDiscord from 'carbon-icons-svelte/lib/LogoDiscord.svelte';
 	import LogoYoutube from 'carbon-icons-svelte/lib/LogoYoutube.svelte';
+	import ApplicationWeb from "carbon-icons-svelte/lib/ApplicationWeb.svelte";
 	import WatsonHealthAiResultsUrgent from 'carbon-icons-svelte/lib/WatsonHealthAiResultsUrgent.svelte';
 	import InformationSquare from 'carbon-icons-svelte/lib/InformationSquare.svelte';
 	import Share from 'carbon-icons-svelte/lib/Share.svelte';
@@ -210,7 +210,7 @@
 				<!-- <SideNavMenuItem href="/" text="Link 1" /> -->
 				<SideNavLink href="/" icon={LogoTwitter} text="Open Twitter" />
 				<SideNavLink href="/" icon={LogoYoutube} text="Open YT Channel" />
-				<SideNavLink href="/" icon={LogoTwitter} text="Twitter" />
+				<SideNavLink href="/" icon={ApplicationWeb} text="Open the Website" />
 			</SideNavMenu>
 			<SideNavDivider />
 			<SideNavLink
