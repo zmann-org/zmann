@@ -10,24 +10,31 @@
 		Button
 	} from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
+
+	import GlassPanel from '../components/home/GlassPanel.svelte';
 	import FAQ from '../components/home/FAQ.svelte';
 	import YT from '../components/home/YT.svelte';
 </script>
 
-<Tile style="height: 400px;">
-	<Grid>
+<Tile
+	style="height: 400px; background-position: center; background-size: 200rem; background-image: url(https://media.discordapp.net/attachments/281535090134351874/985849155912101939/xxcww.jpg);"
+>
+	<Grid narrow>
 		<Row>
-			<Column>Column</Column>
-			<Column>Column</Column>
-			<Column>Column</Column>
-			<Column sm={{ offset: 10 }} >
+			<Column>
+				<AspectRatio
+					ratio="16x9"
+					style="background-color: #ffffff17; max-height: 368px; backdrop-filter: blur(50px);"
+				>
+					<GlassPanel/>
+				</AspectRatio>
+			</Column>
+			<Column sm={{ offset: 10 }}>
 				<ButtonSet stacked>
 					<Button icon={Launch}>Launch Engine</Button>
 					<Dropdown
 						hideLabel
 						light
-						warn
-						warnText="Warning, the Vacaro Launcher is still in early development."
 						type="default"
 						style="width: 100%; max-width: 12.25rem;"
 						titleText="Engine Version"

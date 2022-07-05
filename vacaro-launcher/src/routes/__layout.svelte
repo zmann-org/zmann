@@ -23,6 +23,7 @@
 	import { onMount } from 'svelte';
 	import { appWindow } from '@tauri-apps/api/window';
 	import { goto } from '$app/navigation';
+	import { navigating } from '$app/stores';
 
 	import WindowMinimizeButton from '../components/icon/WindowMinimizeButton.svelte';
 	import WindowCloseButton from '../components/icon/WindowCloseButton.svelte';
