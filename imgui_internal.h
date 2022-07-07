@@ -46,7 +46,7 @@ Index of this file:
 //-----------------------------------------------------------------------------
 
 #ifndef IMGUI_VERSION
-#include "#include "imgui.h""
+#include "imgui.h"
 #endif
 
 #include <stdio.h>      // FILE*, sscanf
