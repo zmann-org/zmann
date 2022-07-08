@@ -4,14 +4,39 @@
     <Natvis Include="imgui.natvis" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\vendor\imgui\backends\imgui_impl_glfw.cpp" />
-    <ClCompile Include="..\vendor\imgui\backends\imgui_impl_vulkan.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\vendor\imgui\misc\cpp\imgui_stdlib.cpp" />
-    <ClCompile Include="..\vendor\imgui\imgui.cpp" />
-    <ClCompile Include="..\vendor\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\vendor\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\vendor\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\vendor\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\vendor\imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\imgui\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\imgui\backends\imgui_impl_vulkan.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\imgui\misc\cpp\imgui_stdlib.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\imgui\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vendor\imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{f5a15a79-ce63-483c-abcf-be05333ec16d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Application.h" />
   </ItemGroup>
 </Project>
