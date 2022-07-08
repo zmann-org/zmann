@@ -14,8 +14,4 @@
     <ClCompile Include="..\vendor\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\vendor\imgui\imgui_widgets.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\vendor\imgui\backends\imgui_impl_glfw.h" />
-    <ClInclude Include="..\vendor\imgui\backends\imgui_impl_vulkan.h" />
-  </ItemGroup>
 </Project>
