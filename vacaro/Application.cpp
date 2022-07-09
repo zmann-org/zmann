@@ -39,7 +39,7 @@ namespace Vacaro {
         // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
         if (!opt_padding)
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("DockSpace Demo", nullptr, window_flags);
+        ImGui::Begin("Vacaro Dockspace", nullptr, window_flags);
         if (!opt_padding)
             ImGui::PopStyleVar();
 
@@ -50,7 +50,7 @@ namespace Vacaro {
         ImGuiIO& io = ImGui::GetIO();
         if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
         {
-            ImGuiID dockspace_id = ImGui::GetID("VacaroDockSpace");
+            ImGuiID dockspace_id = ImGui::GetID("Vacaro DockSpace");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
 
@@ -127,6 +127,8 @@ namespace Vacaro {
 
         ImGui::Begin("Preview");
         ShowAppDebugOverlay();
+        ShowAppDebugOverlay();
+
         ImGui::End();
 
         ImGui::Begin("Add stuff menu");
@@ -139,7 +141,7 @@ namespace Vacaro {
     {
         static int corner = 3;
         ImGuiIO& io = ImGui::GetIO();
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav; /*ImGuiWindowFlags_NoDocking*/
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav; /*ImGuiWindowFlags_NoDocking*/
         if (corner != -1)
         {
             const float PAD = 10.0f;
