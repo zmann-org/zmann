@@ -5,19 +5,17 @@
 <Accordion>
 	<AccordionItem open>
 		<svelte:fragment slot="title">
-			<h5>Natural Language Classifier</h5>
-			<div>AI / Machine Learning</div>
+			<h5>What is Vacaro?</h5>
+			<div>Engine / General Knowledge</div>
 		</svelte:fragment>
 		<p>
-			Natural Language Classifier uses advanced natural language processing and machine learning
-			techniques to create custom classification models. Users train their data and the service
-			predicts the appropriate category for the inputted text.
+			Vacaro is a game and video engine, powered to achieve a realistic and efficient game experience. <strong>Vacaro is still in development and can have bugs or performance issues.</strong>
 		</p>
 	</AccordionItem>
 	<AccordionItem>
 		<svelte:fragment slot="title">
-			<h5>Natural Language Understanding</h5>
-			<div>AI / Machine Learning</div>
+			<h5>How do I get started?</h5>
+			<div>Engine / General Knowledge</div>
 		</svelte:fragment>
 		<p>
 			Analyze text to extract meta-data from content such as concepts, entities, emotion, relations,
@@ -26,8 +24,8 @@
 	</AccordionItem>
 	<AccordionItem>
 		<svelte:fragment slot="title">
-			<h5>Language Translator</h5>
-			<div>AI / Machine Learning</div>
+			<h5>What engine version should I install?</h5>
+			<div>Dev-ops / Launcher Question</div>
 		</svelte:fragment>
 		<p>
 			Translate text, documents, and websites from one language to another. Create industry or
