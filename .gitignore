@@ -540,3 +540,4 @@ examples/example_sdl_opengl2/example_sdl_opengl2
 examples/example_sdl_opengl3/example_sdl_opengl3
 vendor/imgui/
 vendor/SDL2/
+vacaro/enc_temp_folder/

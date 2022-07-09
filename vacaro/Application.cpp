@@ -126,21 +126,20 @@ namespace Vacaro {
         ImGui::End();
 
         ImGui::Begin("Preview");
+        ShowAppDebugOverlay();
         ImGui::End();
 
         ImGui::Begin("Add stuff menu");
         ImGui::End();
-        static bool show_app_debug_overlay = false;
 
-        ShowAppDebugOverlay(&show_app_debug_overlay);
         ImGui::ShowDemoWindow();
     }
 
-    static void ShowAppDebugOverlay(bool* p_open)
+    static void ShowAppDebugOverlay()
     {
         static int corner = 3;
         ImGuiIO& io = ImGui::GetIO();
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav; /*ImGuiWindowFlags_NoDocking*/
         if (corner != -1)
         {
             const float PAD = 10.0f;
@@ -156,8 +155,8 @@ namespace Vacaro {
             ImGui::SetNextWindowViewport(viewport->ID);
             window_flags |= ImGuiWindowFlags_NoMove;
         }
-        ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-        if (ImGui::Begin("Vacaro Debug Overlay", p_open, window_flags))
+        ImGui::SetNextWindowBgAlpha(0.40f); // Transparent background
+        if (ImGui::Begin("Vacaro Debug Overlay", nullptr, window_flags))
         {
             ImGui::Text("Debug overlay\n" "in the corner of the screen.\n" "(right-click to change position)");
             ImGui::Separator();
@@ -176,7 +175,7 @@ namespace Vacaro {
                 if (ImGui::MenuItem("Top-right", NULL, corner == 1)) corner = 1;
                 if (ImGui::MenuItem("Bottom-left", NULL, corner == 2)) corner = 2;
                 if (ImGui::MenuItem("Bottom-right", NULL, corner == 3)) corner = 3;
-                if (p_open && ImGui::MenuItem("Close")) *p_open = false;
+                //if (p_open && ImGui::MenuItem("Close")) *p_open = false;
                 ImGui::EndPopup();
             }
         }
