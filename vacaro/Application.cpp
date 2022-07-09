@@ -1,6 +1,6 @@
 #include "Application.h"
 #include "imgui.h"
-
+#include <iostream>
 namespace Vacaro {
     void RenderUI() {
 
@@ -56,6 +56,25 @@ namespace Vacaro {
 
         if (ImGui::BeginMenuBar())
         {
+            if (ImGui::BeginMenu("File"))
+            {
+                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+                ImGui::Separator();
+                ImGui::EndMenu();
+
+            }
+            if (ImGui::BeginMenu("Edit"))
+            {
+                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+                ImGui::Separator();
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Project"))
+            {
+                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+                ImGui::Separator();
+                ImGui::EndMenu();
+            }
             if (ImGui::BeginMenu("Options"))
             {
                 // Disabling fullscreen would allow the window to be moved to the front of other windows,
@@ -72,7 +91,6 @@ namespace Vacaro {
                 ImGui::Separator();
                 ImGui::EndMenu();
             }
-
             ImGui::EndMenuBar();
         }
 
@@ -93,5 +111,6 @@ namespace Vacaro {
 
         ImGui::Begin("Add stuff menu");
         ImGui::End();
+
     }
 }
