@@ -45,7 +45,7 @@ jobs:
 
       - run: npm run build
 
-      - run: npm run format && npm run lint
+      - run: npm run format
         if: matrix.platform == 'ubuntu-latest'
 
       - run: npm run check
