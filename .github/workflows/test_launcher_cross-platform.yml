@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     defaults: 
       run: 
-        working-directory: 'src'
+        working-directory: 'vacaro-launcher'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
