@@ -48,8 +48,6 @@ jobs:
       - run: npm run format
         if: matrix.platform == 'ubuntu-latest'
 
-      - run: npm run check
-
       - name: Build
         uses: tauri-apps/tauri-action@v0
         env:
