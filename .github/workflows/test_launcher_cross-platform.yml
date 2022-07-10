@@ -1,4 +1,4 @@
-name: Test
+name: test launcher engine [cross-platform] (vacaro-launcher)
 on:
   push:
     branches:
@@ -13,6 +13,9 @@ jobs:
       matrix:
         platform: [macos-10.15, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
+    defaults: 
+      run: 
+        working-directory: 'src'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
