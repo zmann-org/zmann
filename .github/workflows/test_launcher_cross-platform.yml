@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - '*'
+    push: paths: 
+      - vacaro-launcher/**
   pull_request:
   workflow_dispatch:
 
