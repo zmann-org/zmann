@@ -35,7 +35,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@tauri-apps/api": "^1.0.1",
+		"@tauri-apps/api": "^1.0.2",
 		"carbon-icons-svelte": "^11.1.0",
 		"svelte-inline-svg": "^1.1.3"
 	}
