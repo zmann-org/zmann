@@ -42,9 +42,10 @@
 	import InformationSquare from 'carbon-icons-svelte/lib/InformationSquare.svelte';
 	import Share from 'carbon-icons-svelte/lib/Share.svelte';
 	import HeaderNavItemHref from '../components/navigation/HeaderNavItemHref.svelte';
-
+	import HeaderUtilitiesDrag from '../components/navigation/HeaderUtilitiesDrag.svelte';
 	import WarningModal from '../components/theme/WarningModal.svelte';
 	import ContextMenuLayout from '../components/ContextMenuLayout.svelte';
+	import HeaderName from '../components/navigation/HeaderName.svelte';
 
 	let isOpen = false;
 	let isSideNavOpen = false;
@@ -97,7 +98,7 @@
 </script>
 
 <div>
-	<Header
+	<HeaderName
 		data-tauri-drag-region
 		class="titlebar"
 		company="Vacaro"
@@ -124,7 +125,7 @@
 				<HeaderNavItemHref Href="/docs/self-hosting" Text="Self Hosting" StartsWith="false" />
 			</HeaderNavMenu>
 		</HeaderNav>
-		<HeaderUtilities data-tauri-drag-region>
+		<HeaderUtilitiesDrag>
 			{#if themeBool == true}
 				<HeaderGlobalAction
 					on:click={() => themeChange()}
@@ -155,7 +156,7 @@
 					<HeaderPanelLink>Switcher item 5</HeaderPanelLink>
 				</HeaderPanelLinks>
 			</HeaderAction>
-		</HeaderUtilities>
+		</HeaderUtilitiesDrag>
 		<div
 			style="width=100%; margin-left: 20px; margin-right: 1.5px; height=100%"
 			data-tauri-drag-region={true}
@@ -188,7 +189,7 @@
 				icon={WindowCloseButton}
 			/>
 		</div>
-	</Header>
+	</HeaderName>
 
 	<SideNav rail bind:isOpen={isSideNavOpen}>
 		<!-- style={themeBackground} -->
@@ -255,6 +256,7 @@
 			color: white;
 			fill: transparent !important;
 			/* margin-bottom: 17px; */
+			margin-right: -1px;
 		}
 		.closebutton:hover {
 			background-color: #e81123;
