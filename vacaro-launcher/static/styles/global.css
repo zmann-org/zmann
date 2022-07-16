@@ -41,6 +41,7 @@
 /* themed sidenav */
 .bx--side-nav {
 	background-color: var(--cds-field) !important;
+    border-right: 1px solid var(--cds-border-subtle);
 }
 .bx--side-nav__submenu {
 	color: var(--cds-text-01) !important;
