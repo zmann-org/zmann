@@ -88,6 +88,7 @@
     />
   {/if}
   <a
+    data-tauri-drag-region
     href="{href}"
     class:bx--header__name="{true}"
     bind:this="{ref}"
@@ -95,9 +96,9 @@
     on:click
   >
     {#if company}
-      <span>{company}&nbsp;</span>
+      <span data-tauri-drag-region>{company}&nbsp;</span>
     {/if}
-    <div name="platform" class:bx--header__name--prefix="{true}">{platformName}</div>
+    <div name="platform" class:bx--header__name--prefix="{true}" data-tauri-drag-region>{platformName}</div>
   </a>
   <slot />
 </header>
