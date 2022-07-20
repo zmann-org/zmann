@@ -56,10 +56,10 @@
 </Tile>
 
 <Grid style="margin-top: 12px; width: 100%;">
-	<Row>
+	<Row style="margin-right: -2rem; margin-left: -3rem;">
 		<Column aspectRatio="2x1">
 			<AspectRatio ratio="16x9">
-				<Tile style="height: 100% !important;">
+				<Tile style="height: 100% !important; padding: 0;">
 					<YT title="Borderline teaser | Origin event" url="https://www.youtube.com/embed/uo8BfG6aw0g" />
 				</Tile>
 			</AspectRatio>
