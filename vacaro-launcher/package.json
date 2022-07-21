@@ -2,10 +2,10 @@
 	"name": "vacaro-launcher",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "svelte-kit dev --port 8082",
-		"build": "svelte-kit build",
+		"dev": "vite dev --port 8082",
+		"build": "vite build",
 		"package": "svelte-kit package",
-		"preview": "svelte-kit preview",
+		"preview": "vite preview",
 		"prepare": "svelte-kit sync",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
@@ -37,6 +37,7 @@
 	"dependencies": {
 		"@tauri-apps/api": "^1.0.2",
 		"carbon-icons-svelte": "^11.1.0",
-		"svelte-inline-svg": "^1.1.3"
+		"svelte-inline-svg": "^1.1.3",
+		"vite": "^3.0.2"
 	}
 }
