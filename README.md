@@ -17,6 +17,20 @@
 </div>
 
 > **Warning**
-> **Vacaro** is in early development, the *codebase* and *API* can change rapidly.
+> *Vacaro* is in early development, the *codebase* and *API* can change rapidly.
 
-*AZ Software 2016-2022*
+> **Note**
+> Any [*NodeJS*](https://nodejs.org/en/) based projects use [NPM](https://npmjs.org) package manager.
+
+## Project Structure
+- '**vacaro/**' the engine's codebase. *(C++20, Vulkan, Dear Imgui + GLFW)*
+- '**vacaro-launcher/**', the game engine launcher's codebase. *(SvelteKit, Tauri and Rust)*
+- '**vacaro-website/**', the website code for vacaro.org. *(SvelteKit, Carbon Design System, Vite)*
+
+> *[SvelteKit](https://kit.svelte.dev/) applications are using the latest version of [Vite](https://vitejs.dev/).*
+
+<div align="center">
+
+**AZ Software** ***2016-2022***
+
+</div>
