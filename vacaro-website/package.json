@@ -31,5 +31,9 @@
 		"typescript": "^4.7.4",
 		"vite": "^3.0.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"carbon-components-svelte": "^0.67.1",
+		"carbon-icons-svelte": "^11.1.0"
+	}
 }
