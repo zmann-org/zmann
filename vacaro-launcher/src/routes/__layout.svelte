@@ -1,5 +1,6 @@
 <script lang="ts">
 	import 'carbon-components-svelte/css/all.css';
+
 	import {
 		Header,
 		HeaderNav,
@@ -18,7 +19,8 @@
 		SideNavMenu,
 		SideNavMenuItem,
 		SideNavLink,
-		SideNavDivider
+		SideNavDivider,
+		Theme
 	} from 'carbon-components-svelte';
 	import { onMount } from 'svelte';
 	import { appWindow } from '@tauri-apps/api/window';
@@ -37,7 +39,7 @@
 	import LogoTwitter from 'carbon-icons-svelte/lib/LogoTwitter.svelte';
 	import LogoDiscord from 'carbon-icons-svelte/lib/LogoDiscord.svelte';
 	import LogoYoutube from 'carbon-icons-svelte/lib/LogoYoutube.svelte';
-	import ApplicationWeb from "carbon-icons-svelte/lib/ApplicationWeb.svelte";
+	import ApplicationWeb from 'carbon-icons-svelte/lib/ApplicationWeb.svelte';
 	import WatsonHealthAiResultsUrgent from 'carbon-icons-svelte/lib/WatsonHealthAiResultsUrgent.svelte';
 	import InformationSquare from 'carbon-icons-svelte/lib/InformationSquare.svelte';
 	import Share from 'carbon-icons-svelte/lib/Share.svelte';
@@ -52,17 +54,9 @@
 	let isDarkModeModal = false;
 	let isMaximized = false;
 
-	var themeBool = new Boolean(true);
-	let themeKey = 'g10';
-
-	onMount(() => {
-		if (themeBool == true) {
-			themeKey = 'g10';
-		} else if (themeBool == false) {
-			themeKey = 'g90';
-		}
-		document.documentElement.setAttribute('theme', themeKey);
-	});
+	let /**
+		 * @type {import('carbon-components-svelte/types/Theme/Theme.svelte').CarbonTheme}
+		 */ theme = 'g10';
 
 	function closeApp() {
 		appWindow.close();
@@ -82,22 +76,10 @@
 	function routeToPage(route: string, replaceState: boolean) {
 		goto(`/${route}`, { replaceState });
 	}
-
-	function themeChange() {
-		if (themeBool == true) themeBool = false;
-		else if (themeBool == false) themeBool = true;
-
-		if (themeBool == true) {
-			themeKey = 'g10';
-		} else if (themeBool == false) {
-			// isDarkModeModal = true;
-			themeKey = 'g90';
-		}
-		document.documentElement.setAttribute('theme', themeKey);
-	}
 </script>
 
 <div>
+	<Theme bind:theme persist persistKey="__carbon-theme" />
 	<HeaderName
 		data-tauri-drag-region
 		class="titlebar"
@@ -116,25 +98,37 @@
 			<HeaderNavItemHref Href="/engine" Text="Engine" StartsWith="false" />
 			<HeaderNavItemHref Href="/assets" Text="Assets" StartsWith="true" />
 			<HeaderNavMenu text="Documentation">
-				<HeaderNavItemHref Href="/docs/getting-started" Text="Getting Started" StartsWith="true" />
+				<HeaderNavItemHref
+					Href="/docs/getting-started"
+					Text="Getting Started"
+					StartsWith="true"
+				/>
 				<HeaderNavItemHref
 					Href="/docs/account-managment"
 					Text="Account Management"
 					StartsWith="false"
 				/>
-				<HeaderNavItemHref Href="/docs/self-hosting" Text="Self Hosting" StartsWith="false" />
+				<HeaderNavItemHref
+					Href="/docs/self-hosting"
+					Text="Self Hosting"
+					StartsWith="false"
+				/>
 			</HeaderNavMenu>
 		</HeaderNav>
 		<HeaderUtilitiesDrag>
-			{#if themeBool == true}
+			{#if theme == 'g90'}
 				<HeaderGlobalAction
-					on:click={() => themeChange()}
+					on:click={() => {
+						theme = 'g10';
+					}}
 					aria-label="Toggle Theme"
 					icon={MoonThemeSwitchIcon}
 				/>
 			{:else}
 				<HeaderGlobalAction
-					on:click={() => themeChange()}
+					on:click={() => {
+						theme = 'g90';
+					}}
 					aria-label="Toggle Theme"
 					icon={SunThemeSwitchIcon}
 				/>
@@ -231,7 +225,7 @@
 	<ContextMenuLayout />
 
 	<Content>
-		<WarningModal bind:isDarkModeModal bind:themeKey />
+		<WarningModal bind:isDarkModeModal bind:theme />
 		<slot />
 	</Content>
 

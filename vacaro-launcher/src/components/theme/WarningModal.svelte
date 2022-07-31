@@ -1,6 +1,6 @@
 <script>
 	import { Modal } from 'carbon-components-svelte';
-	export let themeKey = 'g10';
+	export let theme = 'g10';
 	export let isDarkModeModal = false;
 </script>
 
@@ -12,7 +12,7 @@
 	on:click:button--secondary={() => (isDarkModeModal = false)}
 	on:open
 	on:close
-	on:click:button--primary={() => (themeKey = 'g90')}
+	on:click:button--primary={() => (theme = 'g90')}
 >
 	<p>The dark theme is currently in development and not supported.</p>
 </Modal>
