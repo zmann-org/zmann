@@ -78,6 +78,13 @@
 		isMaximized = !isMaximized;
 	}
 
+	appWindow.onResized(() => {
+		appWindow.isMaximized().then((e) => {
+			if (e == true) isMaximized = true;
+			else isMaximized = false;
+		});
+	});
+
 	function routeToPage(route: string, replaceState: boolean) {
 		goto(`/${route}`, { replaceState });
 	}
