@@ -14,6 +14,8 @@
 	import Banner from '../components/home/Banner.svelte';
 	import FAQ from '../components/home/FAQ.svelte';
 	import YT from '../components/home/YT.svelte';
+
+	import { relaunch } from '@tauri-apps/api/process';
 </script>
 
 <!-- <Banner /> -->
@@ -49,20 +51,9 @@
 				role="listitem"
 				icon-layout=""
 				kind="tertiary"
-				><!---->Manage Projects<!----><svg
-					focusable="false"
-					preserveAspectRatio="xMidYMid meet"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="currentColor"
-					aria-hidden="true"
-					width="20"
-					height="20"
-					viewBox="0 0 20 20"
-					slot="icon"
-					><!----><path
-						d="M11.8 2.8L10.8 3.8 16.2 9.3 1 9.3 1 10.7 16.2 10.7 10.8 16.2 11.8 17.2 19 10z"
-					/></svg
-				><!----></dds-button-group-item
+				><!---->Manage Projects<!----><Launch
+					style="margin-left: 6px; margin-right: -49px;"
+				/><!----></dds-button-group-item
 			>
 			<!---->
 			<dds-button-group-item
