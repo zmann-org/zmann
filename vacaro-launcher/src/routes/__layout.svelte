@@ -65,13 +65,18 @@
 		appWindow.minimize();
 	}
 	function toggleApp() {
+		// appWindow.isMaximized().then((value) => {
+		// 	if (isMaximized == true) {
+		// 		if (value == true) alert('test1');
+		// 		else alert('test2');
+		// 	} else {
+		// 		if (value == true) alert('test3');
+		// 		else alert('test4');
+		// 	}
+		// });
 		appWindow.toggleMaximize();
 		isMaximized = !isMaximized;
 	}
-
-	import GetisMaximized from '../components/MaximizeHandler';
-
-	GetisMaximized();
 
 	function routeToPage(route: string, replaceState: boolean) {
 		goto(`/${route}`, { replaceState });
