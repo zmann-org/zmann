@@ -11,10 +11,12 @@
 	} from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
 
-	import GlassPanel from '../components/home/GlassPanel.svelte';
+	import Banner from '../components/home/Banner.svelte';
 	import FAQ from '../components/home/FAQ.svelte';
 	import YT from '../components/home/YT.svelte';
 </script>
+
+<!-- <Banner /> -->
 
 <Tile style="height: 512px; background-color: transparent;">
 	<dds-leadspace
@@ -90,49 +92,37 @@
 		<dds-background-media
 			mobile-position="bottom"
 			opacity="100"
+			alt="Image alt text"
+			default-src="/video/splash.png"
 			data-autoid="dds--background-media"
 			slot="image"
 			gradient-direction="left-to-right"
 		>
-			<dds-video-player-container
-				video-id="1_9h94wo6b"
-				background-mode="true"
-				playing-mode="inline"
-				href="https://mediacenter.ibm.com/id/1_9h94wo6b"
-				><!---->
-				<dds-video-player
-					hide-caption=""
-					thumbnail-url="https://cdnsecakmi.kaltura.com/p/1773841/thumbnail/entry_id/1_9h94wo6b/width/3"
-					video-id="1_9h94wo6b"
-					playing-mode="inline"
-					data-autoid="dds--video-player"
-					content-state="thumbnail"
-					background-mode="true"
-					tabindex="0"
-					duration="18"
-					name="Test Video - 1:1"
-					aria-label="Test Video - 1:1 (0:18)"
-				>
-					<div
-						id="7njkbswq0ss"
-						class="kWidgetIframeContainer bx--video-player__video"
-						style="overflow: hidden;"
-						data-video-id="1_9h94wo6b"
-					>
-						<iframe
-							id="7njkbswq0ss_ifp"
-							scrolling="no"
-							name="7njkbswq0ss_ifp"
-							class="mwEmbedKalturaIframe ibm-mediacenter-player ibm-mediacenter-player__1x1 ibm-mediacenter-player__video ibm-mediacenter-player__single-audio ibm-mediacenter-player__idl ibm-mediacenter-player__ibm-design-language"
-							title="The Kaltura Dynamic Video Player"
-							allow="autoplay *; fullscreen *; encrypted-media *"
-							style="border: 0px none; max-width: 100%; max-height: 100%; width: 100%; height: 100%;"
-							frameborder="0"
-						/>
-					</div></dds-video-player
-				>
-				<!----></dds-video-player-container
-			>
+			<dds-image-item
+				media="(min-width: 1800px)"
+				srcset="/video/splash1.png"
+				data-autoid="dds-image-item"
+			/>
+			<dds-image-item
+				media="(min-width: 1600px)"
+				srcset="/video/splash2.png"
+				data-autoid="dds-image-item"
+			/>
+			<dds-image-item
+				media="(min-width: 1400px)"
+				srcset="/video/splash3.png"
+				data-autoid="dds-image-item"
+			/>
+			<dds-image-item
+				media="(min-width: 1200px)"
+				srcset="/video/splash4.png"
+				data-autoid="dds-image-item"
+			/>
+			<dds-image-item
+				media="(min-width: 1060px)"
+				srcset="/video/splash.png"
+				data-autoid="dds-image-item"
+			/>
 		</dds-background-media>
 	</dds-leadspace>
 </Tile>
