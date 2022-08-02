@@ -28,3 +28,5 @@ Makefile text eol=lf
 *.png binary
 *.ttf binary
 *.lib binary
+
+*.css linguist-vendored=false
