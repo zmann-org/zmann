@@ -12,9 +12,10 @@
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
 
 	import Banner from '../components/home/Banner.svelte';
+	import Carousel from '../components/home/Carousel.svelte';
 	import FAQ from '../components/home/FAQ.svelte';
 	import YT from '../components/home/YT.svelte';
-
+	import FeaturesSection from '../components/home/FeaturesSection.svelte';
 	import { relaunch } from '@tauri-apps/api/process';
 </script>
 
@@ -135,3 +136,6 @@
 		</Column>
 	</Row>
 </Grid>
+<Carousel />
+<FeaturesSection />
+<dds-back-to-top>geg</dds-back-to-top>

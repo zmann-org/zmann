@@ -32,4 +32,24 @@
 			region-specific translations via the service's customization capability.
 		</p>
 	</AccordionItem>
+	<AccordionItem>
+		<svelte:fragment slot="title">
+			<h5>What engine version should I install?</h5>
+			<div>Dev-ops / Launcher Question</div>
+		</svelte:fragment>
+		<p>
+			Translate text, documents, and websites from one language to another. Create industry or
+			region-specific translations via the service's customization capability.
+		</p>
+	</AccordionItem>
+	<AccordionItem>
+		<svelte:fragment slot="title">
+			<h5>What engine version should I install?</h5>
+			<div>Dev-ops / Launcher Question</div>
+		</svelte:fragment>
+		<p>
+			Translate text, documents, and websites from one language to another. Create industry or
+			region-specific translations via the service's customization capability.
+		</p>
+	</AccordionItem>
 </Accordion>
