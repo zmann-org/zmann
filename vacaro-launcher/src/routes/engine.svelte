@@ -1,8 +1,8 @@
 <script>
 	import Footer from '../components/navigation/Footer.svelte';
 
-	import Cards from '../components/engine/cards.svelte';
-	import Search from '../components/engine/search.svelte';
+	import Cards from '../components/engine/Cards.svelte';
+	import Search from '../components/engine/Search.svelte';
 </script>
 
 <Search />
