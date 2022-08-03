@@ -24,12 +24,19 @@
 
 ## Project Structure
 - '**vacaro/**' the engine's codebase. *(C++20, Vulkan, Dear Imgui + GLFW)*
+
+
 - '**vacaro-launcher/**', the game engine launcher's codebase. *(SvelteKit, Tauri and Rust)*
+
+![Launcher Banner](https://raw.githubusercontent.com/Vacaro/Vacaro/main/.github/assets/launcher-banner.png)
+
 - - [![CodeQL launcher engine [cross-platform]](https://github.com/Vacaro/Vacaro/actions/workflows/codeql_launcher_cross-platform.yml/badge.svg)](https://github.com/Vacaro/Vacaro/actions/workflows/codeql_launcher_cross-platform.yml)
 
 - - [![test launcher engine [cross-platform] (vacaro-launcher)](https://github.com/Vacaro/Vacaro/actions/workflows/test_launcher_cross-platform.yml/badge.svg)](https://github.com/Vacaro/Vacaro/actions/workflows/test_launcher_cross-platform.yml)
 
 - - [![release launcher engine [cross-platform]](https://github.com/Vacaro/Vacaro/actions/workflows/release_launcher_cross-platform.yml/badge.svg)](https://github.com/Vacaro/Vacaro/actions/workflows/release_launcher_cross-platform.yml)
+
+
 
 - '**vacaro-website/**', the website code for vacaro.org. *(SvelteKit, Carbon Design System, Vite)*
 
