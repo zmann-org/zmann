@@ -40,6 +40,8 @@
 
 - '**vacaro-website/**', the website code for vacaro.org. *(SvelteKit, Carbon Design System, Vite)*
 
+![Website Banner](https://raw.githubusercontent.com/Vacaro/Vacaro/main/.github/assets/website-banner.png)
+
 > *[SvelteKit](https://kit.svelte.dev/) applications are using the latest version of [Vite](https://vitejs.dev/).*
 
 <div align="center">
