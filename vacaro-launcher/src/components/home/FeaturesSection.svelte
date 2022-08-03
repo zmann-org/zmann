@@ -3,6 +3,7 @@
 	alt="Image alt text"
 	default-src="https://www.ibm.com/standards/carbon/web-components/1e7618ebe43eb5c8ce512709495c42fd.jpg"
 	data-autoid="dds--leadspace"
+	style="margin-bottom: -31px; margin-top: -60px;"
 	gradient-style-scheme="with-gradient"
 >
 	<dds-leadspace-heading

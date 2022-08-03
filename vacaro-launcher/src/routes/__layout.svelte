@@ -239,6 +239,7 @@
 	<Content>
 		<WarningModal bind:isDarkModeModal bind:theme />
 		<slot />
+		<dds-back-to-top />
 	</Content>
 
 	<style>

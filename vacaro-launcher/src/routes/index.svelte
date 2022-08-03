@@ -16,6 +16,7 @@
 	import FAQ from '../components/home/FAQ.svelte';
 	import YT from '../components/home/YT.svelte';
 	import FeaturesSection from '../components/home/FeaturesSection.svelte';
+	import Sponsors from '../components/home/Sponsors.svelte';
 	import { relaunch } from '@tauri-apps/api/process';
 </script>
 
@@ -138,4 +139,5 @@
 </Grid>
 <Carousel />
 <FeaturesSection />
-<dds-back-to-top>geg</dds-back-to-top>
+
+<Sponsors />
