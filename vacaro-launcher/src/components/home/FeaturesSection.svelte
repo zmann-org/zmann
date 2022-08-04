@@ -1,18 +1,19 @@
 <dds-leadspace
 	type="centered"
 	alt="Image alt text"
-	default-src="https://www.ibm.com/standards/carbon/web-components/1e7618ebe43eb5c8ce512709495c42fd.jpg"
+	default-src="/video/splash-2.gif"
 	data-autoid="dds--leadspace"
-	style="margin-bottom: -31px; margin-top: -60px;"
+	style="margin-bottom: -32px; margin-top: -60px;"
 	gradient-style-scheme="with-gradient"
+	size="medium"
 >
 	<dds-leadspace-heading
 		role="heading"
 		aria-level="1"
 		data-autoid="dds--leadspace-heading"
-		slot="heading"><!---->Heading can go on two lines max<!----></dds-leadspace-heading
+		slot="heading"><!---->Latest News<!----></dds-leadspace-heading
 	>
-	Use this area for a short line of copy to support the title
+	Get the latest news, blogs and updates.
 	<dds-button-group
 		slot="action"
 		data-autoid="dds--button-group"
@@ -27,7 +28,7 @@
 			role="listitem"
 			icon-layout=""
 			kind="tertiary"
-			><!---->Button 1<!----><svg
+			><!---->Social Media<!----><svg
 				focusable="false"
 				preserveAspectRatio="xMidYMid meet"
 				xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +51,7 @@
 			role="listitem"
 			icon-layout=""
 			kind="primary"
-			><!---->Button 2<!----><svg
+			><!---->Blogs<!----><svg
 				focusable="false"
 				preserveAspectRatio="xMidYMid meet"
 				xmlns="http://www.w3.org/2000/svg"
@@ -71,29 +72,29 @@
 		mobile-position="bottom"
 		opacity="100"
 		alt="Image alt text"
-		default-src="https://www.ibm.com/standards/carbon/web-components/1e7618ebe43eb5c8ce512709495c42fd.jpg"
+		default-src="/video/splash-2.gif"
 		data-autoid="dds--background-media"
 		slot="image"
 		gradient-direction="left-to-right"
 	>
 		<dds-image-item
 			media="(min-width: 1312px)"
-			srcset="https://www.ibm.com/standards/carbon/web-components/1e7618ebe43eb5c8ce512709495c42fd.jpg"
+			srcset="/video/splash-2.gif"
 			data-autoid="dds-image-item"
 		/>
 		<dds-image-item
 			media="(min-width: 672px)"
-			srcset="https://www.ibm.com/standards/carbon/web-components/1e7618ebe43eb5c8ce512709495c42fd.jpg"
+			srcset="/video/splash-2.gif"
 			data-autoid="dds-image-item"
 		/>
 		<dds-image-item
 			media="(min-width: 320px)"
-			srcset="https://www.ibm.com/standards/carbon/web-components/1e7618ebe43eb5c8ce512709495c42fd.jpg"
+			srcset="/video/splash-2.gif"
 			data-autoid="dds-image-item"
 		/>
 		<dds-image-item
 			media="(min-width: 0px)"
-			srcset="https://www.ibm.com/standards/carbon/web-components/1e7618ebe43eb5c8ce512709495c42fd.jpg"
+			srcset="/video/splash-2.gif"
 			data-autoid="dds-image-item"
 		/>
 	</dds-background-media>

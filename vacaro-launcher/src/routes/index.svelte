@@ -140,4 +140,4 @@
 <Carousel />
 <FeaturesSection />
 
-<Sponsors />
+<!-- <Sponsors /> -->
