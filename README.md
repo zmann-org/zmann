@@ -36,6 +36,7 @@
 
 - - [![release launcher engine [cross-platform]](https://github.com/Vacaro/Vacaro/actions/workflows/release_launcher_cross-platform.yml/badge.svg)](https://github.com/Vacaro/Vacaro/actions/workflows/release_launcher_cross-platform.yml)
 
+- - [![build launcher engine [ubuntu-latest] (vacaro-launcher)](https://github.com/Vacaro/Vacaro/actions/workflows/build_launcher_cross-platform.yml/badge.svg)](https://github.com/Vacaro/Vacaro/actions/workflows/build_launcher_cross-platform.yml)
 
 
 - '**vacaro-website/**', the website code for vacaro.org. *(SvelteKit, Carbon Design System, Vite)*
