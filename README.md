@@ -30,14 +30,14 @@
 
 ![Launcher Banner](https://raw.githubusercontent.com/Vacaro/Vacaro/main/.github/assets/launcher-banner.png)
 
-- - [![CodeQL launcher engine [cross-platform]](https://github.com/Vacaro/Vacaro/actions/workflows/codeql_launcher_cross-platform.yml/badge.svg)](https://github.com/Vacaro/Vacaro/actions/workflows/codeql_launcher_cross-platform.yml)
+<div align="center">
 
-- - [![test launcher engine [cross-platform] (vacaro-launcher)](https://github.com/Vacaro/Vacaro/actions/workflows/test_launcher_cross-platform.yml/badge.svg)](https://github.com/Vacaro/Vacaro/actions/workflows/test_launcher_cross-platform.yml)
+[![CodeQL launcher engine [cross-platform]](https://img.shields.io/github/workflow/status/vacaro/vacaro/CodeQL%20launcher%20engine%20[cross-platform]?style=for-the-badge&label=CodeQL%20Launcher%20Engine&logo=codacy)](https://github.com/Vacaro/Vacaro/actions/workflows/codeql_launcher_cross-platform.yml)
+[![test launcher engine [cross-platform] (vacaro-launcher)](https://img.shields.io/github/workflow/status/vacaro/vacaro/test%20launcher%20engine%20[cross-platform]%20(vacaro-launcher)?style=for-the-badge&label=Test%20Launcher%20Engine&logo=github-actions)](https://github.com/Vacaro/Vacaro/actions/workflows/test_launcher_cross-platform.yml)
+[![build launcher engine [ubuntu-latest] (vacaro-launcher)](https://img.shields.io/github/workflow/status/vacaro/vacaro/build%20launcher%20engine%20[ubuntu-latest]%20(vacaro-launcher)?style=for-the-badge&label=Build%20Launcher%20Engine&logo=svelte)](https://github.com/Vacaro/Vacaro/actions/workflows/build_launcher_cross-platform.yml)
+[![release launcher engine [cross-platform]](https://img.shields.io/github/workflow/status/vacaro/vacaro/release%20launcher%20engine%20[cross-platform]?style=for-the-badge&label=Release%20Launcher%20Engine&logo=semantic-release)](https://github.com/Vacaro/Vacaro/actions/workflows/release_launcher_cross-platform.yml)
 
-- - [![release launcher engine [cross-platform]](https://github.com/Vacaro/Vacaro/actions/workflows/release_launcher_cross-platform.yml/badge.svg)](https://github.com/Vacaro/Vacaro/actions/workflows/release_launcher_cross-platform.yml)
-
-- - [![build launcher engine [ubuntu-latest] (vacaro-launcher)](https://github.com/Vacaro/Vacaro/actions/workflows/build_launcher_cross-platform.yml/badge.svg)](https://github.com/Vacaro/Vacaro/actions/workflows/build_launcher_cross-platform.yml)
-
+</div>
 
 - '**vacaro-website/**', the website code for vacaro.org. *(SvelteKit, Carbon Design System, Vite)*
 
