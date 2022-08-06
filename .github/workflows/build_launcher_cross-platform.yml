@@ -1,4 +1,4 @@
-name: test launcher engine [cross-platform] (vacaro-launcher)
+name: build launcher engine [ubuntu-latest] (vacaro-launcher)
 on:
   push:
     branches:
