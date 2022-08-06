@@ -3,7 +3,7 @@
 	alt="Image alt text"
 	default-src="/video/splash-2.gif"
 	data-autoid="dds--leadspace"
-	style="margin-bottom: -32px; margin-top: -60px;"
+	style="margin-bottom: -32px;"
 	gradient-style-scheme="with-gradient"
 	size="medium"
 >

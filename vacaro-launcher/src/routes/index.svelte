@@ -7,7 +7,9 @@
 		AspectRatio,
 		ButtonSet,
 		Dropdown,
-		Button
+		Button,
+		InlineNotification,
+NotificationActionButton
 	} from 'carbon-components-svelte';
 	import Launch from 'carbon-icons-svelte/lib/Launch.svelte';
 
@@ -17,11 +19,17 @@
 	import YT from '../components/home/YT.svelte';
 	import FeaturesSection from '../components/home/FeaturesSection.svelte';
 	import Sponsors from '../components/home/Sponsors.svelte';
+	import GroupBanner from '../components/home/GroupBanner.svelte';
+
 	import { relaunch } from '@tauri-apps/api/process';
+
+	import { breakpointObserver, breakpoints } from 'carbon-components-svelte';
+
+	const size = breakpointObserver();
+	const smaller = size.smallerThan('max');
 </script>
 
 <!-- <Banner /> -->
-
 <Tile style="height: 512px; background-color: transparent;">
 	<dds-leadspace
 		size="medium"
@@ -131,13 +139,27 @@
 					/>
 				</Tile>
 			</AspectRatio>
+			{#if $smaller}
+				<InlineNotification
+					hideCloseButton
+					kind="info"
+					title="Vacaro is in early development,"
+					subtitle="the codebase and API can change rapidly."
+				>
+					<svelte:fragment slot="actions">
+						<NotificationActionButton>Visit the Roadmap</NotificationActionButton>
+					</svelte:fragment>
+				</InlineNotification>
+			{/if}
 		</Column>
 		<Column aspectRatio="2x1">
 			<FAQ />
 		</Column>
 	</Row>
 </Grid>
-<Carousel />
+<!-- <Carousel /> -->
+
+<GroupBanner />
 <FeaturesSection />
 
 <!-- <Sponsors /> -->
