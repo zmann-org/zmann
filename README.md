@@ -13,7 +13,8 @@
 ![Repo Size](https://img.shields.io/github/languages/code-size/vacaro/vacaro?label=repo%20size&logo=github&style=for-the-badge)
 ![Repo Lines](https://img.shields.io/tokei/lines/github/vacaro/vacaro?color=green&style=for-the-badge)
 [![Discord Link](https://img.shields.io/discord/991359734949093496?color=blue&label=Discord&logo=discord&style=for-the-badge)](https://discord.gg/M5SncHjSX5)
-
+![Codacy](https://img.shields.io/codacy/grade/8146c7821b7744c98c6a096a3e6f32a8?logo=codacy&style=for-the-badge)
+    
 </div>
 
 > **Warning**
@@ -30,14 +31,10 @@
 
 ![Launcher Banner](https://raw.githubusercontent.com/Vacaro/Vacaro/main/.github/assets/launcher-banner.png)
 
-<div align="center">
-
 [![CodeQL launcher engine [cross-platform]](https://img.shields.io/github/workflow/status/vacaro/vacaro/CodeQL%20launcher%20engine%20[cross-platform]?style=for-the-badge&label=CodeQL%20Launcher%20Engine&logo=codacy)](https://github.com/Vacaro/Vacaro/actions/workflows/codeql_launcher_cross-platform.yml)
 [![test launcher engine [cross-platform] (vacaro-launcher)](https://img.shields.io/github/workflow/status/vacaro/vacaro/test%20launcher%20engine%20[cross-platform]%20(vacaro-launcher)?style=for-the-badge&label=Test%20Launcher%20Engine&logo=github-actions)](https://github.com/Vacaro/Vacaro/actions/workflows/test_launcher_cross-platform.yml)
 [![build launcher engine [ubuntu-latest] (vacaro-launcher)](https://img.shields.io/github/workflow/status/vacaro/vacaro/build%20launcher%20engine%20[ubuntu-latest]%20(vacaro-launcher)?style=for-the-badge&label=Build%20Launcher%20Engine&logo=svelte)](https://github.com/Vacaro/Vacaro/actions/workflows/build_launcher_cross-platform.yml)
 [![release launcher engine [cross-platform]](https://img.shields.io/github/workflow/status/vacaro/vacaro/release%20launcher%20engine%20[cross-platform]?style=for-the-badge&label=Release%20Launcher%20Engine&logo=semantic-release)](https://github.com/Vacaro/Vacaro/actions/workflows/release_launcher_cross-platform.yml)
-
-</div>
 
 - '**vacaro-website/**', the website code for vacaro.org. *(SvelteKit, Carbon Design System, Vite)*
 
