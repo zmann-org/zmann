@@ -362,6 +362,7 @@ int main(int, char**)
         return 1;
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    //glfwWindowHint(GLFW_DECORATED, false);
     GLFWwindow* window = glfwCreateWindow(1280, 720, "Vacaro Engine", NULL, NULL);
 
     // Setup Vulkan

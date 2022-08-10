@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "imgui.h"
 #include <iostream>
+#include <imgui_internal.h>
 namespace Vacaro {
     void RenderUI() {
 
@@ -71,50 +72,69 @@ namespace Vacaro {
 
         if (ImGui::BeginMenuBar())
         {
-            if (ImGui::BeginMenu("File"))
-            {
-                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-                ImGui::Separator();
-                ImGui::EndMenu();
-
-            }
-            if (ImGui::BeginMenu("Edit"))
-            {
-                if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-                if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-                ImGui::Separator();
-                if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-                if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-                if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("Project"))
-            {
-                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-                ImGui::Separator();
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("Options"))
-            {
-                // Disabling fullscreen would allow the window to be moved to the front of other windows,
-                // which we can't undo at the moment without finer window depth/z control.
-                ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-                ImGui::MenuItem("Padding", NULL, &opt_padding);
-                ImGui::Separator();
-
-                if (ImGui::MenuItem("Flag: NoSplit", "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
-                if (ImGui::MenuItem("Flag: NoResize", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
-                if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode; }
-                if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
-                if (ImGui::MenuItem("Flag: PassthruCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
-                ImGui::Separator();
-                ImGui::EndMenu();
-            }
+            ImGui::Text("secondary menu bar");
+            
             ImGui::EndMenuBar();
         }
 
         ImGui::End();
 
+        ImGuiViewportP* viewport = (ImGuiViewportP*)(void*)ImGui::GetMainViewport();
+        ImGuiWindowFlags window_flags2 = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
+        float height = ImGui::GetFrameHeight();
+
+        /*if (ImGui::BeginViewportSideBar("##MainStatusBar", viewport, ImGuiDir_Down, height, window_flags2)) {
+            if (ImGui::BeginMenuBar()) {
+                ImGui::Text("Happy status bar");
+                ImGui::EndMenuBar();
+            }
+            ImGui::End();
+        }*/
+        if (ImGui::BeginViewportSideBar("##SecondaryMenuBar", viewport, ImGuiDir_Up, height, window_flags2)) {
+            if (ImGui::BeginMenuBar()) {
+                if (ImGui::BeginMenu("File"))
+                {
+                    ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+                    ImGui::Separator();
+                    ImGui::EndMenu();
+
+                }
+                if (ImGui::BeginMenu("Edit"))
+                {
+                    if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+                    if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+                    ImGui::Separator();
+                    if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+                    if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+                    if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+                    ImGui::EndMenu();
+                }
+                if (ImGui::BeginMenu("Project"))
+                {
+                    ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+                    ImGui::Separator();
+                    ImGui::EndMenu();
+                }
+                if (ImGui::BeginMenu("Options"))
+                {
+                    // Disabling fullscreen would allow the window to be moved to the front of other windows,
+                    // which we can't undo at the moment without finer window depth/z control.
+                    ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
+                    ImGui::MenuItem("Padding", NULL, &opt_padding);
+                    ImGui::Separator();
+
+                    if (ImGui::MenuItem("Flag: NoSplit", "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
+                    if (ImGui::MenuItem("Flag: NoResize", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
+                    if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode; }
+                    if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
+                    if (ImGui::MenuItem("Flag: PassthruCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
+                    ImGui::Separator();
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMenuBar();
+            }
+            ImGui::End();
+        }
         ImGui::Begin("Level Properties");
         ImGui::Button("Hello");
         static float value = 0.0;
