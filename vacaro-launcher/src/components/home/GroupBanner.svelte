@@ -8,7 +8,7 @@
 						aria-level="3"
 						data-autoid="dds--content-group__heading"
 						slot="heading"
-						><!---->Accelerate application development efforts with IBM Product Name<!----></dds-content-group-heading
+						><!----><bold>Join the Team</bold> and help us develop the engine.<!----></dds-content-group-heading
 					>
 
 					<dds-link-list
@@ -23,7 +23,7 @@
 							data-autoid="dds--link-list-item"
 							type="default"
 						>
-							Learn more about Kubernetes <svg
+							Learn more about GitHub and the Vacaro Organization<svg
 								focusable="false"
 								preserveAspectRatio="xMidYMid meet"
 								xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +45,7 @@
 							data-autoid="dds--link-list-item"
 							type="default"
 						>
-							Containerization A Complete Guide <svg
+							Compete guide to start contributing to Vacaro <svg
 								focusable="false"
 								preserveAspectRatio="xMidYMid meet"
 								xmlns="http://www.w3.org/2000/svg"
