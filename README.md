@@ -68,6 +68,6 @@ There are some major agreements which need to be followed about distribution and
 
 <div align="center">
 
-**AZ Software** ***2016-2022***
+### [**AZ Software**](https://azsoftware.org) ***2016-2022***
 
 </div>
