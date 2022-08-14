@@ -42,6 +42,25 @@
 
 > *[SvelteKit](https://kit.svelte.dev/) applications are using the latest version of [Vite](https://vitejs.dev/).*
 
+# Table of Contents
+- [Usage & Licensing](#usage-and-licensing)
+
+# Usage and Licensing
+*How to license and distribute Vacaro.*
+
+Vacaro uses uses an *open-by-design* approach to its codebase. The code is open and accessible, and everyone can use and build (with) it.
+There are some major agreements which need to be followed about distribution and publishing a game or content made by the Vacaro Engine.
+
+- Games published on major or private platforms need to follow the EPLA (end-publisher-license-agreement).
+> **Note**
+> The EPLA is still in development and is subject to change without prior knowledge.
+
+- Games need to follow and have the right attributes to the engine and AZ Software (More about this topic in 'Splashscreens' and 'Marketing')
+
+> **Warning**
+> *this section is incomplete and will be updated*
+
+
 <div align="center">
 
 **AZ Software** ***2016-2022***
