@@ -21,7 +21,7 @@
 		"@tauri-apps/cli": "^1.0.5",
 		"@typescript-eslint/eslint-plugin": "^5.33.0",
 		"@typescript-eslint/parser": "^5.33.0",
-		"carbon-components-svelte": "^0.67.9",
+		"carbon-components-svelte": "^0.68.0",
 		"eslint": "^8.21.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-svelte3": "^4.0.0",
