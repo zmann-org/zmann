@@ -1,5 +1,5 @@
 <script>
-	import { Accordion, AccordionItem, Link } from 'carbon-components-svelte';
+	import { Accordion, AccordionItem, Link, Tag } from 'carbon-components-svelte';
 	import Restart from 'carbon-icons-svelte/lib/Restart.svelte';
 </script>
 
@@ -38,17 +38,7 @@
 	</AccordionItem>
 	<AccordionItem>
 		<svelte:fragment slot="title">
-			<h5>What engine version should I install?</h5>
-			<div>Dev-ops / Launcher Question</div>
-		</svelte:fragment>
-		<p>
-			Translate text, documents, and websites from one language to another. Create industry or
-			region-specific translations via the service's customization capability.
-		</p>
-	</AccordionItem>
-	<AccordionItem>
-		<svelte:fragment slot="title">
-			<h5>What engine version should I install?</h5>
+			<h5>What is the difference between Beta and <Tag type="green">LTS</Tag> releases?</h5>
 			<div>Dev-ops / Launcher Question</div>
 		</svelte:fragment>
 		<p>
@@ -57,6 +47,6 @@
 		</p>
 	</AccordionItem>
 	<div style="text-align: center; margin-bottom: 50px; margin-top: 10px;">
-	<Link icon={Restart}>Load more Questions</Link>
-</div>
+		<Link icon={Restart} style="cursor:pointer;">Load more Questions</Link>
+	</div>
 </Accordion>
