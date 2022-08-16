@@ -1,8 +1,7 @@
 <script>
-
-import { Tag } from "carbon-components-svelte";
-
+	import { Tag } from 'carbon-components-svelte';
 </script>
+
 <div class="bx--grid">
 	<div class="bx--row grid-alignment">
 		<dds-card-section-carousel
@@ -57,7 +56,8 @@ import { Tag } from "carbon-components-svelte";
 						data-autoid="dds--card-heading"
 						slot="heading"
 						style="height: 28px; margin-bottom: 64px;"
-						><!---->Lorem ipsum dolor sit amet<Tag type="green">Video</Tag><!----></dds-card-heading
+						><!---->Lorem ipsum dolor sit amet<Tag type="green">Video</Tag
+						><!----></dds-card-heading
 					>
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et ultricies est.
 
@@ -104,7 +104,8 @@ import { Tag } from "carbon-components-svelte";
 						data-autoid="dds--card-heading"
 						slot="heading"
 						style="height: 28px; margin-bottom: 64px;"
-						><!---->Lorem ipsum dolor sit amet<Tag type="red">Blog</Tag><!----></dds-card-heading
+						><!---->Lorem ipsum dolor sit amet<Tag type="red">Blog</Tag
+						><!----></dds-card-heading
 					>
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et ultricies est.
 					<dds-card-footer
@@ -144,7 +145,8 @@ import { Tag } from "carbon-components-svelte";
 						data-autoid="dds--card-heading"
 						slot="heading"
 						style="height: 28px; margin-bottom: 64px;"
-						><!---->Lorem ipsum dolor sit amet<Tag type="blue">Tutorial</Tag><!----></dds-card-heading
+						><!---->Lorem ipsum dolor sit amet<Tag type="blue">Tutorial</Tag
+						><!----></dds-card-heading
 					>
 
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et ultricies

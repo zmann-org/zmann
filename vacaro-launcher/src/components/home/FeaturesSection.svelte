@@ -78,29 +78,29 @@
 		gradient-direction="left-to-right"
 	>
 		<dds-image-item
-				media="(min-width: 1800px)"
-				srcset="/video/splash1.png"
-				data-autoid="dds-image-item"
-			/>
-			<dds-image-item
-				media="(min-width: 1600px)"
-				srcset="/video/splash2.png"
-				data-autoid="dds-image-item"
-			/>
-			<dds-image-item
-				media="(min-width: 1400px)"
-				srcset="/video/splash3.png"
-				data-autoid="dds-image-item"
-			/>
-			<dds-image-item
-				media="(min-width: 1200px)"
-				srcset="/video/splash4.png"
-				data-autoid="dds-image-item"
-			/>
-			<dds-image-item
-				media="(min-width: 1060px)"
-				srcset="/video/splash.png"
-				data-autoid="dds-image-item"
-			/>
+			media="(min-width: 1800px)"
+			srcset="/video/splash1.png"
+			data-autoid="dds-image-item"
+		/>
+		<dds-image-item
+			media="(min-width: 1600px)"
+			srcset="/video/splash2.png"
+			data-autoid="dds-image-item"
+		/>
+		<dds-image-item
+			media="(min-width: 1400px)"
+			srcset="/video/splash3.png"
+			data-autoid="dds-image-item"
+		/>
+		<dds-image-item
+			media="(min-width: 1200px)"
+			srcset="/video/splash4.png"
+			data-autoid="dds-image-item"
+		/>
+		<dds-image-item
+			media="(min-width: 1060px)"
+			srcset="/video/splash.png"
+			data-autoid="dds-image-item"
+		/>
 	</dds-background-media>
 </dds-leadspace>

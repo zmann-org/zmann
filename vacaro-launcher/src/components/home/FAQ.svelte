@@ -1,7 +1,15 @@
 <script>
-	import { Accordion, AccordionItem, Link, Tag } from 'carbon-components-svelte';
+	import {
+		Accordion,
+		AccordionItem,
+		Link,
+		SkeletonPlaceholder,
+		Tag
+	} from 'carbon-components-svelte';
 	import Restart from 'carbon-icons-svelte/lib/Restart.svelte';
 </script>
+
+<SkeletonPlaceholder />
 
 <Accordion>
 	<AccordionItem open>
@@ -38,7 +46,7 @@
 	</AccordionItem>
 	<AccordionItem>
 		<svelte:fragment slot="title">
-			<h5>What is the difference between Beta and <Tag type="green">LTS</Tag> releases?</h5>
+			<h5>What is the difference between Beta and<Tag type="green">LTS</Tag>releases?</h5>
 			<div>Dev-ops / Launcher Question</div>
 		</svelte:fragment>
 		<p>

@@ -10,28 +10,16 @@
 		slot="image"
 		data-autoid="dds--background-media"
 		opacity="100"
-			default-src="/video/splash1.png"
+		default-src="/video/splash1.png"
 	>
 		<dds-image-item
 			media="(min-width: 1584px)"
 			srcset="https://fpoimg.com/1584x560?&bg_color=ee5396&text_color=161616"
 		/>
-		<dds-image-item
-			media="(min-width: 1312px)"
-			srcset="/video/splash1.png"
-		/>
-		<dds-image-item
-			media="(min-width: 672px)"
-			srcset="/video/splash1.png"
-		/>
-		<dds-image-item
-			media="(min-width: 320px)"
-			srcset="/video/splash1.png"
-		/>
-		<dds-image-item
-			media="(min-width: 0px)"
-			srcset="/video/splash1.png"
-		/>
+		<dds-image-item media="(min-width: 1312px)" srcset="/video/splash1.png" />
+		<dds-image-item media="(min-width: 672px)" srcset="/video/splash1.png" />
+		<dds-image-item media="(min-width: 320px)" srcset="/video/splash1.png" />
+		<dds-image-item media="(min-width: 0px)" srcset="/video/splash1.png" />
 	</dds-background-media>
 	<dds-leadspace-with-search-heading
 		role="heading"

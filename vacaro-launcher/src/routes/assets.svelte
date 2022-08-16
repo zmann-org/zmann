@@ -49,7 +49,6 @@
 								href="https://example.com"
 								style="height: 23px;"
 							/>
-                            
 						</dds-card-group-item>
 
 						<dds-card-group-item
@@ -191,7 +190,7 @@
 						data-autoid="dds--card-link-cta"
 						color-scheme=""
 						pictogram-placement="top"
-					>dds-card-link-cta
+						>dds-card-link-cta
 						<dds-card-link-heading
 							role="heading"
 							aria-level="3"

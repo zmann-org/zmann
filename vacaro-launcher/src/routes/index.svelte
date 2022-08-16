@@ -68,11 +68,13 @@
 			<!---->
 			<dds-button-group-item
 				aria-label=""
-				href="https://example.com"
 				data-autoid="dds--button-group-item"
 				role="listitem"
 				icon-layout=""
 				kind="primary"
+				on:click={() => {
+					alert('test');
+				}}
 				><!---->Launch Engine<!----><svg
 					focusable="false"
 					preserveAspectRatio="xMidYMid meet"
