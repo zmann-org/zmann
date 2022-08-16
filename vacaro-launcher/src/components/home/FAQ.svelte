@@ -9,10 +9,11 @@
 	import Restart from 'carbon-icons-svelte/lib/Restart.svelte';
 </script>
 
-<SkeletonPlaceholder />
+<!-- <SkeletonPlaceholder /> -->
 
 <Accordion>
 	<AccordionItem open>
+		<!-- style="border-top: 1px solid transparent;" -->
 		<svelte:fragment slot="title">
 			<h5>What is Vacaro?</h5>
 			<div>Engine / General Knowledge</div>
