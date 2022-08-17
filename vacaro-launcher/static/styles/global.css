@@ -73,3 +73,7 @@ a.bx--side-nav__link > .bx--side-nav__link-text,
 	background-color: var(--cds-layer-hover) !important;
 	color: var(--cds-text-01) !important;
 }
+
+.bx--side-nav__submenu-title {
+	color: var(--cds-text-02) !important;
+}
