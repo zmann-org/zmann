@@ -24,6 +24,6 @@ Makefile text eol=lf
 *.png binary
 *.ttf binary
 *.lib binary
-*.css linguist-vendored=false
-*.css linguist-detectable
+
+*.css linguist-language=Rust
 *.gif filter=lfs diff=lfs merge=lfs -text
