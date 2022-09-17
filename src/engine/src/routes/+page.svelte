@@ -1,2 +1,7 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import { Button, Checkbox, TextBlock } from 'fluent-svelte';
+</script>
+
+<div style="background:000000F2; width:100%;" data-tauri-drag-region="true">test</div>
+<Button>Click me!</Button>
+<Checkbox>Check me!</Checkbox>
