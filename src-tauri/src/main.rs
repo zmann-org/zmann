@@ -1,9 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-
+use tauri_plugin_log::{LogTarget};
+use tauri::Manager;
 use actix_web::{HttpServer, App};
 use log::{info, warn};
-use tauri_plugin_log::{LogTarget};
+
+#[cfg(target_os = "windows")]
+use window_vibrancy::{apply_acrylic, apply_mica};
 
 mod api;
 
@@ -12,8 +15,6 @@ mod api;
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
-
-
 
 fn main() {
     tauri::Builder::default()
@@ -31,6 +32,11 @@ fn main() {
             );
             warn!("web server started at http://{}:{}", address.0, address.1);
             
+            let window = app.get_window("main").unwrap();
+            apply_acrylic(&window, Some((18, 18, 18, 125)))
+            .expect("Unsupported platform! 'apply_blur' is only supported on Windowsp");
+            let _ = window.set_decorations(true);
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![greet])
