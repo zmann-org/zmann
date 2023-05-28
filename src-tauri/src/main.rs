@@ -1,12 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-use tauri_plugin_log::{LogTarget};
-use tauri::Manager;
-use actix_web::{HttpServer, App};
+use actix_web::{App, HttpServer};
 use log::{info, warn};
+use tauri::Manager;
+use tauri_plugin_log::LogTarget;
 
 #[cfg(target_os = "windows")]
-use window_vibrancy::{apply_acrylic, apply_mica};
+use window_vibrancy::apply_acrylic;
 
 mod api;
 
@@ -18,11 +18,11 @@ fn greet(name: &str) -> String {
 
 fn main() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_log::Builder::default().targets([
-            LogTarget::LogDir,
-            LogTarget::Stdout,
-            LogTarget::Webview,
-        ]).build())
+        .plugin(
+            tauri_plugin_log::Builder::default()
+                .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])
+                .build(),
+        )
         .setup(|app| {
             let address = ("127.0.0.1", 55123);
             tauri::async_runtime::spawn(
@@ -31,10 +31,10 @@ fn main() {
                     .run(),
             );
             warn!("web server started at http://{}:{}", address.0, address.1);
-            
+
             let window = app.get_window("main").unwrap();
             apply_acrylic(&window, Some((18, 18, 18, 125)))
-            .expect("Unsupported platform! 'apply_blur' is only supported on Windowsp");
+                .expect("Unsupported platform! 'apply_blur' is only supported on Windowsp");
             let _ = window.set_decorations(true);
 
             Ok(())
