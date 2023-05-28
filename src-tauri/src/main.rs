@@ -13,6 +13,11 @@ mod command;
 
 fn main() {
     tauri::Builder::default()
+        .on_window_event(|e| {
+            if let tauri::WindowEvent::Resized(_) = e.event() {
+                std::thread::sleep(std::time::Duration::from_nanos(1));
+            }
+        })
         .plugin(
             tauri_plugin_log::Builder::default()
                 .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])
