@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use actix_web::{HttpServer, App};
-use log::info;
+use log::{info, warn};
 use tauri_plugin_log::{LogTarget};
 
 mod api;
@@ -23,13 +23,14 @@ fn main() {
             LogTarget::Webview,
         ]).build())
         .setup(|app| {
-            let address = ("127.0.0.1", 8080);
+            let address = ("127.0.0.1", 55123);
             tauri::async_runtime::spawn(
                 HttpServer::new(|| App::new().service(api::endpoints::hello))
                     .bind(address)?
                     .run(),
             );
-            info!("web server started at http://{}:{}", address.0, address.1);
+            warn!("web server started at http://{}:{}", address.0, address.1);
+            
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![greet])
