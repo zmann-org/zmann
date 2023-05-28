@@ -35,6 +35,7 @@ fn main() {
             let window = app.get_window("main").unwrap();
             apply_acrylic(&window, Some((18, 18, 18, 125)))
                 .expect("Unsupported platform! 'apply_blur' is only supported on Windowsp");
+
             let _ = window.set_decorations(true);
 
             Ok(())
