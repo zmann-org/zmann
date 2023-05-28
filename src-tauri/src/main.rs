@@ -15,6 +15,7 @@ fn main() {
     tauri::Builder::default()
         .on_window_event(|e| {
             if let tauri::WindowEvent::Resized(_) = e.event() {
+                info!("{:?}", e.event());
                 std::thread::sleep(std::time::Duration::from_nanos(1));
             }
         })
