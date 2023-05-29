@@ -14,6 +14,28 @@
   -webkit-text-size-adjust: 100%;
 }
 
+:host {
+  --primaryColor: #00b4ffff;
+  --fontSizeDefault: calc(var(--screenHeight) * 24px / 1080);
+  --backgroundColorPanel: #00000033;
+  --textColor: #ffffffff;
+  --fontSizeParagraph: calc(var(--screenHeight) * 18px / 1080);
+  --fontSizeMedium: calc(var(--screenHeight) * 30px / 1080);
+  --textErrorColor: #ff2704ff;
+  --fontSizeBig: calc(var(--screenHeight) * 36px / 1080);
+  --backgroundColorContrastedPanel: #ffffff38;
+  --fontSizeXXL: calc(var(--screenHeight) * 48px / 1080);
+  --baseMargin: calc(var(--screenHeight) * 12px / 1080);
+  --halfMargin: calc(var(--screenHeight) * 6px / 1080);
+  --quartMargin: calc(var(--screenHeight) * 3px / 1080);
+  --backgroundColorInput: #3f4751ff;
+  --backgroundColorComponent: #0000001a;
+  --backgroundColorDarkerPanel: #00000059;
+  --dividerColor: #ffffff4c;
+  --backgroundColorContrastedPanelLight: #ffffff1a;
+  --backgroundColorPopUpLayer2: #34393fff;
+}
+
 .container {
   margin: 0;
   padding-top: 10vh;
