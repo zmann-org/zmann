@@ -27,10 +27,9 @@ align-items: center;
     class:bx--header__action--active={isActive}
     {...$$restProps}
     on:click
-    style="background-color: var(--cds-interactive-01, #0f62fe) !important; width: 36px; height: 36px;"
-  >
+    style="background-color: var(--cds-interactive-01, #0f62fe) !important; width: 36px; height: 36px;">
     <slot>
-      <svelte:component this={icon} size={18} style="vertical-align: middle;" />
+      <svelte:component this={icon} size={20} style="vertical-align: middle;"/>
     </slot>
   </button>
 </div>

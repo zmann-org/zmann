@@ -24,6 +24,8 @@
 .bx--header {
   border-bottom: 1px solid #ffffff4c !important;
   background-color: #00000033 !important;
+  background-color: transparent !important;
+
 }
 .bx--header__action:active, a.bx--header__menu-item:active {
   background-color: transparent !important;
