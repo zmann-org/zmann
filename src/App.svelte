@@ -7,6 +7,11 @@
     Content,
   } from "carbon-components-svelte";
   import { Header, HeaderUtilities, HeaderTitlebar } from "./shell";
+  import { trace, info, error, attachConsole } from "tauri-plugin-log-api";
+  import { onMount } from "svelte";
+  onMount(() => {
+    info("hmr update http://localhost:1420/");
+  });
 </script>
 
 <Header platformName="Distraze">

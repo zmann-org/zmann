@@ -6,7 +6,7 @@ use tauri::Manager;
 use tauri_plugin_log::LogTarget;
 
 #[cfg(target_os = "windows")]
-use window_vibrancy::{apply_acrylic, apply_blur};
+use window_vibrancy::{apply_acrylic};
 use window_shadows::set_shadow;
 
 mod api;
@@ -38,7 +38,7 @@ fn main() {
             // set_shadow(&window, true).expect("Unsupported platform!");
             apply_acrylic(&window, Some((18, 18, 18, 125)))
                 .expect("Unsupported platform! 'apply_blur' is only supported on Windowsp");
-            
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![command::greet])
