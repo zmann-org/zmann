@@ -38,7 +38,7 @@
 
 .bx--btn--primary:active {
   color: var(--cds-interactive-01, #0f62fe) !important;
-  background-color: var(--cds-active-primary, #002d9c) !important;
+  background-color: white !important;
 }
 
 .bx--btn--primary:focus {

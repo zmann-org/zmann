@@ -1,13 +1,14 @@
 <script lang="ts">
   import "carbon-components-svelte/css/all.css";
-  import { Button, Header, HeaderGlobalAction, HeaderUtilities, SkipToContent, Theme, Content } from "carbon-components-svelte";
+  import { Button, HeaderGlobalAction, SkipToContent, Theme, Content } from "carbon-components-svelte";
+  import { Header, HeaderUtilities } from './shell'
   import Greet from './lib/Greet.svelte'
 
   import SettingsAdjust from "carbon-icons-svelte/lib/SettingsAdjust.svelte";
   import UserAvatarFilledAlt from "carbon-icons-svelte/lib/UserAvatarFilledAlt.svelte";
 </script>
 
-<Header company="IBM" platformName="Carbon Svelte">
+<Header platformName="Distraze">
   <svelte:fragment slot="skip-to-content">
     <SkipToContent />
   </svelte:fragment>
