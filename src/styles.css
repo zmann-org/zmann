@@ -55,3 +55,21 @@ a.bx--header__name, a.bx--header__name:hover {
 .bx--btn--primary:focus {
   box-shadow: inset 0 0 0 2px var(--cds-focus, #0f62fe),inset 0 0 0 2px var(--cds-ui-background, #ffffff) !important;
 }
+
+/* headernav overrides */
+.bx--header__nav {
+    display: block !important;
+}
+
+.bx--header__nav::before {
+    background-color: #ffffff4c !important;
+    width: 2px !important;
+}
+
+a.bx--header__name {
+  padding-right: 10px !important;
+}
+
+a.bx--header__menu-item:hover {
+  background-color: #ffffff4c !important;
+}

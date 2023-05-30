@@ -5,6 +5,8 @@
     SkipToContent,
     Theme,
     Content,
+    HeaderNav,
+    HeaderNavItem,
   } from "carbon-components-svelte";
   import { Header, HeaderUtilities, HeaderTitlebar } from "./shell";
   import { trace, info, error, attachConsole } from "tauri-plugin-log-api";
@@ -18,6 +20,11 @@
   <svelte:fragment slot="skip-to-content">
     <SkipToContent />
   </svelte:fragment>
+  <HeaderNav>
+    <HeaderNavItem text="Home" isSelected/>
+    <HeaderNavItem text="Home"/>
+    <HeaderNavItem text="Home"/>
+  </HeaderNav>
   <HeaderUtilities>
     <HeaderTitlebar />
   </HeaderUtilities>

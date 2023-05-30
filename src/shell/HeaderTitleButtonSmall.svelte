@@ -1,7 +1,7 @@
 <script>
   /** Set to `true` to use the active variant */
   export let isActive = false;
-
+  
   /**
    * Specify the icon to render
    * @type {typeof import("svelte").SvelteComponent}

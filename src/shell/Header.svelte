@@ -41,7 +41,7 @@
    * x-large: 1312
    * max: 1584
    */
-  export let expansionBreakpoint = 1056;
+  export let expansionBreakpoint = 0;
 
   /** Obtain a reference to the HTML anchor element */
   export let ref = null;
@@ -81,9 +81,6 @@
 
 <header aria-label={ariaLabel} class:bx--header={true} data-tauri-drag-region>
   <slot name="skip-to-content" />
-  {#if ($shouldRenderHamburgerMenu && winWidth < expansionBreakpoint) || persistentHamburgerMenu}
-    <HamburgerMenu bind:isOpen={isSideNavOpen} {iconClose} {iconMenu} />
-  {/if}
   <a
     {href}
     class:bx--header__name={true}
