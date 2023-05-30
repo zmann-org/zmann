@@ -11,6 +11,9 @@
   import { Header, HeaderUtilities, HeaderTitlebar } from "./shell";
   import { trace, info, error, attachConsole } from "tauri-plugin-log-api";
   import { onMount } from "svelte";
+  import { invoke } from '@tauri-apps/api/tauri'
+  import Greet from "./lib/Greet.svelte";
+
   onMount(() => {
     info("onMount => http://localhost:1420/");
   });
@@ -21,9 +24,9 @@
     <SkipToContent />
   </svelte:fragment>
   <HeaderNav>
-    <HeaderNavItem text="Home" isSelected/>
-    <HeaderNavItem text="Home"/>
-    <HeaderNavItem text="Home"/>
+    <HeaderNavItem text="Home" isSelected />
+    <HeaderNavItem text="Home" />
+    <HeaderNavItem text="Home" />
   </HeaderNav>
   <HeaderUtilities>
     <HeaderTitlebar />
@@ -39,5 +42,5 @@
       "ui-background": "transparent",
     }}
   />
-  <Button>Primary button</Button>
+<Greet/>
 </Content>
