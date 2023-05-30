@@ -5,7 +5,6 @@
   import Subtract from "carbon-icons-svelte/lib/Subtract.svelte";
   import Launch from "carbon-icons-svelte/lib/Launch.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
-  import Renew from "carbon-icons-svelte/lib/Renew.svelte";
   import { appWindow } from "@tauri-apps/api/window";
 
   let isMaximized = false;
@@ -22,12 +21,6 @@
     });
   });
 </script>
-
-<HeaderTitleButton
-  aria-label="Settings"
-  icon={Renew}
-  on:click={() => appWindow.close()}
-/>
 
 <HeaderTitleButtonSmall
   aria-label="Settings"
