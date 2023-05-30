@@ -1,5 +1,5 @@
 <script>
-  import { HeaderTitleButton, HeaderTitleButtonSmall } from "../shell";
+  import { HeaderTitleButton, HeaderTitleButtonSmall, HeaderTitleButtonSmallRounded } from "../shell";
 
   import Minimize from "carbon-icons-svelte/lib/Minimize.svelte";
   import Subtract from "carbon-icons-svelte/lib/Subtract.svelte";
@@ -33,7 +33,7 @@
   on:click={() => toggleApp()}
 />
 
-<HeaderTitleButtonSmall
+<HeaderTitleButtonSmallRounded
   aria-label="Settings"
   icon={Close}
   on:click={() => appWindow.close()}

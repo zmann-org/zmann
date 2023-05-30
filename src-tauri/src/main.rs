@@ -35,7 +35,7 @@ fn main() {
             warn!("web server started at http://{}:{}", address.0, address.1);
 
             let window = app.get_window("main").unwrap();
-            // set_shadow(&window, true).expect("Unsupported platform!");
+            set_shadow(&window, true).expect("Unsupported platform!");
             apply_acrylic(&window, Some((18, 18, 18, 125)))
                 .expect("Unsupported platform! 'apply_blur' is only supported on Windowsp");
 
