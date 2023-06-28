@@ -1,0 +1,17 @@
+@use "@carbon/react" with (
+  $theme: (
+    background: #e2e2e2,
+    background-brand: #00B4FF,
+    button-primary: #00B4FF,
+  )
+);
+@use "@carbon/react/scss/theme";
+
+body {
+  background: theme.$background;
+  color: theme.$text-primary;
+}
+
+test {
+  background-color: theme.$background-brand;
+}
