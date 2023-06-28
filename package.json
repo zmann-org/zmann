@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "tauri": "tauri",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -18,5 +19,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.1.5"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.4.0"
   }
 }
