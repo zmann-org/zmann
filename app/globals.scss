@@ -1,17 +1,33 @@
-@use "@carbon/react" with (
+@use "@carbon/react/scss/themes" as *;
+
+//overriding theme tokens and adding a custom token
+@use "@carbon/react/scss/theme" with (
   $theme: (
-    background: #e2e2e2,
-    background-brand: #00B4FF,
-    button-primary: #00B4FF,
+    // add a completely new token
+    background: yellow,
+    // redefine existing tokens to new values
+    text-error: rebeccapurple,
+    focus: pink,
   )
 );
-@use "@carbon/react/scss/theme";
+
+// override a component token
+@use "@carbon/react/scss/components/button/tokens" as button-tokens with (
+  $button-primary: #00b4ff,
+  $button-primary-hover: #00b4ff,
+  $button-primary-active: #798490
+);
+@use "@carbon/react";
+
+:root {
+  @include theme.theme();
+}
 
 body {
   background: theme.$background;
   color: theme.$text-primary;
 }
 
-test {
-  background-color: theme.$background-brand;
+.cds--btn--primary:hover {
+  border: 2px solid theme.$text-on-color !important;
 }
