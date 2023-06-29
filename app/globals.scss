@@ -4,6 +4,7 @@
 @use "@carbon/react/scss/theme" with (
   $theme: (
     background: transparent,
+    text-primary: #ffffff
   )
 );
 
@@ -22,6 +23,7 @@
 body {
   background: theme.$background;
   color: theme.$text-primary;
+  overflow: hidden; /* Hide scrollbars */
 }
 
 .cds--btn--primary:hover {
