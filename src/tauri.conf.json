@@ -16,6 +16,9 @@
     },
     "bundle": {
       "active": true,
+      "resources": [
+        "../SimConnect.dll"
+      ],
       "category": "DeveloperTool",
       "copyright": "",
       "deb": {
