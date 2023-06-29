@@ -56,9 +56,11 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
-        "resizable": true,
+        "transparent": true,
+        "decorations": false,
         "title": "Distraze",
+        "resizable": true,
+        "height": 600,
         "width": 800
       }
     ]

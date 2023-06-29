@@ -3,11 +3,7 @@
 //overriding theme tokens and adding a custom token
 @use "@carbon/react/scss/theme" with (
   $theme: (
-    // add a completely new token
-    background: yellow,
-    // redefine existing tokens to new values
-    text-error: rebeccapurple,
-    focus: pink,
+    background: transparent,
   )
 );
 
