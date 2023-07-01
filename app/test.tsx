@@ -4,14 +4,10 @@ import { Button } from '@carbon/react'
 
 export default function Greet() {
   const handleButtonClick = () => {
-    invoke<string>('greet', { name: 'Next.js' })
+    invoke<string>('test')
       .then(console.log)
       .catch(console.error)
   }
-
-  useEffect(() => {
-    // Add any necessary initialization code here
-  }, [])
 
   return (
     <>

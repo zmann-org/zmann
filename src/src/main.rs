@@ -4,6 +4,7 @@ use tauri::Manager;
 use tauri_plugin_log::LogTarget;
 use window_vibrancy::{apply_acrylic};
 // use window_shadows::set_shadow;
+use command::sim_connect::SimConnect;
 
 mod command;
 
@@ -19,6 +20,7 @@ fn main() {
                 .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])
                 .build(),
         )
+        .invoke_handler(tauri::generate_handler![test])
         .setup(|app| {
             let window = app.get_window("main").unwrap();
             let _ = window.set_decorations(true); // override default decorations
@@ -27,7 +29,11 @@ fn main() {
                 .expect("Unsupported platform! 'apply_blur' is only supported on Windowsp");
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![command::greet])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn test() {
+    let _sim = SimConnect::new();
 }

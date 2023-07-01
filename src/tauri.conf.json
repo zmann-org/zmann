@@ -17,7 +17,7 @@
     "bundle": {
       "active": true,
       "resources": [
-        "../SimConnect.dll"
+        "./SimConnect.dll"
       ],
       "category": "DeveloperTool",
       "copyright": "",
@@ -41,7 +41,6 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
       "shortDescription": "",
       "targets": "all",
       "windows": {
