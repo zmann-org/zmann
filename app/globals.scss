@@ -3,7 +3,7 @@
 //overriding theme tokens and adding a custom token
 @use "@carbon/react/scss/theme" with (
   $theme: (
-    background: transparent,
+    background: #292929,
     text-primary: #ffffff
   )
 );

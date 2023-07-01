@@ -25,8 +25,8 @@ fn main() {
             let window = app.get_window("main").unwrap();
             let _ = window.set_decorations(true); // override default decorations
             // let _ = set_shadow(&window, true); Don't use unwrap() here as it will panic on Linux.
-            apply_acrylic(&window, Some((1, 1, 1, 125)))
-                .expect("Unsupported platform! 'apply_blur' is only supported on Windowsp");
+            // apply_acrylic(&window, Some((1, 1, 1, 125)))
+            //     .expect("Unsupported platform! 'apply_blur' is only supported on Windowsp");
             Ok(())
         })
         .run(tauri::generate_context!())
