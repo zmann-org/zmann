@@ -16,7 +16,7 @@
     "@types/react-dom": "18.2.6",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
-    "next": "13.4.7",
+    "next": "13.5.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tauri-plugin-log-api": "github:tauri-apps/tauri-plugin-log#v1",
