@@ -6,11 +6,11 @@ on:
     paths:
       - 'crates/**'
       - '.github/workflows/**'
-  pull_request:
-    branches: ["main"]
-    paths:
-      - 'crates/**'
-      - '.github/workflows/**'
+  # pull_request:
+  #   branches: ["main"]
+  #   paths:
+  #     - 'crates/**'
+  #     - '.github/workflows/**'
 
 defaults:
   run:
