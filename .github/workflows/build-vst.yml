@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: ["main"]
 
+defaults:
+  run:
+    # This otherwise gets run under dash which does not support brace expansion
+    shell: bash
+
 jobs:
   package:
     strategy:
