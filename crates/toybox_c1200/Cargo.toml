@@ -1,0 +1,28 @@
+[package]
+name = "toybox_c1200"
+version = "0.1.0"
+edition = "2021"
+authors = ["ZMANN <info@example.com>"]
+license = "GPL-3.0-or-later"
+homepage = "https://youtu.be/dQw4w9WgXcQ"
+description = "A short description of your plugin"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# Remove the `assert_process_allocs` feature to allow allocations on the audio
+# thread in debug builds.
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", features = ["assert_process_allocs"] }
+# Uncomment the below line to disable the on-by-default VST3 feature to remove
+# the GPL compatibility requirement
+# nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", default_features = false, features = ["assert_process_allocs"] }
+
+[profile.release]
+lto = "thin"
+strip = "symbols"
+
+[profile.profiling]
+inherits = "release"
+debug = true
+strip = "none"
