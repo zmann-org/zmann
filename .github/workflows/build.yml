@@ -3,12 +3,17 @@ name: CI Builds
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    paths:
+      - 'crates/**'
+      - '.github/workflows/**'
+  # pull_request:
+  #   branches: ["main"]
+  #   paths:
+  #     - 'crates/**'
+  #     - '.github/workflows/**'
 
 defaults:
   run:
-    # This otherwise gets run under dash which does not support brace expansion
     shell: bash
 
 jobs:
