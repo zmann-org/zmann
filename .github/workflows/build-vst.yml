@@ -1,4 +1,4 @@
-name: Build All VSTs
+name: CI Builds
 
 on:
   push:
@@ -7,16 +7,44 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
-    runs-on: windows-latest
-    env:
-      CARGO_TERM_COLOR: always
-
+  package:
+    strategy:
+      matrix:
+        include:
+          - { name: windows, os: windows-latest, cross-target: "" }
+    name: Package plugin binaries
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - run: rustup toolchain install stable --profile minimal --target stable-x86_64-pc-windows-msvc --no-self-update
-      - uses: ./
-      - name: Build xtask
-        run: cargo build -p xtask --verbose
-      - name: Build Toybox C1200
-        run: cargo xtask bundle toybox_c1200 --verbose
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ matrix.cross-target }}
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: ${{ matrix.cross-target }}
+      - name: Package all targets from bundler.toml
+        # Instead of hardcoding which targets to build and package, we'll
+        # package everything that's got en entry in the `bundler.toml` file
+        run: |
+          # Building can be sped up by specifying all packages in one go
+          package_args=()
+          for package in $(cargo xtask known-packages); do
+            package_args+=("-p" "$package")
+          done
+
+          runner_name=${{ matrix.name }}
+          if [[ $runner_name = 'macos-universal' ]]; then
+            export MACOSX_DEPLOYMENT_TARGET=10.13
+            cargo xtask bundle-universal "${package_args[@]}" --release
+          else
+            cross_target=${{ matrix.cross-target }}
+            if [[ -n $cross_target ]]; then
+              package_args+=("--target" "$cross_target")
+            fi
+
+            cargo xtask bundle "${package_args[@]}" --release
+          fi
