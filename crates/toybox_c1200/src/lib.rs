@@ -15,8 +15,8 @@ struct ToyboxCParams {
     /// these IDs remain constant, you can rename and reorder these fields as you wish. The
     /// parameters are exposed to the host in the same order they were defined. In this case, this
     /// gain parameter is stored as linear gain while the values are displayed in decibels.
-    #[id = "gain"]
-    pub gain: FloatParam,
+    #[id = "output"]
+    pub output: FloatParam,
 }
 
 impl Default for ToyboxC {
@@ -33,7 +33,7 @@ impl Default for ToyboxCParams {
             // This gain is stored as linear gain. NIH-plug comes with useful conversion functions
             // to treat these kinds of parameters as if we were dealing with decibels. Storing this
             // as decibels is easier to work with, but requires a conversion for every sample.
-            gain: FloatParam::new(
+            output: FloatParam::new(
                 "Gain",
                 util::db_to_gain(0.0),
                 FloatRange::Skewed {
@@ -81,7 +81,7 @@ impl Plugin for ToyboxC {
     }];
 
 
-    const MIDI_INPUT: MidiConfig = MidiConfig::None;
+    const MIDI_INPUT: MidiConfig = MidiConfig::Basic;
     const MIDI_OUTPUT: MidiConfig = MidiConfig::None;
 
     const SAMPLE_ACCURATE_AUTOMATION: bool = true;
@@ -123,11 +123,10 @@ impl Plugin for ToyboxC {
         _context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
         for channel_samples in buffer.iter_samples() {
-            // Smoothing is optionally built into the parameters themselves
-            let gain = self.params.gain.smoothed.next();
+            let output = self.params.output.smoothed.next();
 
             for sample in channel_samples {
-                *sample *= gain;
+                *sample *= output;
             }
         }
 
@@ -150,7 +149,7 @@ impl Vst3Plugin for ToyboxC {
 
     // And also don't forget to change these categories
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
-        &[Vst3SubCategory::Fx, Vst3SubCategory::Dynamics];
+        &[Vst3SubCategory::Sampler, Vst3SubCategory::Instrument];
 }
 
 nih_export_clap!(ToyboxC);
