@@ -1,11 +1,11 @@
 ## Effects
 
 
-- [] gain
-- [] chorus
-- [] vibrato
-- [] reverb (delay?)
-- [] output
+- [ ] gain
+- [ ] chorus
+- [ ] vibrato
+- [ ] reverb (delay?)
+- [ ] output
 
 ## Building
 
