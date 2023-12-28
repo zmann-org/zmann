@@ -1,6 +1,8 @@
 use nih_plug::prelude::*;
-use std::sync::Arc;
+use presets::Presets;
+use std::sync::{atomic::{AtomicBool, Ordering}, Arc};
 mod presets;
+
 struct ToyboxC {
     params: Arc<ToyboxCParams>,
     pub buffer: Vec<instrument::buffer::Sample>,
@@ -11,6 +13,9 @@ struct ToyboxC {
 struct ToyboxCParams {
     #[id = "output"]
     pub output: FloatParam,
+    #[id = "preset"]
+    pub preset: EnumParam<Presets>,
+    preset_changed: Arc<AtomicBool>,
 }
 
 impl Default for ToyboxC {
@@ -25,6 +30,11 @@ impl Default for ToyboxC {
 
 impl Default for ToyboxCParams {
     fn default() -> Self {
+        let preset_changed = Arc::new(AtomicBool::new(false));
+        let preset_changed_mem = preset_changed.clone();
+        let preset_callback = Arc::new(move |_: Presets| {
+            preset_changed_mem.store(true, Ordering::Relaxed);
+        });
         Self {
             output: FloatParam::new(
                 "Output Gain",
@@ -39,6 +49,9 @@ impl Default for ToyboxCParams {
             .with_unit(" dB")
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+            preset: EnumParam::new("Preset", Presets::default())
+            .with_callback(preset_callback), // .hide(),
+            preset_changed,
         }
     }
 }
@@ -85,7 +98,7 @@ impl Plugin for ToyboxC {
         // function if you do not need it.
         true
     }
-    
+
     fn process(
         &mut self,
         buffer: &mut Buffer,
