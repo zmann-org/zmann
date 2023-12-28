@@ -3,6 +3,8 @@ use std::sync::Arc;
 
 struct ToyboxC {
     params: Arc<ToyboxCParams>,
+    pub buffer: Vec<instrument::buffer::sample>,
+    // instrument: instrument::Instrument,
 }
 
 #[derive(Params)]
@@ -61,7 +63,7 @@ impl Plugin for ToyboxC {
     const MIDI_OUTPUT: MidiConfig = MidiConfig::None;
 
     const SAMPLE_ACCURATE_AUTOMATION: bool = true;
-    
+
     type SysExMessage = ();
 
     type BackgroundTask = ();
