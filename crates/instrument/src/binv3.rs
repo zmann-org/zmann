@@ -1,10 +1,5 @@
-use lazy_static::lazy_static;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
-
-lazy_static! {
-    pub static ref COMPRESSION_LEVEL: i32 = 3;
-}
 
 #[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub enum PlayingStyle {
@@ -32,7 +27,7 @@ impl Instrument {
 
 pub fn encode(instr: Instrument) -> Vec<u8> {
     let encoded: &[u8] = &bincode::serialize(&instr).unwrap();
-    return zstd::encode_all(encoded, *COMPRESSION_LEVEL).unwrap();
+    return zstd::encode_all(encoded, 3).unwrap();
 }
 
 pub fn decode(bin: Vec<u8>) -> Instrument {
