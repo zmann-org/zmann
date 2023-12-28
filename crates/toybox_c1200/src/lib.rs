@@ -101,16 +101,6 @@ impl Plugin for ToyboxC {
     }
 }
 
-impl ClapPlugin for ToyboxC {
-    const CLAP_ID: &'static str = "com.zmann.toybox.c1200";
-    const CLAP_DESCRIPTION: Option<&'static str> = Some("A short description of your plugin");
-    const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
-    const CLAP_SUPPORT_URL: Option<&'static str> = None;
-
-    // Don't forget to change these features
-    const CLAP_FEATURES: &'static [ClapFeature] = &[ClapFeature::AudioEffect, ClapFeature::Stereo];
-}
-
 impl Vst3Plugin for ToyboxC {
     const VST3_CLASS_ID: [u8; 16] = *b"zmann.c120012345";
 
@@ -119,5 +109,4 @@ impl Vst3Plugin for ToyboxC {
         &[Vst3SubCategory::Sampler, Vst3SubCategory::Instrument];
 }
 
-nih_export_clap!(ToyboxC);
 nih_export_vst3!(ToyboxC);
