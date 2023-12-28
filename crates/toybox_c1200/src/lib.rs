@@ -1,7 +1,13 @@
+use include_dir::{include_dir, Dir};
 use nih_plug::prelude::*;
 use presets::Presets;
-use std::sync::{atomic::{AtomicBool, Ordering}, Arc};
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
 mod presets;
+
+static ASSETS: Dir<'_> = include_dir!("D:/Github/zmann-vst/bin_samples/ToyboxC1200");
 
 struct ToyboxC {
     params: Arc<ToyboxCParams>,
@@ -49,9 +55,18 @@ impl Default for ToyboxCParams {
             .with_unit(" dB")
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db()),
-            preset: EnumParam::new("Preset", Presets::default())
-            .with_callback(preset_callback), // .hide(),
+            preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback), // .hide(),
             preset_changed,
+        }
+    }
+}
+
+impl ToyboxC {
+    fn load_preset(&mut self, preset: Presets) {
+        nih_log!("[Toybox C1200] load_preset: {:?}", preset);
+        if let Some(input_file) = ASSETS.get_file(format!("{}.binv3", preset.to_string())) {
+            self.instrument = instrument::binv3::decode(input_file.contents().to_vec());
+            nih_log!("[Toybox C1200] load_preset done: {:?}", preset);
         }
     }
 }
@@ -93,9 +108,7 @@ impl Plugin for ToyboxC {
         _buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>,
     ) -> bool {
-        // Resize buffers and perform other potentially expensive initialization operations here.
-        // The `reset()` function is always called right after this function. You can remove this
-        // function if you do not need it.
+        self.load_preset(self.params.preset.value());
         true
     }
 
