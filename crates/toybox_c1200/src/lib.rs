@@ -1,58 +1,76 @@
+use include_dir::{include_dir, Dir};
+use instrument::{
+    binv3::{Instrument, PlayingStyle},
+    buffer::Sample,
+};
 use nih_plug::prelude::*;
-use std::sync::Arc;
+use presets::Presets;
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
+mod presets;
 
-// This is a shortened version of the gain example with most comments removed, check out
-// https://github.com/robbert-vdh/nih-plug/blob/master/plugins/examples/gain/src/lib.rs to get
-// started
+static ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/");
 
 struct ToyboxC {
     params: Arc<ToyboxCParams>,
+    pub buffer: Vec<Sample>,
+    instrument: Instrument,
 }
 
 #[derive(Params)]
 struct ToyboxCParams {
-    /// The parameter's ID is used to identify the parameter in the wrappred plugin API. As long as
-    /// these IDs remain constant, you can rename and reorder these fields as you wish. The
-    /// parameters are exposed to the host in the same order they were defined. In this case, this
-    /// gain parameter is stored as linear gain while the values are displayed in decibels.
     #[id = "output"]
     pub output: FloatParam,
+    #[id = "preset"]
+    pub preset: EnumParam<Presets>,
+    preset_changed: Arc<AtomicBool>,
 }
 
 impl Default for ToyboxC {
     fn default() -> Self {
         Self {
             params: Arc::new(ToyboxCParams::default()),
+            buffer: vec![],
+            instrument: Instrument::empty(),
         }
     }
 }
 
 impl Default for ToyboxCParams {
     fn default() -> Self {
+        let preset_changed = Arc::new(AtomicBool::new(false));
+        let preset_changed_mem = preset_changed.clone();
+        let preset_callback = Arc::new(move |_: Presets| {
+            preset_changed_mem.store(true, Ordering::Relaxed);
+        });
         Self {
-            // This gain is stored as linear gain. NIH-plug comes with useful conversion functions
-            // to treat these kinds of parameters as if we were dealing with decibels. Storing this
-            // as decibels is easier to work with, but requires a conversion for every sample.
             output: FloatParam::new(
-                "Gain",
+                "Output Volume",
                 util::db_to_gain(0.0),
                 FloatRange::Skewed {
                     min: util::db_to_gain(-30.0),
                     max: util::db_to_gain(30.0),
-                    // This makes the range appear as if it was linear when displaying the values as
-                    // decibels
                     factor: FloatRange::gain_skew_factor(-30.0, 30.0),
                 },
             )
-            // Because the gain parameter is stored as linear gain instead of storing the value as
-            // decibels, we need logarithmic smoothing
             .with_smoother(SmoothingStyle::Logarithmic(50.0))
             .with_unit(" dB")
-            // There are many predefined formatters we can use here. If the gain was stored as
-            // decibels instead of as a linear gain value, we could have also used the
-            // `.with_step_size(0.1)` function to get internal rounding.
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+            preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback), // .hide(),
+            preset_changed,
+        }
+    }
+}
+
+impl ToyboxC {
+    fn load_preset(&mut self, preset: Presets) {
+        nih_log!("[Toybox C1200] load_preset: {:?}", preset);
+        if let Some(input_file) = ASSETS.get_file(format!("{}.binv3", preset.to_string())) {
+            self.instrument = instrument::binv3::decode(input_file.contents().to_vec());
+            nih_log!("[Toybox C1200] load_preset done: {:?}", preset);
         }
     }
 }
@@ -65,8 +83,6 @@ impl Plugin for ToyboxC {
 
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
-    // The first audio IO layout is used as the default. The other layouts may be selected either
-    // explicitly or automatically by the host or the user depending on the plugin API/backend.
     const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[AudioIOLayout {
         main_input_channels: NonZeroU32::new(2),
         main_output_channels: NonZeroU32::new(2),
@@ -74,25 +90,16 @@ impl Plugin for ToyboxC {
         aux_input_ports: &[],
         aux_output_ports: &[],
 
-        // Individual ports and the layout as a whole can be named here. By default these names
-        // are generated as needed. This layout will be called 'Stereo', while a layout with
-        // only one input and output channel would be called 'Mono'.
         names: PortNames::const_default(),
     }];
-
 
     const MIDI_INPUT: MidiConfig = MidiConfig::Basic;
     const MIDI_OUTPUT: MidiConfig = MidiConfig::None;
 
     const SAMPLE_ACCURATE_AUTOMATION: bool = true;
 
-    // If the plugin can send or receive SysEx messages, it can define a type to wrap around those
-    // messages here. The type implements the `SysExMessage` trait, which allows conversion to and
-    // from plain byte buffers.
     type SysExMessage = ();
-    // More advanced plugins can use this to run expensive background tasks. See the field's
-    // documentation for more information. `()` means that the plugin does not have any background
-    // tasks.
+
     type BackgroundTask = ();
 
     fn params(&self) -> Arc<dyn Params> {
@@ -105,52 +112,107 @@ impl Plugin for ToyboxC {
         _buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>,
     ) -> bool {
-        // Resize buffers and perform other potentially expensive initialization operations here.
-        // The `reset()` function is always called right after this function. You can remove this
-        // function if you do not need it.
+        self.load_preset(self.params.preset.value());
         true
-    }
-
-    fn reset(&mut self) {
-        // Reset buffers and envelopes here. This can be called from the audio thread and may not
-        // allocate. You can remove this function if you do not need it.
     }
 
     fn process(
         &mut self,
         buffer: &mut Buffer,
         _aux: &mut AuxiliaryBuffers,
-        _context: &mut impl ProcessContext<Self>,
+        context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
-        for channel_samples in buffer.iter_samples() {
+        let mut next_event = context.next_event();
+        let preset_value_changed = self.params.preset_changed.clone();
+
+        for (sample_id, channel_samples) in buffer.iter_samples().enumerate() {
+            while let Some(event) = next_event {
+                if event.timing() > sample_id as u32 {
+                    break;
+                }
+                match event {
+                    NoteEvent::NoteOn {
+                        timing: _,
+                        voice_id: _,
+                        channel: _,
+                        note,
+                        velocity: _,
+                    } => {
+                        if let Some(data) = self.instrument.notes.get(&note) {
+                            nih_log!(
+                                "[Toybox] NoteOn: {} - Buffer - {:?} Instrument - {:?}",
+                                note,
+                                std::thread::current().id(),
+                                &self.params.preset.value()
+                            );
+                            self.buffer.push(Sample::new(data.to_vec(), note));
+                        } else {
+                            nih_log!(
+                                "[Toybox] NO NOTE: {} - Buffer - {:?} Instrument - {:?}",
+                                note,
+                                std::thread::current().id(),
+                                &self.params.preset.value()
+                            );
+                        }
+                    }
+                    NoteEvent::NoteOff {
+                        timing: _,
+                        voice_id: _,
+                        channel: _,
+                        note,
+                        velocity: _,
+                    } => {
+                        if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note))
+                        {
+                            if self.instrument.style == PlayingStyle::WhilePressed {
+                                self.buffer.remove(index);
+                                nih_log!(
+                                        "[Toybox] NoteOff WhilePressed: {} - Buffer - {:?} Instrument - {:?}",
+                                        note,
+                                        std::thread::current().id(),
+                                        &self.params.preset.value()
+                                    );
+                            } else {
+                                nih_log!(
+                                    "[Toybox] NoteOff: {} - Buffer - {:?} Instrument - {:?}",
+                                    note,
+                                    std::thread::current().id(),
+                                    &self.params.preset.value()
+                                );
+                            }
+                        }
+                    }
+                    _ => (),
+                }
+
+                next_event = context.next_event();
+            }
+
             let output = self.params.output.smoothed.next();
 
             for sample in channel_samples {
+                for playing_sample in &mut self.buffer {
+                    *sample += playing_sample.get_next_sample();
+                }
+
                 *sample *= output;
+
+                self.buffer.retain(|e| !e.should_be_removed());
             }
         }
 
+        if preset_value_changed.swap(false, Ordering::Relaxed) {
+            nih_log!("[Toybox] preset_changed");
+            self.load_preset(self.params.preset.value());
+        }
         ProcessStatus::Normal
     }
 }
 
-impl ClapPlugin for ToyboxC {
-    const CLAP_ID: &'static str = "com.zmann.toybox.c1200";
-    const CLAP_DESCRIPTION: Option<&'static str> = Some("A short description of your plugin");
-    const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
-    const CLAP_SUPPORT_URL: Option<&'static str> = None;
-
-    // Don't forget to change these features
-    const CLAP_FEATURES: &'static [ClapFeature] = &[ClapFeature::AudioEffect, ClapFeature::Stereo];
-}
-
 impl Vst3Plugin for ToyboxC {
     const VST3_CLASS_ID: [u8; 16] = *b"zmann.c120012345";
-
-    // And also don't forget to change these categories
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
         &[Vst3SubCategory::Sampler, Vst3SubCategory::Instrument];
 }
 
-nih_export_clap!(ToyboxC);
 nih_export_vst3!(ToyboxC);

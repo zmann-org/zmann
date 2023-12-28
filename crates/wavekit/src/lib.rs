@@ -27,10 +27,14 @@ fn read_samples<R: std::io::Read>(mut reader: hound::WavReader<R>) -> Vec<f32> {
             .map(|s| s.unwrap_or_default())
             .collect::<Vec<_>>(),
 
-        hound::SampleFormat::Int => reader
-            .samples::<i32>()
-            .map(|s| s.unwrap_or_default() as f32 * 256.0 / i32::MAX as f32) // fix loudness on int based wav files
-            .collect::<Vec<_>>(),
+        hound::SampleFormat::Int => {
+            let bit_depth = spec.bits_per_sample;
+            let scaling_factor = 1.0 / (1 << (bit_depth - 1)) as f32;
+            reader
+                .samples::<i32>()
+                .map(|s| s.unwrap_or_default() as f32 * scaling_factor * 0.3)
+                .collect::<Vec<_>>()
+        },
     };
 
     samples
