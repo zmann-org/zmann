@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "crates/toybox_c1200",
+    "crates/wavekit",
     "crates/xtask"
 ]
 resolver = "2"
