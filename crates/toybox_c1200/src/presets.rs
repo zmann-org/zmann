@@ -1,4 +1,3 @@
-
 use nih_plug::prelude::Enum;
 use serde::{Deserialize, Serialize};
 use strum_macros::Display;

@@ -1,4 +1,8 @@
 use include_dir::{include_dir, Dir};
+use instrument::{
+    binv3::{Instrument, PlayingStyle},
+    buffer::Sample,
+};
 use nih_plug::prelude::*;
 use presets::Presets;
 use std::sync::{
@@ -7,12 +11,12 @@ use std::sync::{
 };
 mod presets;
 
-static ASSETS: Dir<'_> = include_dir!("D:/Github/zmann-vst/bin_samples/ToyboxC1200");
+static ASSETS: Dir<'_> = include_dir!("D:/Github/zmann-vst/bin_samples/C1200_testing");
 
 struct ToyboxC {
     params: Arc<ToyboxCParams>,
-    pub buffer: Vec<instrument::buffer::Sample>,
-    instrument: instrument::binv3::Instrument,
+    pub buffer: Vec<Sample>,
+    instrument: Instrument,
 }
 
 #[derive(Params)]
@@ -29,7 +33,7 @@ impl Default for ToyboxC {
         Self {
             params: Arc::new(ToyboxCParams::default()),
             buffer: vec![],
-            instrument: instrument::binv3::Instrument::empty(),
+            instrument: Instrument::empty(),
         }
     }
 }
@@ -116,16 +120,91 @@ impl Plugin for ToyboxC {
         &mut self,
         buffer: &mut Buffer,
         _aux: &mut AuxiliaryBuffers,
-        _context: &mut impl ProcessContext<Self>,
+        context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
-        for channel_samples in buffer.iter_samples() {
+        let mut next_event = context.next_event();
+        let preset_value_changed = self.params.preset_changed.clone();
+
+        for (sample_id, channel_samples) in buffer.iter_samples().enumerate() {
+            while let Some(event) = next_event {
+                if event.timing() > sample_id as u32 {
+                    break;
+                }
+                match event {
+                    NoteEvent::NoteOn {
+                        timing: _,
+                        voice_id: _,
+                        channel: _,
+                        note,
+                        velocity: _,
+                    } => {
+                        if let Some(data) = self.instrument.notes.get(&note) {
+                            nih_log!(
+                                "[Toybox] NoteOn: {} - Buffer - {:?} Instrument - {:?}",
+                                note,
+                                std::thread::current().id(),
+                                &self.params.preset.value()
+                            );
+                            self.buffer.push(Sample::new(data.to_vec(), note));
+                        } else {
+                            nih_log!(
+                                "[Toybox] NO NOTE: {} - Buffer - {:?} Instrument - {:?}",
+                                note,
+                                std::thread::current().id(),
+                                &self.params.preset.value()
+                            );
+                        }
+                    }
+                    NoteEvent::NoteOff {
+                        timing: _,
+                        voice_id: _,
+                        channel: _,
+                        note,
+                        velocity: _,
+                    } => {
+                        if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note))
+                        {
+                            if self.instrument.style == PlayingStyle::WhilePressed {
+                                self.buffer.remove(index);
+                                nih_log!(
+                                        "[Toybox] NoteOff WhilePressed: {} - Buffer - {:?} Instrument - {:?}",
+                                        note,
+                                        std::thread::current().id(),
+                                        &self.params.preset.value()
+                                    );
+                            } else {
+                                nih_log!(
+                                    "[Toybox] NoteOff: {} - Buffer - {:?} Instrument - {:?}",
+                                    note,
+                                    std::thread::current().id(),
+                                    &self.params.preset.value()
+                                );
+                            }
+                        }
+                    }
+                    _ => (),
+                }
+
+                next_event = context.next_event();
+            }
+
             let output = self.params.output.smoothed.next();
 
             for sample in channel_samples {
+                for playing_sample in &mut self.buffer {
+                    *sample += playing_sample.get_next_sample();
+                }
+
                 *sample *= output;
+
+                self.buffer.retain(|e| !e.should_be_removed());
             }
         }
 
+        if preset_value_changed.swap(false, Ordering::Relaxed) {
+            nih_log!("[Toybox] preset_changed");
+            self.load_preset(self.params.preset.value());
+        }
         ProcessStatus::Normal
     }
 }
