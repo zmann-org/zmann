@@ -61,10 +61,9 @@ impl Plugin for ToyboxC {
     const MIDI_OUTPUT: MidiConfig = MidiConfig::None;
 
     const SAMPLE_ACCURATE_AUTOMATION: bool = true;
+    
+    type SysExMessage = ();
 
-    // More advanced plugins can use this to run expensive background tasks. See the field's
-    // documentation for more information. `()` means that the plugin does not have any background
-    // tasks.
     type BackgroundTask = ();
 
     fn params(&self) -> Arc<dyn Params> {
@@ -103,8 +102,6 @@ impl Plugin for ToyboxC {
 
 impl Vst3Plugin for ToyboxC {
     const VST3_CLASS_ID: [u8; 16] = *b"zmann.c120012345";
-
-    // And also don't forget to change these categories
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
         &[Vst3SubCategory::Sampler, Vst3SubCategory::Instrument];
 }
