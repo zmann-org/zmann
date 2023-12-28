@@ -1,10 +1,10 @@
 use nih_plug::prelude::*;
 use std::sync::Arc;
-
+mod presets;
 struct ToyboxC {
     params: Arc<ToyboxCParams>,
-    pub buffer: Vec<instrument::buffer::sample>,
-    // instrument: instrument::Instrument,
+    pub buffer: Vec<instrument::buffer::Sample>,
+    instrument: instrument::binv3::Instrument,
 }
 
 #[derive(Params)]
@@ -17,6 +17,8 @@ impl Default for ToyboxC {
     fn default() -> Self {
         Self {
             params: Arc::new(ToyboxCParams::default()),
+            buffer: vec![],
+            instrument: instrument::binv3::Instrument::new(),
         }
     }
 }

@@ -2,3 +2,10 @@
 name = "instrument"
 version = "0.0.0"
 edition = "2021"
+
+[dependencies]
+zstd = "0.13.0"
+lazy_static = "1.4.0"
+bincode = "1.3.3"
+serde_derive = "1.0.190"
+serde = "1.0.190"

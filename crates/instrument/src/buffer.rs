@@ -1,10 +1,10 @@
-pub struct sample {
+pub struct Sample {
     root: Vec<f32>,
     current_note: u8,
     current_sample_index: usize,
 }
 
-impl sample {
+impl Sample {
     pub fn new(data: Vec<f32>, note: u8) -> Self {
         Self {
             root: data,

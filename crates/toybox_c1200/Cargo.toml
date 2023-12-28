@@ -9,8 +9,8 @@ license = "GPL-3.0-or-later"
 crate-type = ["cdylib"]
 
 [dependencies]
-nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git", features = [
-    "assert_process_allocs", # Remove the `assert_process_allocs` feature to allow allocations on the audio thread in debug builds.
-] }
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+strum_macros = "0.25.3"
 wavekit = { path = "../wavekit" }
 instrument = { path = "../instrument" }
+serde = { version = "1.0.190", features = ["derive"] }
