@@ -5,4 +5,4 @@
 # name = "Human Readable Plugin Name"  # defaults to <package_name>
 
 [toybox_c1200]
-name = "Toybox C1200"
+name = "Toybox_C1200"
