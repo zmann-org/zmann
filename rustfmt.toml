@@ -1,0 +1,5 @@
+edition = "2021"
+format_strings = false
+ignore = [
+    "crates/xtask/src/main.rs"
+]
