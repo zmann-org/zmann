@@ -28,13 +28,30 @@ jobs:
       - uses: actions/checkout@v3
       - name: Fetch all git history
         run: git fetch --force --prune --tags --unshallow
+      - name: Install dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libgl-dev libjack-dev libx11-xcb-dev  libxcb1-dev libxcb-dri2-0-dev libxcb-icccm4-dev libxcursor-dev libxkbcommon-dev libxcb-shape0-dev libxcb-xfixes0-dev
+
       - uses: actions/cache@v3
+        # FIXME: Caching `target/` causes the Windows runner to blow up after some time
+        if: startsWith(matrix.os, 'windows')
         with:
           path: |
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-          key: ${{ matrix.cross-target }}
+          key: ${{ matrix.name }}-${{ matrix.cross-target }}
+      - uses: actions/cache@v3
+        if: "!startsWith(matrix.os, 'windows')"
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ matrix.name }}-${{ matrix.cross-target }}
       - name: Set up Rust toolchain
         uses: dtolnay/rust-toolchain@nightly
         with:
@@ -43,8 +60,6 @@ jobs:
         if: matrix.os == 'windows'
         run: ./download-binv3.bat
       - name: Package all targets from bundler.toml
-        # Instead of hardcoding which targets to build and package, we'll
-        # package everything that's got en entry in the `bundler.toml` file
         run: |
           # Building can be sped up by specifying all packages in one go
           package_args=()
