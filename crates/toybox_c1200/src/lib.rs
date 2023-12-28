@@ -11,7 +11,7 @@ use std::sync::{
 };
 mod presets;
 
-static ASSETS: Dir<'_> = include_dir!("D:/Github/zmann-vst/bin_samples/C1200_testing");
+static ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/");
 
 struct ToyboxC {
     params: Arc<ToyboxCParams>,
@@ -47,7 +47,7 @@ impl Default for ToyboxCParams {
         });
         Self {
             output: FloatParam::new(
-                "Output Gain",
+                "Output Volume",
                 util::db_to_gain(0.0),
                 FloatRange::Skewed {
                     min: util::db_to_gain(-30.0),
