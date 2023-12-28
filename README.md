@@ -1,6 +1,5 @@
 ## Effects
 
-
 - [ ] gain
 - [ ] chorus
 - [ ] vibrato
