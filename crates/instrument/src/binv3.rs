@@ -21,7 +21,7 @@ pub struct Instrument {
 }
 
 impl Instrument {
-    pub fn new() -> Self {
+    pub fn empty() -> Self {
         Instrument {
             notes: HashMap::new(),
             name: String::new(),

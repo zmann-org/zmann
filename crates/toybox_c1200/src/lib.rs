@@ -18,7 +18,7 @@ impl Default for ToyboxC {
         Self {
             params: Arc::new(ToyboxCParams::default()),
             buffer: vec![],
-            instrument: instrument::binv3::Instrument::new(),
+            instrument: instrument::binv3::Instrument::empty(),
         }
     }
 }
