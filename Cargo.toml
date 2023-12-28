@@ -1,6 +1,16 @@
+resolver = "2"
+
 [workspace]
 members = [
     "crates/toybox_c1200",
     "crates/xtask"
 ]
-resolver = "2"
+
+[profile.release]
+lto = "thin"
+strip = "symbols"
+
+[profile.profiling]
+inherits = "release"
+debug = true
+strip = "none"
