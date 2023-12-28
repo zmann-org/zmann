@@ -57,7 +57,7 @@ jobs:
         with:
           targets: ${{ matrix.cross-target }}
       - name: Download ToyboxC artifacts
-        if: matrix.os == 'windows'
+        if: startsWith(matrix.os, 'windows')
         run: ./download-binv3.bat
       - name: Package all targets from bundler.toml
         run: |
