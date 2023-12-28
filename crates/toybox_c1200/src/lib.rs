@@ -27,7 +27,7 @@ impl Default for ToyboxCParams {
     fn default() -> Self {
         Self {
             output: FloatParam::new(
-                "Gain",
+                "Output Gain",
                 util::db_to_gain(0.0),
                 FloatRange::Skewed {
                     min: util::db_to_gain(-30.0),
