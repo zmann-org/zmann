@@ -1,3 +1,4 @@
+use fx::{freeverb::Freeverb, moorer_verb::MoorerReverb, DEFAULT_SAMPLE_RATE};
 use include_dir::{include_dir, Dir};
 use instrument::{
     binv3::{Instrument, PlayingStyle},
@@ -13,16 +14,49 @@ mod presets;
 
 static ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/");
 
+#[derive(Enum, Debug, PartialEq, Eq)]
+pub enum ReverbType {
+    #[id = "freeverb"]
+    #[name = "Freeverb"]
+    Freeverb,
+    #[id = "moorer"]
+    #[name = "Moorer"]
+    Moorer,
+}
 struct ToyboxC {
     params: Arc<ToyboxCParams>,
     pub buffer: Vec<Sample>,
     instrument: Instrument,
+    freeverb: Freeverb,
+    moorer_reverb: MoorerReverb,
 }
 
 #[derive(Params)]
 struct ToyboxCParams {
-    #[id = "output"]
-    pub output: FloatParam,
+    #[id = "input-gain"]
+    pub input_gain: FloatParam,
+
+    #[id = "output-gain"]
+    pub output_gain: FloatParam,
+
+    #[id = "dry-wet"]
+    pub reverb_dry_wet_ratio: FloatParam,
+
+    #[id = "room-size"]
+    pub reverb_room_size: FloatParam,
+
+    #[id = "dampening"]
+    pub reverb_damping: FloatParam,
+
+    #[id = "frozen"]
+    pub reverb_frozen: BoolParam,
+
+    #[id = "reverb-type"]
+    pub reverb_type: EnumParam<ReverbType>,
+
+    #[id = "width"]
+    pub reverb_width: FloatParam,
+
     #[id = "preset"]
     pub preset: EnumParam<Presets>,
     preset_changed: Arc<AtomicBool>,
@@ -32,6 +66,8 @@ impl Default for ToyboxC {
     fn default() -> Self {
         Self {
             params: Arc::new(ToyboxCParams::default()),
+            freeverb: Freeverb::new(DEFAULT_SAMPLE_RATE),
+            moorer_reverb: MoorerReverb::new(DEFAULT_SAMPLE_RATE),
             buffer: vec![],
             instrument: Instrument::empty(),
         }
@@ -46,8 +82,8 @@ impl Default for ToyboxCParams {
             preset_changed_mem.store(true, Ordering::Relaxed);
         });
         Self {
-            output: FloatParam::new(
-                "Output Volume",
+            input_gain: FloatParam::new(
+                "Input gain",
                 util::db_to_gain(0.0),
                 FloatRange::Skewed {
                     min: util::db_to_gain(-30.0),
@@ -59,6 +95,52 @@ impl Default for ToyboxCParams {
             .with_unit(" dB")
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+
+            output_gain: FloatParam::new(
+                "Output gain",
+                util::db_to_gain(0.0),
+                FloatRange::Skewed {
+                    min: util::db_to_gain(-30.0),
+                    max: util::db_to_gain(30.0),
+                    factor: FloatRange::gain_skew_factor(-30.0, 30.0),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_unit(" dB")
+            .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
+            .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+
+            reverb_dry_wet_ratio: FloatParam::new(
+                "Dry/wet",
+                0.5,
+                FloatRange::Linear { min: 0.0, max: 1.0 },
+            )
+            .with_smoother(SmoothingStyle::Linear(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+
+            reverb_room_size: FloatParam::new(
+                "Room size",
+                0.5,
+                FloatRange::Linear { min: 0.0, max: 1.0 },
+            )
+            .with_smoother(SmoothingStyle::Linear(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+
+            reverb_damping: FloatParam::new(
+                "Dampening",
+                0.5,
+                FloatRange::Linear { min: 0.0, max: 1.0 },
+            )
+            .with_smoother(SmoothingStyle::Linear(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+
+            reverb_frozen: BoolParam::new("Frozen", false),
+
+            reverb_type: EnumParam::new("Type", ReverbType::Freeverb),
+
+            reverb_width: FloatParam::new("Width", 0.5, FloatRange::Linear { min: 0.0, max: 1.0 })
+                .with_smoother(SmoothingStyle::Linear(50.0))
+                .with_value_to_string(formatters::v2s_f32_rounded(2)),
             preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback), // .hide(),
             preset_changed,
         }
@@ -72,6 +154,30 @@ impl ToyboxC {
             self.instrument = instrument::binv3::decode(input_file.contents().to_vec());
             nih_log!("[Toybox C1200] load_preset done: {:?}", preset);
         }
+    }
+    fn update_reverbs(&mut self) {
+        let room_size_smoothed = &self.params.reverb_room_size.smoothed;
+        let damping_smoothed = &self.params.reverb_damping.smoothed;
+        let width_smoothed = &self.params.reverb_width.smoothed;
+
+        // Update reverbs while parameters smooth
+        if room_size_smoothed.is_smoothing() {
+            self.freeverb.set_room_size(room_size_smoothed.next());
+            self.moorer_reverb.set_room_size(room_size_smoothed.next());
+        }
+        if damping_smoothed.is_smoothing() {
+            self.freeverb.set_damping(damping_smoothed.next());
+            self.moorer_reverb.set_damping(damping_smoothed.next());
+        }
+        if width_smoothed.is_smoothing() {
+            self.freeverb.set_width(width_smoothed.next());
+            self.moorer_reverb.set_width(width_smoothed.next());
+        }
+
+        // Check if we should freeze the reverb
+        let frozen = self.params.reverb_frozen.value();
+        self.freeverb.set_frozen(frozen);
+        self.moorer_reverb.set_frozen(frozen);
     }
 }
 
@@ -125,7 +231,7 @@ impl Plugin for ToyboxC {
         let mut next_event = context.next_event();
         let preset_value_changed = self.params.preset_changed.clone();
 
-        for (sample_id, channel_samples) in buffer.iter_samples().enumerate() {
+        for (sample_id, mut channel_samples) in buffer.iter_samples().enumerate() {
             while let Some(event) = next_event {
                 if event.timing() > sample_id as u32 {
                     break;
@@ -188,14 +294,40 @@ impl Plugin for ToyboxC {
                 next_event = context.next_event();
             }
 
-            let output = self.params.output.smoothed.next();
+            let input_gain = self.params.input_gain.smoothed.next();
+            let output_gain = self.params.output_gain.smoothed.next();
 
-            for sample in channel_samples {
+            for (i, sample) in channel_samples.iter_mut().enumerate() {
+                let mut input = 0.0;
                 for playing_sample in &mut self.buffer {
-                    *sample += playing_sample.get_next_sample();
+                    input += playing_sample.get_next_sample();
                 }
 
-                *sample *= output;
+                self.update_reverbs();
+
+                // Process with reverb
+                input *= input_gain;
+                let frame_out = match self.params.reverb_type.value() {
+                    ReverbType::Freeverb => {
+                        if i % 2 == 0 {
+                            self.freeverb.tick((input, 0.0)).0
+                        } else {
+                            self.freeverb.tick((0.0, input)).1
+                        }
+                    }
+                    ReverbType::Moorer => {
+                        if i % 2 == 0 {
+                            self.moorer_reverb.tick((input, 0.0)).0
+                        } else {
+                            self.moorer_reverb.tick((0.0, input)).1
+                        }
+                    }
+                };
+
+                // Apply dry/wet, then output
+                let dry_wet_ratio = self.params.reverb_dry_wet_ratio.smoothed.next();
+                *sample = input * (1. - dry_wet_ratio) + frame_out * dry_wet_ratio;
+                *sample *= output_gain;
 
                 self.buffer.retain(|e| !e.should_be_removed());
             }
