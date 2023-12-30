@@ -1,3 +1,6 @@
+# ZMANN
+Collection of VST's by ZMANN built using [`nih-plug`](https://github.com/robbert-vdh/nih-plug).
+
 ## Effects
 
 - [x] gain
