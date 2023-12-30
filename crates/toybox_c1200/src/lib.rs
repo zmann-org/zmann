@@ -294,29 +294,7 @@ impl Plugin for ToyboxC {
                     input += playing_sample.get_next_sample();
                 }
             
-                // Update reverbs based on parameters
-                let room_size_smoothed = &self.params.room_size.smoothed;
-                let damping_smoothed = &self.params.damping.smoothed;
-                let width_smoothed = &self.params.width.smoothed;
-            
-                // Update reverbs while parameters smooth
-                if room_size_smoothed.is_smoothing() {
-                    self.freeverb.set_room_size(room_size_smoothed.next());
-                    self.moorer_reverb.set_room_size(room_size_smoothed.next());
-                }
-                if damping_smoothed.is_smoothing() {
-                    self.freeverb.set_damping(damping_smoothed.next());
-                    self.moorer_reverb.set_damping(damping_smoothed.next());
-                }
-                if width_smoothed.is_smoothing() {
-                    self.freeverb.set_width(width_smoothed.next());
-                    self.moorer_reverb.set_width(width_smoothed.next());
-                }
-            
-                // Check if we should freeze the reverb
-                let frozen = self.params.frozen.value();
-                self.freeverb.set_frozen(frozen);
-                self.moorer_reverb.set_frozen(frozen);
+                self.update_reverbs();
             
                 // Get input/output gain
                 let input_gain = self.params.input_gain.smoothed.next();
