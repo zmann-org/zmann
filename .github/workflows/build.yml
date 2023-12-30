@@ -56,9 +56,9 @@ jobs:
         uses: dtolnay/rust-toolchain@nightly
         with:
           targets: ${{ matrix.cross-target }}
-      - name: Download ToyboxC artifacts
-        if: startsWith(matrix.os, 'windows')
-        run: ./download-binv3.bat
+      # - name: Download ToyboxC artifacts
+      #   if: startsWith(matrix.os, 'windows')
+      #   run: ./download-binv3.bat
       - name: Package all targets from bundler.toml
         run: |
           # Building can be sped up by specifying all packages in one go
