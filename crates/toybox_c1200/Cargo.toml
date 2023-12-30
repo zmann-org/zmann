@@ -15,3 +15,4 @@ wavekit = { path = "../wavekit" }
 instrument = { path = "../instrument" }
 serde = { version = "1.0.190", features = ["derive"] }
 include_dir = "0.7.3"
+fx = { git = "https://github.com/zmann-org/fx.git" }
