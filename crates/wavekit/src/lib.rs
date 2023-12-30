@@ -34,7 +34,7 @@ fn read_samples<R: std::io::Read>(mut reader: hound::WavReader<R>) -> Vec<f32> {
                 .samples::<i32>()
                 .map(|s| s.unwrap_or_default() as f32 * scaling_factor * 0.3)
                 .collect::<Vec<_>>()
-        },
+        }
     };
 
     samples
