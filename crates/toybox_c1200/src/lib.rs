@@ -1,7 +1,7 @@
 use fx::{freeverb::Freeverb, moorer_verb::MoorerReverb, DEFAULT_SAMPLE_RATE};
 use include_dir::{include_dir, Dir};
 use instrument::{
-    binv3::{Instrument, PlayingStyle},
+    binv4::{Instrument, PlayingStyle},
     buffer::Sample,
 };
 use nih_plug::prelude::*;
@@ -149,11 +149,13 @@ impl Default for ToyboxCParams {
 
 impl ToyboxC {
     fn load_preset(&mut self, preset: Presets) {
+        let before = std::time::Instant::now();
         nih_log!("[Toybox C1200] load_preset: {:?}", preset);
-        if let Some(input_file) = ASSETS.get_file(format!("{}.binv3", preset.to_string())) {
-            self.instrument = instrument::binv3::decode(input_file.contents().to_vec());
+        if let Some(input_file) = ASSETS.get_file(format!("{}.binv4", preset.to_string())) {
+            self.instrument = instrument::binv4::decode(input_file.contents().to_vec());
             nih_log!("[Toybox C1200] load_preset done: {:?}", preset);
         }
+        nih_log!("Elapsed time: {:.2?}", before.elapsed());
     }
     fn update_reverbs(&mut self) {
         let room_size_smoothed = &self.params.reverb_room_size.smoothed;
@@ -218,7 +220,11 @@ impl Plugin for ToyboxC {
         _buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>,
     ) -> bool {
-        self.load_preset(self.params.preset.value());
+        let before = std::time::Instant::now();
+        if self.instrument.notes.is_empty() {
+            self.load_preset(self.params.preset.value());
+        }
+        nih_log!("Elapsed time: {:.2?}", before.elapsed());
         true
     }
 
@@ -270,21 +276,24 @@ impl Plugin for ToyboxC {
                     } => {
                         if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note))
                         {
-                            if self.instrument.style == PlayingStyle::WhilePressed {
-                                self.buffer.remove(index);
-                                nih_log!(
+                            match self.instrument.style {
+                                PlayingStyle::WhilePressed => {
+                                    self.buffer.remove(index);
+                                    nih_log!(
                                         "[Toybox] NoteOff WhilePressed: {} - Buffer - {:?} Instrument - {:?}",
                                         note,
                                         std::thread::current().id(),
                                         &self.params.preset.value()
                                     );
-                            } else {
-                                nih_log!(
-                                    "[Toybox] NoteOff: {} - Buffer - {:?} Instrument - {:?}",
-                                    note,
-                                    std::thread::current().id(),
-                                    &self.params.preset.value()
-                                );
+                                }
+                                _ => {
+                                    nih_log!(
+                                        "[Toybox] NoteOff: {} - Buffer - {:?} Instrument - {:?}",
+                                        note,
+                                        std::thread::current().id(),
+                                        &self.params.preset.value()
+                                    );
+                                }
                             }
                         }
                     }

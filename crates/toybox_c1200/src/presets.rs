@@ -43,6 +43,6 @@ pub enum Presets {
 
 impl Default for Presets {
     fn default() -> Self {
-        Self::Cello
+        Self::ElecOrgan4
     }
 }
