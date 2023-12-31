@@ -39,22 +39,22 @@ struct ToyboxCParams {
     #[id = "output-gain"]
     pub output_gain: FloatParam,
 
-    #[id = "dry-wet"]
+    #[id = "reverb-dry-wet"]
     pub reverb_dry_wet_ratio: FloatParam,
 
-    #[id = "room-size"]
+    #[id = "reverb-room-size"]
     pub reverb_room_size: FloatParam,
 
-    #[id = "dampening"]
+    #[id = "reverb-dampening"]
     pub reverb_damping: FloatParam,
 
-    #[id = "frozen"]
+    #[id = "reverb-frozen"]
     pub reverb_frozen: BoolParam,
 
     #[id = "reverb-type"]
     pub reverb_type: EnumParam<ReverbType>,
 
-    #[id = "width"]
+    #[id = "reverb-width"]
     pub reverb_width: FloatParam,
 
     #[id = "preset"]
@@ -155,7 +155,12 @@ impl ToyboxC {
             self.instrument = instrument::binv4::decode(input_file.contents().to_vec());
             nih_log!("[Toybox C1200] load_preset done: {:?}", preset);
         }
-        nih_log!("Elapsed time: {:.2?}", before.elapsed());
+        nih_log!(
+            "[Toybox C1200] Elapsed time: {:.2?} - {:?} - {:?}",
+            before.elapsed(),
+            preset,
+            self.params.preset.value()
+        );
     }
     fn update_reverbs(&mut self) {
         let room_size_smoothed = &self.params.reverb_room_size.smoothed;
@@ -220,11 +225,9 @@ impl Plugin for ToyboxC {
         _buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>,
     ) -> bool {
-        let before = std::time::Instant::now();
         if self.instrument.notes.is_empty() {
             self.load_preset(self.params.preset.value());
         }
-        nih_log!("Elapsed time: {:.2?}", before.elapsed());
         true
     }
 
@@ -308,34 +311,41 @@ impl Plugin for ToyboxC {
 
             for (i, sample) in channel_samples.iter_mut().enumerate() {
                 let mut input = 0.0;
+                let dw_reverb = self.params.reverb_dry_wet_ratio.smoothed.next();
+
                 for playing_sample in &mut self.buffer {
                     input += playing_sample.get_next_sample();
                 }
 
-                self.update_reverbs();
+                if dw_reverb > 0.0 {
+                    self.update_reverbs();
 
-                // Process with reverb
-                input *= input_gain;
-                let frame_out = match self.params.reverb_type.value() {
-                    ReverbType::Freeverb => {
-                        if i % 2 == 0 {
-                            self.freeverb.tick((input, 0.0)).0
-                        } else {
-                            self.freeverb.tick((0.0, input)).1
+                    // Process with reverb
+                    input *= input_gain;
+                    let frame_out = match self.params.reverb_type.value() {
+                        ReverbType::Freeverb => {
+                            if i % 2 == 0 {
+                                self.freeverb.tick((input, 0.0)).0
+                            } else {
+                                self.freeverb.tick((0.0, input)).1
+                            }
                         }
-                    }
-                    ReverbType::Moorer => {
-                        if i % 2 == 0 {
-                            self.moorer_reverb.tick((input, 0.0)).0
-                        } else {
-                            self.moorer_reverb.tick((0.0, input)).1
+                        ReverbType::Moorer => {
+                            if i % 2 == 0 {
+                                self.moorer_reverb.tick((input, 0.0)).0
+                            } else {
+                                self.moorer_reverb.tick((0.0, input)).1
+                            }
                         }
-                    }
-                };
+                    };
 
-                // Apply dry/wet, then output
-                let dry_wet_ratio = self.params.reverb_dry_wet_ratio.smoothed.next();
-                *sample = input * (1. - dry_wet_ratio) + frame_out * dry_wet_ratio;
+                    // Apply dry/wet, then output
+                    *sample = input * (1. - dw_reverb) + frame_out * dw_reverb;
+                }
+                else {
+                    // Process without reverb
+                    *sample = input;
+                }
                 *sample *= output_gain;
 
                 self.buffer.retain(|e| !e.should_be_removed());
