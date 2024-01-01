@@ -46,7 +46,22 @@ Then finally to build the plugin run:
 cargo xtask bundle toybox_c1200 --target x86_64-pc-windows-gnu
 ```
 
-## License
+Certainly, my apologies for the oversight. Here's the revised acknowledgment section:
+
+## Acknowledgments
+
+- **wry** (Modified)
+  - Original Library: [wry](https://github.com/tauri-apps/wry)
+  - License: Apache-2.0
+
+- **nih-plug-webview** (Modified)
+  - Original Library: [nih-plug-webview](https://github.com/maxjvh/nih-plug-webview)
+  - License: ISC
+
+- **nih-plug** (Integrated)
+  - Original Library: [nih-plug](https://github.com/robbert-vdh/nih-plug)
+    - The framework is licensed under the ISC license.
+    - The VST3 bindings used by `nih_export_vst3!()` are licensed under the GPLv3 license. This implies that unless you replace these bindings with your own bindings made from scratch, any VST3 plugins built in this repository need to comply with the terms of the GPLv3 license.
 
 The code in this repository is licensed under the GNU General Public License v3.0 or later. You can find a copy of the license in the [LICENSE](./LICENSE) file.
 
