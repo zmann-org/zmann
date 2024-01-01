@@ -1,5 +1,7 @@
 use fx::{
     delay_line::StereoDelay, freeverb::Freeverb, moorer_verb::MoorerReverb, DEFAULT_SAMPLE_RATE,
+    FLUTTER_MAX_FREQUENCY_RATIO, FLUTTER_MAX_LFO_FREQUENCY, WOW_MAX_FREQUENCY_RATIO,
+    WOW_MAX_LFO_FREQUENCY,
 };
 use include_dir::{include_dir, Dir};
 use instrument::{
@@ -35,6 +37,8 @@ struct ToyboxC {
     freeverb: Freeverb,
     moorer_reverb: MoorerReverb,
     chorus: StereoDelay,
+    wow: StereoDelay,
+    flutter: StereoDelay,
 }
 
 #[derive(Params)]
@@ -81,6 +85,12 @@ struct ToyboxCParams {
     #[id = "chorus-feedback"]
     pub chorus_feedback: FloatParam,
 
+    #[id = "vibrato-wow"]
+    pub vibrato_wow: FloatParam,
+
+    #[id = "vibrato-flutter"]
+    pub vibrato_flutter: FloatParam,
+
     #[id = "preset"]
     pub preset: EnumParam<Presets>,
     preset_changed: Arc<AtomicBool>,
@@ -93,6 +103,8 @@ impl Default for ToyboxC {
             freeverb: Freeverb::new(DEFAULT_SAMPLE_RATE),
             moorer_reverb: MoorerReverb::new(DEFAULT_SAMPLE_RATE),
             chorus: StereoDelay::new(MAX_DELAY_TIME_SECONDS, DEFAULT_SAMPLE_RATE),
+            wow: StereoDelay::new(MAX_DELAY_TIME_SECONDS, DEFAULT_SAMPLE_RATE),
+            flutter: StereoDelay::new(MAX_DELAY_TIME_SECONDS, DEFAULT_SAMPLE_RATE),
             buffer: vec![],
             instrument: Instrument::empty(),
         }
@@ -218,6 +230,28 @@ impl Default for ToyboxCParams {
             )
             .with_smoother(SmoothingStyle::Logarithmic(50.0))
             .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            vibrato_wow: FloatParam::new(
+                "Vibrato Wow",
+                0.0,
+                FloatRange::Skewed {
+                    min: PARAMETER_MINIMUM,
+                    max: 1.0,
+                    factor: FloatRange::skew_factor(-1.0),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            vibrato_flutter: FloatParam::new(
+                "Vibrato Flutter",
+                0.0,
+                FloatRange::Skewed {
+                    min: PARAMETER_MINIMUM,
+                    max: 1.0,
+                    factor: FloatRange::skew_factor(-1.0),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
             preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback), // .hide(),
             preset_changed,
         }
@@ -300,6 +334,11 @@ impl Plugin for ToyboxC {
         _buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>,
     ) -> bool {
+        let before: std::time::Instant = std::time::Instant::now();
+        self.wow
+            .resize_buffers(MAX_DELAY_TIME_SECONDS, _buffer_config.sample_rate as usize);
+        self.flutter
+            .resize_buffers(MAX_DELAY_TIME_SECONDS, _buffer_config.sample_rate as usize);
         self.chorus
             .resize_buffers(MAX_DELAY_TIME_SECONDS, _buffer_config.sample_rate as usize);
         self.freeverb
@@ -309,6 +348,11 @@ impl Plugin for ToyboxC {
         if self.instrument.notes.is_empty() {
             self.load_preset(self.params.preset.value());
         }
+        nih_log!(
+            "[Toybox C1200] initialize: {:.2?} - {:?}",
+            before.elapsed(),
+            self.params.preset.value()
+        );
         true
     }
 
@@ -396,6 +440,52 @@ impl Plugin for ToyboxC {
                 for playing_sample in &mut self.buffer {
                     input += playing_sample.get_next_sample();
                 }
+
+                let wow = self.params.vibrato_wow.smoothed.next();
+                let flutter = self.params.vibrato_flutter.smoothed.next();
+                let phase_offset = PARAMETER_MINIMUM * 0.5; // only offset right phase by a maximum of 180 degrees
+
+                if wow > PARAMETER_MINIMUM {
+                    input = if i % 2 == 0 {
+                        self.wow
+                            .process_with_vibrato(
+                                (input, 0.0),
+                                WOW_MAX_LFO_FREQUENCY,
+                                wow * WOW_MAX_FREQUENCY_RATIO,
+                                phase_offset,
+                            )
+                            .0
+                    } else {
+                        self.wow
+                            .process_with_vibrato(
+                                (0.0, input),
+                                WOW_MAX_LFO_FREQUENCY,
+                                wow * WOW_MAX_FREQUENCY_RATIO,
+                                phase_offset,
+                            )
+                            .1
+                    };
+                }
+
+                // Apply flutter
+                if flutter > PARAMETER_MINIMUM {
+                    input = if i % 2 == 0 {
+                        self.flutter.process_with_vibrato(
+                            (input, 0.0),
+                            FLUTTER_MAX_LFO_FREQUENCY,
+                            flutter * FLUTTER_MAX_FREQUENCY_RATIO,
+                            phase_offset,
+                        )
+                    } else {
+                        self.flutter.process_with_vibrato(
+                            (0.0, input),
+                            FLUTTER_MAX_LFO_FREQUENCY,
+                            flutter * FLUTTER_MAX_FREQUENCY_RATIO,
+                            phase_offset,
+                        )
+                    }
+                    .1
+                };
 
                 if self.params.chorus.value() {
                     let rate = self.params.chorus_rate.smoothed.next();
