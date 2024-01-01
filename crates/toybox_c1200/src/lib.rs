@@ -309,12 +309,12 @@ impl Plugin for ToyboxC {
 
             for (i, sample) in channel_samples.iter_mut().enumerate() {
                 let mut input = 0.0;
-                let dw_reverb = self.params.reverb_dry_wet_ratio.smoothed.next();
-
+                
                 for playing_sample in &mut self.buffer {
                     input += playing_sample.get_next_sample();
                 }
-
+                
+                let dw_reverb = self.params.reverb_dry_wet_ratio.smoothed.next();
                 if dw_reverb > 0.0 {
                     self.update_reverbs();
 
@@ -337,12 +337,11 @@ impl Plugin for ToyboxC {
                         }
                     };
 
-                    // Apply dry/wet, then output
                     *sample = input * (1. - dw_reverb) + frame_out * dw_reverb;
                 } else {
-                    // Process without reverb
                     *sample = input;
                 }
+
                 *sample *= output_gain;
 
                 self.buffer.retain(|e| !e.should_be_removed());
