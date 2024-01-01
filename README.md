@@ -46,8 +46,6 @@ Then finally to build the plugin run:
 cargo xtask bundle toybox_c1200 --target x86_64-pc-windows-gnu
 ```
 
-Certainly, my apologies for the oversight. Here's the revised acknowledgment section:
-
 ## Acknowledgments
 
 - **wry** (Modified)
