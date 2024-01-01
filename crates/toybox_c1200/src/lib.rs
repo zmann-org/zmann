@@ -36,11 +36,11 @@ struct ToyboxC {
 
 #[derive(Params)]
 struct ToyboxCParams {
-    #[id = "input-gain"]
-    pub reverb_gain: FloatParam,
-
     #[id = "output-gain"]
     pub output_gain: FloatParam,
+
+    #[id = "input-gain"]
+    pub reverb_gain: FloatParam,
 
     #[id = "reverb-dry-wet"]
     pub reverb_dry_wet_ratio: FloatParam,
