@@ -1,14 +1,17 @@
 use fx::{
-    delay_line::StereoDelay,
-    freeverb::Freeverb,
-    moorer_verb::MoorerReverb,
-    DEFAULT_SAMPLE_RATE,
+    delay_line::StereoDelay, freeverb::Freeverb, moorer_verb::MoorerReverb, DEFAULT_SAMPLE_RATE,
 };
-use include_dir::{ include_dir, Dir };
-use instrument::{ binv4::{ Instrument, PlayingStyle }, buffer::Sample };
+use include_dir::{include_dir, Dir};
+use instrument::{
+    binv4::{Instrument, PlayingStyle},
+    buffer::Sample,
+};
 use nih_plug::prelude::*;
 use presets::Presets;
-use std::sync::{ atomic::{ AtomicBool, Ordering }, Arc };
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
 mod presets;
 
 static ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/");
@@ -104,85 +107,117 @@ impl Default for ToyboxCParams {
             preset_changed_mem.store(true, Ordering::Relaxed);
         });
         Self {
-            reverb_gain: FloatParam::new("Reverb Gain", util::db_to_gain(0.0), FloatRange::Skewed {
-                min: util::db_to_gain(-30.0),
-                max: util::db_to_gain(30.0),
-                factor: FloatRange::gain_skew_factor(-30.0, 30.0),
-            })
-                .with_smoother(SmoothingStyle::Logarithmic(50.0))
-                .with_unit(" dB")
-                .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
-                .with_string_to_value(formatters::s2v_f32_gain_to_db()),
-            output_gain: FloatParam::new("Output gain", util::db_to_gain(0.0), FloatRange::Skewed {
-                min: util::db_to_gain(-30.0),
-                max: util::db_to_gain(30.0),
-                factor: FloatRange::gain_skew_factor(-30.0, 30.0),
-            })
-                .with_smoother(SmoothingStyle::Logarithmic(50.0))
-                .with_unit(" dB")
-                .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
-                .with_string_to_value(formatters::s2v_f32_gain_to_db()),
-            reverb_dry_wet_ratio: FloatParam::new("Reverb Dry/wet", 0.5, FloatRange::Linear {
-                min: 0.0,
-                max: 1.0,
-            })
-                .with_smoother(SmoothingStyle::Linear(50.0))
-                .with_value_to_string(formatters::v2s_f32_rounded(2)),
-            reverb_room_size: FloatParam::new("Reverb Room size", 0.5, FloatRange::Linear {
-                min: 0.0,
-                max: 1.0,
-            })
-                .with_smoother(SmoothingStyle::Linear(50.0))
-                .with_value_to_string(formatters::v2s_f32_rounded(2)),
-            reverb_damping: FloatParam::new("Reverb Dampening", 0.5, FloatRange::Linear {
-                min: 0.0,
-                max: 1.0,
-            })
-                .with_smoother(SmoothingStyle::Linear(50.0))
-                .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            reverb_gain: FloatParam::new(
+                "Reverb Gain",
+                util::db_to_gain(0.0),
+                FloatRange::Skewed {
+                    min: util::db_to_gain(-30.0),
+                    max: util::db_to_gain(30.0),
+                    factor: FloatRange::gain_skew_factor(-30.0, 30.0),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_unit(" dB")
+            .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
+            .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+            output_gain: FloatParam::new(
+                "Output gain",
+                util::db_to_gain(0.0),
+                FloatRange::Skewed {
+                    min: util::db_to_gain(-30.0),
+                    max: util::db_to_gain(30.0),
+                    factor: FloatRange::gain_skew_factor(-30.0, 30.0),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_unit(" dB")
+            .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
+            .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+            reverb_dry_wet_ratio: FloatParam::new(
+                "Reverb Dry/wet",
+                0.5,
+                FloatRange::Linear { min: 0.0, max: 1.0 },
+            )
+            .with_smoother(SmoothingStyle::Linear(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            reverb_room_size: FloatParam::new(
+                "Reverb Room size",
+                0.5,
+                FloatRange::Linear { min: 0.0, max: 1.0 },
+            )
+            .with_smoother(SmoothingStyle::Linear(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            reverb_damping: FloatParam::new(
+                "Reverb Dampening",
+                0.5,
+                FloatRange::Linear { min: 0.0, max: 1.0 },
+            )
+            .with_smoother(SmoothingStyle::Linear(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
             reverb_frozen: BoolParam::new("Reverb Frozen", false),
             reverb_type: EnumParam::new("Reverb Type", ReverbType::Freeverb),
-            reverb_width: FloatParam::new("Reverb Width", 0.5, FloatRange::Linear {
-                min: 0.0,
-                max: 1.0,
-            })
-                .with_smoother(SmoothingStyle::Linear(50.0))
-                .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            reverb_width: FloatParam::new(
+                "Reverb Width",
+                0.5,
+                FloatRange::Linear { min: 0.0, max: 1.0 },
+            )
+            .with_smoother(SmoothingStyle::Linear(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
             chorus: BoolParam::new("Chorus", false),
-            chorus_rate: FloatParam::new("Chorus Rate", 0.1, FloatRange::Skewed {
-                min: 0.001,
-                max: 3.0,
-                factor: FloatRange::skew_factor(-2.0),
-            })
-                .with_smoother(SmoothingStyle::Logarithmic(50.0))
-                .with_unit(" Hz")
-                .with_value_to_string(formatters::v2s_f32_rounded(2)),
-            chorus_lfo_amount: FloatParam::new("Chorus LFO Amount", 0.02, FloatRange::Skewed {
-                min: 0.001,
-                max: 3.0,
-                factor: FloatRange::skew_factor(-2.0),
-            })
-                .with_smoother(SmoothingStyle::Logarithmic(50.0))
-                .with_unit(" freq. ratio")
-                .with_value_to_string(formatters::v2s_f32_rounded(3)),
-            chorus_depth: FloatParam::new("Chorus Depth", 0.5, FloatRange::Linear {
-                min: PARAMETER_MINIMUM,
-                max: 1.0,
-            })
-                .with_smoother(SmoothingStyle::Logarithmic(50.0))
-                .with_value_to_string(formatters::v2s_f32_rounded(2)),
-            chorus_width: FloatParam::new("Chorus Width", 0.5, FloatRange::Linear {
-                min: PARAMETER_MINIMUM,
-                max: 1.0,
-            })
-                .with_smoother(SmoothingStyle::Logarithmic(50.0))
-                .with_value_to_string(formatters::v2s_f32_rounded(2)),
-            chorus_feedback: FloatParam::new("Chorus Feedback", 0.5, FloatRange::Linear {
-                min: PARAMETER_MINIMUM,
-                max: 1.0,
-            })
-                .with_smoother(SmoothingStyle::Logarithmic(50.0))
-                .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            chorus_rate: FloatParam::new(
+                "Chorus Rate",
+                0.1,
+                FloatRange::Skewed {
+                    min: 0.001,
+                    max: 3.0,
+                    factor: FloatRange::skew_factor(-2.0),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_unit(" Hz")
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            chorus_lfo_amount: FloatParam::new(
+                "Chorus LFO Amount",
+                0.02,
+                FloatRange::Skewed {
+                    min: 0.001,
+                    max: 3.0,
+                    factor: FloatRange::skew_factor(-2.0),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_unit(" freq. ratio")
+            .with_value_to_string(formatters::v2s_f32_rounded(3)),
+            chorus_depth: FloatParam::new(
+                "Chorus Depth",
+                0.5,
+                FloatRange::Linear {
+                    min: PARAMETER_MINIMUM,
+                    max: 1.0,
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            chorus_width: FloatParam::new(
+                "Chorus Width",
+                0.5,
+                FloatRange::Linear {
+                    min: PARAMETER_MINIMUM,
+                    max: 1.0,
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            chorus_feedback: FloatParam::new(
+                "Chorus Feedback",
+                0.5,
+                FloatRange::Linear {
+                    min: PARAMETER_MINIMUM,
+                    max: 1.0,
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
             preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback), // .hide(),
             preset_changed,
         }
@@ -236,17 +271,15 @@ impl Plugin for ToyboxC {
 
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
-    const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[
-        AudioIOLayout {
-            main_input_channels: NonZeroU32::new(2),
-            main_output_channels: NonZeroU32::new(2),
+    const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[AudioIOLayout {
+        main_input_channels: NonZeroU32::new(2),
+        main_output_channels: NonZeroU32::new(2),
 
-            aux_input_ports: &[],
-            aux_output_ports: &[],
+        aux_input_ports: &[],
+        aux_output_ports: &[],
 
-            names: PortNames::const_default(),
-        },
-    ];
+        names: PortNames::const_default(),
+    }];
 
     const MIDI_INPUT: MidiConfig = MidiConfig::Basic;
     const MIDI_OUTPUT: MidiConfig = MidiConfig::None;
@@ -265,11 +298,14 @@ impl Plugin for ToyboxC {
         &mut self,
         _audio_io_layout: &AudioIOLayout,
         _buffer_config: &BufferConfig,
-        _context: &mut impl InitContext<Self>
+        _context: &mut impl InitContext<Self>,
     ) -> bool {
-        self.chorus.resize_buffers(MAX_DELAY_TIME_SECONDS, _buffer_config.sample_rate as usize);
-        self.freeverb.generate_filters(_buffer_config.sample_rate as usize);
-        self.moorer_reverb.generate_filters(_buffer_config.sample_rate as usize);
+        self.chorus
+            .resize_buffers(MAX_DELAY_TIME_SECONDS, _buffer_config.sample_rate as usize);
+        self.freeverb
+            .generate_filters(_buffer_config.sample_rate as usize);
+        self.moorer_reverb
+            .generate_filters(_buffer_config.sample_rate as usize);
         if self.instrument.notes.is_empty() {
             self.load_preset(self.params.preset.value());
         }
@@ -280,7 +316,7 @@ impl Plugin for ToyboxC {
         &mut self,
         buffer: &mut Buffer,
         _aux: &mut AuxiliaryBuffers,
-        context: &mut impl ProcessContext<Self>
+        context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
         let mut next_event = context.next_event();
         let preset_value_changed = self.params.preset_changed.clone();
@@ -291,7 +327,13 @@ impl Plugin for ToyboxC {
                     break;
                 }
                 match event {
-                    NoteEvent::NoteOn { timing: _, voice_id: _, channel: _, note, velocity: _ } => {
+                    NoteEvent::NoteOn {
+                        timing: _,
+                        voice_id: _,
+                        channel: _,
+                        note,
+                        velocity: _,
+                    } => {
                         if let Some(data) = self.instrument.notes.get(&note) {
                             nih_log!(
                                 "[Toybox] NoteOn: {} - Buffer - {:?} Instrument - {:?}",
@@ -316,7 +358,8 @@ impl Plugin for ToyboxC {
                         note,
                         velocity: _,
                     } => {
-                        if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note)) {
+                        if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note))
+                        {
                             match self.instrument.style {
                                 PlayingStyle::WhilePressed => {
                                     self.buffer.remove(index);
@@ -363,23 +406,27 @@ impl Plugin for ToyboxC {
 
                     // this is neccicary to deinterleave the stereo signal
                     input = if i % 2 == 0 {
-                        self.chorus.process_with_chorus(
-                            (input, 0.0),
-                            rate,
-                            vibrato_width,
-                            width,
-                            depth,
-                            feedback
-                        ).0
+                        self.chorus
+                            .process_with_chorus(
+                                (input, 0.0),
+                                rate,
+                                vibrato_width,
+                                width,
+                                depth,
+                                feedback,
+                            )
+                            .0
                     } else {
-                        self.chorus.process_with_chorus(
-                            (0.0, input),
-                            rate,
-                            vibrato_width,
-                            width,
-                            depth,
-                            feedback
-                        ).1
+                        self.chorus
+                            .process_with_chorus(
+                                (0.0, input),
+                                rate,
+                                vibrato_width,
+                                width,
+                                depth,
+                                feedback,
+                            )
+                            .1
                     };
                 }
 
@@ -427,10 +474,8 @@ impl Plugin for ToyboxC {
 
 impl Vst3Plugin for ToyboxC {
     const VST3_CLASS_ID: [u8; 16] = *b"zmann.c120012345";
-    const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[
-        Vst3SubCategory::Sampler,
-        Vst3SubCategory::Instrument,
-    ];
+    const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
+        &[Vst3SubCategory::Sampler, Vst3SubCategory::Instrument];
 }
 
 nih_export_vst3!(ToyboxC);

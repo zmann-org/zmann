@@ -4,7 +4,7 @@ const AVERAGE_FACTOR: f32 = 0.9999;
 
 /// FIXME: Use with extreme caution and low volumes.
 /// I probably implemented this wrong, because Juan Gil's JUCE version sounds fine but this does not.
-/// 
+///
 /// A dynamic range processor capable of compression and expansion.
 ///
 /// Code ported from Juan Gil's compressor-expander implementation, which is licensed under GNU:
