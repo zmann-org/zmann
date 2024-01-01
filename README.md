@@ -58,6 +58,10 @@ Certainly, my apologies for the oversight. Here's the revised acknowledgment sec
   - Original Library: [nih-plug-webview](https://github.com/maxjvh/nih-plug-webview)
   - License: ISC
 
+- **fx** (Modified)
+  - Original Library: [renzol2/fx](https://github.com/renzol2/fx)
+  - License: GPLv3
+
 - **nih-plug** (Integrated)
   - Original Library: [nih-plug](https://github.com/robbert-vdh/nih-plug)
     - The framework is licensed under the ISC license.
