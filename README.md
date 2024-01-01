@@ -16,7 +16,7 @@ After installing [Rust](https://rustup.rs/), you can compile Toybox C1200 as fol
 #### Windows
 
 ```sh
-./download-vst.bat
+./scripts/download-vst.bat
 
 cargo xtask bundle toybox_c1200 --release
 ```
@@ -35,7 +35,7 @@ Before the final build step, you need to get the `binv3` files:
 1. **Download Precompiled Files:** You can download the precompiled `binv3` files from Zmann's CDN. To do this, run the following script:
 
     ```sh
-    ./download-binv3.bat
+    ./scripts/download-binv3.bat
     ```
 
 2. **Build Yourself:** The option of building them yourself is currently not supported.
