@@ -10,9 +10,9 @@ crate-type = ["cdylib"]
 
 [dependencies]
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
-strum_macros = "0.25.3"
 wavekit = { path = "../wavekit" }
 instrument = { path = "../instrument" }
 fx = { path = "../fx" }
+strum_macros = "0.25.3"
 serde = { version = "1.0.190", features = ["derive"] }
 include_dir = "0.7.3"
