@@ -150,13 +150,11 @@ impl Default for ToyboxCParams {
 impl ToyboxC {
     fn load_preset(&mut self, preset: Presets) {
         let before = std::time::Instant::now();
-        nih_log!("[Toybox C1200] load_preset: {:?}", preset);
         if let Some(input_file) = ASSETS.get_file(format!("{}.binv4", preset.to_string())) {
             self.instrument = instrument::binv4::decode(input_file.contents().to_vec());
-            nih_log!("[Toybox C1200] load_preset done: {:?}", preset);
         }
         nih_log!(
-            "[Toybox C1200] Elapsed time: {:.2?} - {:?} - {:?}",
+            "[Toybox C1200] load_preset: {:.2?} - {:?} - {:?}",
             before.elapsed(),
             preset,
             self.params.preset.value()
@@ -341,8 +339,7 @@ impl Plugin for ToyboxC {
 
                     // Apply dry/wet, then output
                     *sample = input * (1. - dw_reverb) + frame_out * dw_reverb;
-                }
-                else {
+                } else {
                     // Process without reverb
                     *sample = input;
                 }
