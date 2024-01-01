@@ -6,7 +6,7 @@ Collection of VST's by ZMANN built using [`nih-plug`](https://github.com/robbert
 - [x] gain
 - [ ] chorus
 - [ ] vibrato
-- [ ] reverb (delay?)
+- [x] reverb (delay?)
 - [x] output
 
 ## Building
