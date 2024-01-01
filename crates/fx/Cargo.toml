@@ -1,0 +1,7 @@
+[package]
+name = "fx"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+approx = "0.5.1"
