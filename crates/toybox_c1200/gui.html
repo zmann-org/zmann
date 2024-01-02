@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gain plugin</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
+          segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto,
+          arial, sans-serif;
+        overflow: hidden;
+        background: rgb(150, 150, 150);
+      }
+
+      .corner-resize {
+        position: absolute;
+        z-index: 2;
+        bottom: 0;
+        right: 0;
+        width: 2rem;
+        height: 2rem;
+        cursor: nwse-resize;
+      }
+
+      .corner-resize svg {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    Gain:
+    <input
+      style="margin: 1rem"
+      class="slider"
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+    />
+    <span class="value-display"></span>
+
+    <div class="corner-resize">
+      <svg viewBox="0 0 10 10" width="10" height="10">
+        <path d="M 10 0 L 10 10 L 0 10 Z" fill="#ccc" />
+      </svg>
+    </div>
+    <select onchange="setMyValue(this.value)" id="select">
+      <option value="Accordion">Accordion</option>
+      <option value="AltoSax">AltoSax</option>
+      <option value="Bandoneon">Bandoneon</option>
+      <option value="Brass1">Brass1</option>
+      <option value="Brass2">Brass2</option>
+      <option value="BrassEnsemble">BrassEnsemble</option>
+      <option value="Cello">Cello</option>
+      <option value="ChurchOrgan">ChurchOrgan</option>
+      <option value="Clarinet">Clarinet</option>
+      <option value="ElecOrgan1">ElecOrgan1</option>
+      <option value="ElecOrgan2">ElecOrgan2</option>
+      <option value="ElecOrgan3">ElecOrgan3</option>
+      <option value="ElecOrgan4">ElecOrgan4</option>
+      <option value="Flute">Flute</option>
+      <option value="FrenchHorn1">FrenchHorn1</option>
+      <option value="FrenchHorn2">FrenchHorn2</option>
+      <option value="Harmonica">Harmonica</option>
+      <option value="Harp">Harp</option>
+      <option value="Oboe">Oboe</option>
+      <option value="Piccolo">Piccolo</option>
+      <option value="PipeOrgan">PipeOrgan</option>
+      <option value="Recorder">Recorder</option>
+      <option value="ReedOrgan">ReedOrgan</option>
+      <option value="SopranoSax">SopranoSax</option>
+      <option value="Soundtrack">Soundtrack</option>
+      <option value="Strings1">Strings1</option>
+      <option value="Strings2">Strings2</option>
+      <option value="Strings3">Strings3</option>
+      <option value="SynPad1">SynPad1</option>
+      <option value="SynPad2">SynPad2</option>
+      <option value="SynPad3">SynPad3</option>
+      <option value="TenorSax">TenorSax</option>
+      <option value="Trumpet">Trumpet</option>
+      <option value="Tuba">Tuba</option>
+      <option value="Violin">Violin</option>
+    </select>
+
+    <pre></pre>
+
+    <script>
+      let size = { width: 0, height: 0 };
+      const slider = document.querySelector(".slider");
+
+      slider.addEventListener("input", (e) => {
+        e.preventDefault();
+        console.log(e.target.value);
+        sendToPlugin({ type: "SetGain", value: Number(e.target.value) });
+      });
+
+      window.onPluginMessage = (msg) => {
+        switch (msg.type) {
+          case "param_change": {
+            slider.value = msg.value;
+            document.querySelector(".value-display").textContent = msg.text;
+            break;
+          }
+          case "instrument_change": {
+            document.querySelector("select").value = msg.value;
+            break;
+          }
+          case "set_size": {
+            size.width = msg.width;
+            size.height = msg.height;
+            break;
+          }
+        }
+      };
+
+      let cornerResizeMouseDown = false;
+      let startPos = { x: 0, y: 0 };
+      let startSize = { ...size };
+
+      document
+        .querySelector(".corner-resize")
+        .addEventListener("mousedown", (e) => {
+          cornerResizeMouseDown = true;
+          startPos.x = e.clientX;
+          startPos.y = e.clientY;
+          startSize = { ...size };
+        });
+
+      window.addEventListener("mouseup", () => {
+        cornerResizeMouseDown = false;
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (cornerResizeMouseDown) {
+          const deltaX = e.clientX - startPos.x;
+          const deltaY = e.clientY - startPos.y;
+          const width = Math.max(100, startSize.width + deltaX);
+          const height = Math.max(100, startSize.height + deltaY);
+          size.width = width;
+          size.height = height;
+          sendToPlugin({ type: "SetSize", width, height });
+        }
+      });
+
+      const log = document.querySelector("pre");
+      let n = 0;
+      window.addEventListener("keydown", (e) => {
+        log.textContent = `keydown: ${e.key} (${n++})`;
+      });
+
+      window.addEventListener("keyup", (e) => {
+        log.textContent = `keyup: ${e.key} (${n++})`;
+      });
+
+      function setMyValue(v) {
+        console.log(v);
+        sendToPlugin({ type: "SetPreset", preset: v });
+      }
+      sendToPlugin({ type: "Init" });
+    </script>
+  </body>
+</html>

@@ -9,17 +9,30 @@ use instrument::{
     buffer::Sample,
 };
 use nih_plug::prelude::*;
+use nih_plug_webview::{HTMLSource, WebViewEditor, WebviewEvent};
 use presets::Presets;
+use serde::Deserialize;
+use serde_json::json;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc,
 };
+
 mod presets;
 
 static ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/");
 
 const MAX_DELAY_TIME_SECONDS: f32 = 5.0;
 const PARAMETER_MINIMUM: f32 = 0.01;
+
+#[derive(Deserialize)]
+#[serde(tag = "type")]
+enum Action {
+    Init,
+    SetSize { width: u32, height: u32 },
+    SetGain { value: f32 },
+    SetPreset { preset: Presets },
+}
 
 #[derive(Enum, Debug, PartialEq, Eq)]
 pub enum ReverbType {
@@ -45,6 +58,7 @@ struct ToyboxC {
 struct ToyboxCParams {
     #[id = "output-gain"]
     pub output_gain: FloatParam,
+    output_gain_value_changed: Arc<AtomicBool>,
 
     #[id = "input-gain"]
     pub reverb_gain: FloatParam,
@@ -118,6 +132,12 @@ impl Default for ToyboxCParams {
         let preset_callback = Arc::new(move |_: Presets| {
             preset_changed_mem.store(true, Ordering::Relaxed);
         });
+
+        let output_gain_value_changed = Arc::new(AtomicBool::new(false));
+        let v = output_gain_value_changed.clone();
+        let param_callback = Arc::new(move |_: f32| {
+            v.store(true, Ordering::Relaxed);
+        });
         Self {
             reverb_gain: FloatParam::new(
                 "Reverb Gain",
@@ -144,7 +164,9 @@ impl Default for ToyboxCParams {
             .with_smoother(SmoothingStyle::Logarithmic(50.0))
             .with_unit(" dB")
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
-            .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+            .with_string_to_value(formatters::s2v_f32_gain_to_db())
+            .with_callback(param_callback.clone()),
+            output_gain_value_changed,
             reverb_dry_wet_ratio: FloatParam::new(
                 "Reverb Dry/wet",
                 0.5,
@@ -326,6 +348,81 @@ impl Plugin for ToyboxC {
 
     fn params(&self) -> Arc<dyn Params> {
         self.params.clone()
+    }
+
+    fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
+        let params = self.params.clone();
+        let gain_value_changed = self.params.output_gain_value_changed.clone();
+        let preset_value_changed = self.params.preset_changed.clone();
+        let editor =
+            WebViewEditor::new(HTMLSource::String(include_str!("../gui.html")), (200, 200))
+                .with_background_color((150, 150, 150, 255))
+                .with_developer_mode(false)
+                .with_event_loop(move |ctx, setter| {
+                    while let Some(event) = ctx.next_event() {
+                        match event {
+                            WebviewEvent::JSON(value) => {
+                                if let Ok(action) = serde_json::from_value(value) {
+                                    match action {
+                                        Action::SetGain { value } => {
+                                            setter.begin_set_parameter(&params.output_gain);
+                                            setter.set_parameter_normalized(
+                                                &params.output_gain,
+                                                value,
+                                            );
+                                            setter.end_set_parameter(&params.output_gain);
+                                        }
+                                        Action::SetSize { width, height } => {
+                                            ctx.resize(width, height);
+                                        }
+                                        Action::SetPreset { preset } => {
+                                            setter.begin_set_parameter(&params.preset);
+                                            setter.set_parameter(&params.preset, preset);
+                                            setter.end_set_parameter(&params.preset);
+                                        }
+                                        Action::Init => {
+                                            let _ = ctx.send_json(json!({
+                                                "type": "set_size",
+                                                "width": ctx.width.load(Ordering::Relaxed),
+                                                "height": ctx.height.load(Ordering::Relaxed)
+                                            }));
+                                            let _ = ctx.send_json(json!({
+                                                "type": "preset_change",
+                                                "param": "preset_change",
+                                                "value": params.preset.value().to_string(),
+                                                "text": params.preset.to_string()
+                                            }));
+                                        }
+                                    }
+                                } else {
+                                    panic!("Invalid action received from web UI.")
+                                }
+                            }
+                            WebviewEvent::FileDropped(path) => println!("File dropped: {:?}", path),
+                            _ => {}
+                        }
+                    }
+
+                    if gain_value_changed.swap(false, Ordering::Relaxed) {
+                        let _ = ctx.send_json(json!({
+                            "type": "param_change",
+                            "param": "gain",
+                            "value": params.output_gain.unmodulated_normalized_value(),
+                            "text": params.output_gain.to_string()
+                        }));
+                    }
+                    if preset_value_changed.swap(false, Ordering::Relaxed) {
+                        let _ = ctx.send_json(json!({
+                            "type": "preset_change",
+                            "param": "preset_change",
+                            "value": params.preset.value().to_string(),
+                            "text": params.preset.to_string()
+                        }));
+                        nih_log!("[webview] preset changed")
+                    }
+                });
+
+        Some(Box::new(editor))
     }
 
     fn initialize(
@@ -535,7 +632,7 @@ impl Plugin for ToyboxC {
             }
         }
 
-        if preset_value_changed.swap(false, Ordering::Relaxed) {
+        if preset_value_changed.load(Ordering::Relaxed) {
             self.load_preset(self.params.preset.value());
         }
         ProcessStatus::Normal

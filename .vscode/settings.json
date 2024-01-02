@@ -1,3 +1,6 @@
 {
-    "explorer.excludeGitIgnore": true
+    "explorer.excludeGitIgnore": true,
+    "rust-analyzer.linkedProjects": [
+        ".\\crates\\toybox_c1200\\Cargo.toml"
+    ]
 }
