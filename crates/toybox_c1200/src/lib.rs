@@ -379,12 +379,6 @@ impl Plugin for ToyboxC {
                         velocity: _,
                     } => {
                         if let Some(data) = self.instrument.notes.get(&note) {
-                            nih_log!(
-                                "[Toybox] NoteOn: {} - Buffer - {:?} Instrument - {:?}",
-                                note,
-                                std::thread::current().id(),
-                                &self.params.preset.value()
-                            );
                             self.buffer.push(Sample::new(data.to_vec(), note));
                         } else {
                             nih_log!(
@@ -407,21 +401,8 @@ impl Plugin for ToyboxC {
                             match self.instrument.style {
                                 PlayingStyle::WhilePressed => {
                                     self.buffer.remove(index);
-                                    nih_log!(
-                                        "[Toybox] NoteOff WhilePressed: {} - Buffer - {:?} Instrument - {:?}",
-                                        note,
-                                        std::thread::current().id(),
-                                        &self.params.preset.value()
-                                    );
                                 }
-                                _ => {
-                                    nih_log!(
-                                        "[Toybox] NoteOff: {} - Buffer - {:?} Instrument - {:?}",
-                                        note,
-                                        std::thread::current().id(),
-                                        &self.params.preset.value()
-                                    );
-                                }
+                                _ => {}
                             }
                         }
                     }
@@ -555,7 +536,6 @@ impl Plugin for ToyboxC {
         }
 
         if preset_value_changed.swap(false, Ordering::Relaxed) {
-            nih_log!("[Toybox] preset_changed");
             self.load_preset(self.params.preset.value());
         }
         ProcessStatus::Normal
