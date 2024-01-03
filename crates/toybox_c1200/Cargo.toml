@@ -10,6 +10,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+nih_plug_webview = { git = "https://github.com/zmann-org/nih-plug-wry.git" }
 wavekit = { path = "../wavekit" }
 instrument = { path = "../instrument" }
 fx = { path = "../fx" }
