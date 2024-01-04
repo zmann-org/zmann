@@ -1,0 +1,27 @@
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+fileGroups:
+  sources:
+    - "crates/*/src/**/*"
+    - "crates/*/Cargo.toml"
+    - "Cargo.toml"
+
+tasks:
+  build:
+    command: "cargo xtask bundle $project"
+    inputs:
+      - "@globs(sources)"
+    options:
+      runFromWorkspaceRoot: true
+  check:
+    command: "cargo check --workspace"
+    inputs:
+      - "@globs(sources)"
+  format:
+    command: "cargo fmt --all --check"
+    inputs:
+      - "@globs(sources)"
+  lint:
+    command: "cargo clippy --workspace"
+    inputs:
+      - "@globs(sources)"
