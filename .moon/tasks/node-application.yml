@@ -1,37 +1,37 @@
 $schema: 'https://moonrepo.dev/schemas/tasks.json'
 
 fileGroups:
-  vite:
+  next:
+    - 'app/**/*'
+    - 'pages/**/*'
     - 'public/**/*'
     - 'src/**/*'
-    - 'vite.config.*'
-  sources: []
+    - 'next-env.d.ts'
+    - 'next.config.*'
   tests:
     - 'tests/**/*'
 
 tasks:
+  next:
+    command: 'next'
+    local: true
+
   # Build the application
   build:
-    command: 'vite build'
+    command: 'npm run build'
     inputs:
-      - '@group(vite)'
-      - '@group(sources)'
+      - '@group(next)'
     outputs:
-      - 'dist'
+      - '.next'
 
   # Run the development server
   dev:
-    command: 'vite dev'
+    command: 'next dev'
     local: true
 
-  # Optimize dependencies
-  optimize:
-    command: 'vite optimize'
-    local: true
-
-  # Preview the built application
-  preview:
-    command: 'vite preview'
+  # Serve the built application
+  start:
+    command: 'next start'
     deps:
       - 'build'
     local: true
