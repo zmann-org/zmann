@@ -1,10 +1,11 @@
+"use client";
+import Button from '@himalaya-ui/core/esm/button'
 import Image from 'next/image'
-import styles from './page.module.css'
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      hello
+    <main>
+      <Button>Action</Button>
     </main>
   )
 }
