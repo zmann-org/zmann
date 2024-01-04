@@ -1,0 +1,37 @@
+$schema: 'https://moonrepo.dev/schemas/tasks.json'
+
+fileGroups:
+  vite:
+    - 'public/**/*'
+    - 'src/**/*'
+    - 'vite.config.*'
+  sources: []
+  tests:
+    - 'tests/**/*'
+
+tasks:
+  # Build the application
+  build:
+    command: 'vite build'
+    inputs:
+      - '@group(vite)'
+      - '@group(sources)'
+    outputs:
+      - 'dist'
+
+  # Run the development server
+  dev:
+    command: 'vite dev'
+    local: true
+
+  # Optimize dependencies
+  optimize:
+    command: 'vite optimize'
+    local: true
+
+  # Preview the built application
+  preview:
+    command: 'vite preview'
+    deps:
+      - 'build'
+    local: true

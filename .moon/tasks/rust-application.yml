@@ -9,6 +9,8 @@ fileGroups:
 tasks:
   build:
     command: "cargo xtask bundle $project"
+    deps:
+      - "toybox_c1200_ui:build" # TODO: This should be dynamic not fixed
     inputs:
       - "@globs(sources)"
     options:

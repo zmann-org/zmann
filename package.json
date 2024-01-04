@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "@moonrepo/cli": "^1.19.0"
-  }
+  },
+  "workspaces": [
+    "packages/toybox_c1200_ui"
+  ]
 }
