@@ -1,0 +1,3 @@
+$schema: "https://moonrepo.dev/schemas/project.json"
+type: "library"
+language: "rust"
