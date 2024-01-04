@@ -9,13 +9,16 @@ use instrument::{
     buffer::Sample,
 };
 use nih_plug::prelude::*;
+use nih_plug_webview::{WebViewEditor, http::{header::CONTENT_TYPE, Response}, WebviewEvent, HTMLSource};
 use presets::Presets;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc,
 };
+
 mod presets;
 
+static WEB_ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../packages/toybox_c1200_ui/dist/");
 static ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/");
 
 const MAX_DELAY_TIME_SECONDS: f32 = 5.0;
@@ -326,6 +329,51 @@ impl Plugin for ToyboxC {
 
     fn params(&self) -> Arc<dyn Params> {
         self.params.clone()
+    }
+
+    fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
+        let params = self.params.clone();
+
+        let editor = WebViewEditor::new(
+            HTMLSource::URL("https://toybox.localhost/index.html"),
+            (630, 560),
+        )
+        .with_custom_protocol("toybox".to_owned(), move |request| {
+            let path = request.uri().path();
+            let mimetype = if path.ends_with(".html") || path == "/gui.html" {
+                "text/html"
+            } else if path.ends_with(".js") {
+                "text/javascript"
+            } else if path.ends_with(".css") {
+                "text/css"
+            } else if path.ends_with(".png") {
+                "image/png"
+            } else if path.ends_with(".wasm") {
+                "application/wasm"
+            } else {
+                "text/html"
+            };
+
+            match WEB_ASSETS.get_file(path.trim_start_matches("/")) {
+                Some(content) => { 
+                    return Response::builder()
+                    .header(CONTENT_TYPE, mimetype)
+                    .header("Access-Control-Allow-Origin", "https://toybox.localhost")
+                    .body(content.contents().into())
+                    .map_err(Into::into);
+                }
+                None => {
+                    return Response::builder()
+                    .header(CONTENT_TYPE, mimetype)
+                    .header("Access-Control-Allow-Origin", "https://toybox.localhost")
+                    .body((b"not found" as &[u8]).into())
+                    .map_err(Into::into);
+                }
+            }
+        })
+        .with_background_color((150, 150, 150, 255))
+        .with_developer_mode(true);
+        Some(Box::new(editor))
     }
 
     fn initialize(
