@@ -38,4 +38,4 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-      - run: npx moon run toybox_c1200:build
+      - run: moon run toybox_c1200:build
