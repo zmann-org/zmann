@@ -17,6 +17,8 @@ tasks:
 
   # Build the application
   build:
+    options: 
+      cache: false
     command: 'next build'
     inputs:
       - '@group(next)'

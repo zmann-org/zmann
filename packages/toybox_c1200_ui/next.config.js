@@ -8,7 +8,7 @@ const nextConfig = {
   },
   compress: true,
   output: "export",
-  distDir: "out",
+  distDir: "dist",
   transpilePackages: [],
 };
 
