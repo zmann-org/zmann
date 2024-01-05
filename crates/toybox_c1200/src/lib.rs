@@ -372,6 +372,7 @@ impl Plugin for ToyboxC {
             }
         })
         .with_background_color((150, 150, 150, 255))
+        .with_caption_color(0x00A553FF)
         .with_developer_mode(true);
         Some(Box::new(editor))
     }
