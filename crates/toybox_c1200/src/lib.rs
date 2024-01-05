@@ -1,7 +1,10 @@
 use fx::{
-    delay_line::StereoDelay, freeverb::Freeverb, moorer_verb::MoorerReverb, DEFAULT_SAMPLE_RATE,
-    FLUTTER_MAX_FREQUENCY_RATIO, FLUTTER_MAX_LFO_FREQUENCY, WOW_MAX_FREQUENCY_RATIO,
-    WOW_MAX_LFO_FREQUENCY,
+    biquad::{BiquadFilterType, StereoBiquadFilter},
+    delay_line::StereoDelay,
+    freeverb::Freeverb,
+    moorer_verb::MoorerReverb,
+    DEFAULT_SAMPLE_RATE, FLUTTER_MAX_FREQUENCY_RATIO, FLUTTER_MAX_LFO_FREQUENCY,
+    WOW_MAX_FREQUENCY_RATIO, WOW_MAX_LFO_FREQUENCY,
 };
 use include_dir::{include_dir, Dir};
 use instrument::{
@@ -9,7 +12,10 @@ use instrument::{
     buffer::Sample,
 };
 use nih_plug::prelude::*;
-use nih_plug_webview::{WebViewEditor, http::{header::CONTENT_TYPE, Response}, WebviewEvent, HTMLSource};
+use nih_plug_webview::{
+    http::{header::CONTENT_TYPE, Response},
+    HTMLSource, WebViewEditor, WebviewEvent,
+};
 use presets::Presets;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
@@ -18,11 +24,35 @@ use std::sync::{
 
 mod presets;
 
-static WEB_ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../packages/toybox_c1200_ui/dist/");
+static WEB_ASSETS: Dir<'_> =
+    include_dir!("$CARGO_MANIFEST_DIR/../../packages/toybox_c1200_ui/dist/");
 static ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/");
 
 const MAX_DELAY_TIME_SECONDS: f32 = 5.0;
 const PARAMETER_MINIMUM: f32 = 0.01;
+
+fn eq_type_to_param(filter_type: BiquadFilterTypeParam) -> BiquadFilterType {
+    match filter_type {
+        BiquadFilterTypeParam::LowPass => BiquadFilterType::LowPass,
+        BiquadFilterTypeParam::HighPass => BiquadFilterType::HighPass,
+        BiquadFilterTypeParam::BandPass => BiquadFilterType::BandPass,
+        BiquadFilterTypeParam::Notch => BiquadFilterType::Notch,
+        BiquadFilterTypeParam::ParametricEQ => BiquadFilterType::ParametricEQ,
+        BiquadFilterTypeParam::LowShelf => BiquadFilterType::LowShelf,
+        BiquadFilterTypeParam::HighShelf => BiquadFilterType::HighShelf,
+    }
+}
+
+#[derive(Enum, Debug, PartialEq, Eq, Clone, Copy)]
+pub enum BiquadFilterTypeParam {
+    LowPass,
+    HighPass,
+    BandPass,
+    Notch,
+    ParametricEQ,
+    LowShelf,
+    HighShelf,
+}
 
 #[derive(Enum, Debug, PartialEq, Eq)]
 pub enum ReverbType {
@@ -37,6 +67,7 @@ struct ToyboxC {
     params: Arc<ToyboxCParams>,
     pub buffer: Vec<Sample>,
     instrument: Instrument,
+    biquad: StereoBiquadFilter,
     freeverb: Freeverb,
     moorer_reverb: MoorerReverb,
     chorus: StereoDelay,
@@ -49,7 +80,7 @@ struct ToyboxCParams {
     #[id = "output-gain"]
     pub output_gain: FloatParam,
 
-    #[id = "input-gain"]
+    #[id = "reverb-gain"]
     pub reverb_gain: FloatParam,
 
     #[id = "reverb-dry-wet"]
@@ -94,6 +125,21 @@ struct ToyboxCParams {
     #[id = "vibrato-flutter"]
     pub vibrato_flutter: FloatParam,
 
+    #[id = "filter-cutoff-frequency"]
+    pub filter_cutoff_frequency: FloatParam,
+
+    #[id = "filter-q"]
+    pub filter_q: FloatParam,
+
+    #[id = "filter-type"]
+    pub filter_type: EnumParam<BiquadFilterTypeParam>,
+
+    #[id = "filter-gain"]
+    pub filter_gain: FloatParam,
+
+    #[id = "filter"]
+    pub filter: BoolParam,
+
     #[id = "preset"]
     pub preset: EnumParam<Presets>,
     preset_changed: Arc<AtomicBool>,
@@ -108,6 +154,7 @@ impl Default for ToyboxC {
             chorus: StereoDelay::new(MAX_DELAY_TIME_SECONDS, DEFAULT_SAMPLE_RATE),
             wow: StereoDelay::new(MAX_DELAY_TIME_SECONDS, DEFAULT_SAMPLE_RATE),
             flutter: StereoDelay::new(MAX_DELAY_TIME_SECONDS, DEFAULT_SAMPLE_RATE),
+            biquad: StereoBiquadFilter::new(),
             buffer: vec![],
             instrument: Instrument::empty(),
         }
@@ -255,6 +302,45 @@ impl Default for ToyboxCParams {
             )
             .with_smoother(SmoothingStyle::Logarithmic(50.0))
             .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            filter: BoolParam::new("Filter", false),
+            filter_gain: FloatParam::new(
+                "Filter Gain",
+                util::db_to_gain(0.0),
+                FloatRange::Skewed {
+                    min: util::db_to_gain(-30.0),
+                    max: util::db_to_gain(30.0),
+                    factor: FloatRange::gain_skew_factor(-30.0, 30.0),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_unit(" dB")
+            .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
+            .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+
+            filter_cutoff_frequency: FloatParam::new(
+                "Filter Cutoff",
+                1_000.0,
+                FloatRange::Skewed {
+                    min: 15.0,
+                    max: 22_000.0,
+                    factor: FloatRange::skew_factor(-2.2),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(20.0))
+            .with_unit(" Hz")
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            filter_q: FloatParam::new(
+                "Filter Q",
+                0.7,
+                FloatRange::Skewed {
+                    min: 0.1,
+                    max: 18.0,
+                    factor: FloatRange::skew_factor(-2.2),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(20.0))
+            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            filter_type: EnumParam::new("Filter Type", BiquadFilterTypeParam::LowPass),
             preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback), // .hide(),
             preset_changed,
         }
@@ -355,7 +441,7 @@ impl Plugin for ToyboxC {
             };
 
             match WEB_ASSETS.get_file(path.trim_start_matches("/")) {
-                Some(content) => { 
+                Some(content) => {
                     return Response::builder()
                     .header(CONTENT_TYPE, mimetype)
                     .header("Access-Control-Allow-Origin", "https://toybox.localhost")
@@ -473,7 +559,39 @@ impl Plugin for ToyboxC {
 
                 let wow = self.params.vibrato_wow.smoothed.next();
                 let flutter = self.params.vibrato_flutter.smoothed.next();
-                let phase_offset = PARAMETER_MINIMUM * 0.5; // only offset right phase by a maximum of 180 degrees
+
+                if self.params.filter.value() {
+                    let filter_type = self.params.filter_type.value();
+                    let frequency = self.params.filter_cutoff_frequency.smoothed.next();
+                    let fc = frequency / 48000.0;
+                    let q = self.params.filter_q.smoothed.next();
+        
+                    let gain = self.params.filter_gain.smoothed.next();
+                    let gain_db = util::gain_to_db(gain);
+                    self.biquad
+                        .set_biquads(eq_type_to_param(filter_type), fc, q, gain_db);
+
+                    if self.params.filter_cutoff_frequency.smoothed.is_smoothing() {
+                        let cutoff_frequency_smoothed =
+                            self.params.filter_cutoff_frequency.smoothed.next();
+                        let fc = cutoff_frequency_smoothed / 48000.0;
+                        self.biquad.set_fc(fc);
+                    }
+                    if self.params.filter_q.smoothed.is_smoothing() {
+                        let q_smoothed = self.params.filter_q.smoothed.next();
+                        self.biquad.set_q(q_smoothed);
+                    }
+                    if self.params.filter_gain.smoothed.is_smoothing() {
+                        let gain_smoothed = self.params.filter_gain.smoothed.next();
+                        let gain_db = util::gain_to_db(gain_smoothed);
+                        self.biquad.set_peak_gain(gain_db);
+                    }
+                    input = if i % 2 == 0 {
+                        self.biquad.process((input, 0.0)).0
+                    } else {
+                        self.biquad.process((0.0, input)).1
+                    };
+                }
 
                 if wow > PARAMETER_MINIMUM {
                     input = if i % 2 == 0 {
@@ -482,7 +600,7 @@ impl Plugin for ToyboxC {
                                 (input, 0.0),
                                 WOW_MAX_LFO_FREQUENCY,
                                 wow * WOW_MAX_FREQUENCY_RATIO,
-                                phase_offset,
+                                0.05,
                             )
                             .0
                     } else {
@@ -491,7 +609,7 @@ impl Plugin for ToyboxC {
                                 (0.0, input),
                                 WOW_MAX_LFO_FREQUENCY,
                                 wow * WOW_MAX_FREQUENCY_RATIO,
-                                phase_offset,
+                                0.05,
                             )
                             .1
                     };
@@ -504,14 +622,14 @@ impl Plugin for ToyboxC {
                             (input, 0.0),
                             FLUTTER_MAX_LFO_FREQUENCY,
                             flutter * FLUTTER_MAX_FREQUENCY_RATIO,
-                            phase_offset,
+                            0.05,
                         )
                     } else {
                         self.flutter.process_with_vibrato(
                             (0.0, input),
                             FLUTTER_MAX_LFO_FREQUENCY,
                             flutter * FLUTTER_MAX_FREQUENCY_RATIO,
-                            phase_offset,
+                            0.05,
                         )
                     }
                     .1
