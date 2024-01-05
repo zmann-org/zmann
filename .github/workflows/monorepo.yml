@@ -23,6 +23,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Fetch all git history
         run: git fetch --force --prune --tags --unshallow
+      - uses: 'moonrepo/setup-toolchain@v0'
+      - run: 'moon ci'
+      - uses: moonrepo/setup-rust@v1
       - uses: actions/cache@v3
         with:
           path: |
@@ -35,6 +38,4 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-      - run: npm ci
-      - uses: moonrepo/setup-rust@v1
       - run: npx moon run toybox_c1200:build
