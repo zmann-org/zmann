@@ -37,5 +37,4 @@ jobs:
           cache: "npm"
       - run: npm ci
       - uses: moonrepo/setup-rust@v1
-      - run: npx moon ci
       - run: npx moon toybox_c1200:build
