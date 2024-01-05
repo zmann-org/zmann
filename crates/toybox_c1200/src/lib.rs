@@ -421,12 +421,12 @@ impl Plugin for ToyboxC {
         let params = self.params.clone();
 
         let editor = WebViewEditor::new(
-            HTMLSource::URL("https://toybox.localhost/index.html"),
-            (630, 560),
+            HTMLSource::URL("https://zmann.localhost/index.html"),
+            (800, 300),
         )
-        .with_custom_protocol("toybox".to_owned(), move |request| {
+        .with_custom_protocol("zmann".to_owned(), move |request| {
             let path = request.uri().path();
-            let mimetype = if path.ends_with(".html") || path == "/gui.html" {
+            let mimetype = if path.ends_with(".html") {
                 "text/html"
             } else if path.ends_with(".js") {
                 "text/javascript"
@@ -434,10 +434,8 @@ impl Plugin for ToyboxC {
                 "text/css"
             } else if path.ends_with(".png") {
                 "image/png"
-            } else if path.ends_with(".wasm") {
-                "application/wasm"
             } else {
-                "text/html"
+                "text/html" // falback, replace with mime_guess
             };
 
             match WEB_ASSETS.get_file(path.trim_start_matches("/")) {
@@ -457,8 +455,8 @@ impl Plugin for ToyboxC {
                 }
             }
         })
-        .with_background_color((150, 150, 150, 255))
-        .with_caption_color(0x00A553FF)
+        .with_background_color((31, 31, 31, 255))
+        .with_caption_color(0x001F1F1F)
         .with_developer_mode(true);
         Some(Box::new(editor))
     }
