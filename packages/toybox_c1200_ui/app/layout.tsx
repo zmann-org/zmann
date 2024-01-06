@@ -1,35 +1,48 @@
 "use client";
-import { StyledJsxRegistry, useTheme } from "@himalaya-ui/core";
-import "./globals.css";
+import { ConfigProvider, StyledJsxRegistry } from "@himalaya-ui/core";
 import "@fontsource-variable/instrument-sans";
-import { Providers } from "@/lib/providers";
+import "./globals.css";
+import VSTHeader from "@/lib/components/Header";
+import { useEffect, useState } from "react";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const theme = useTheme();
+  // const [sliderValue, setSliderValue] = useState(0);
+  const [presetValue, setpresetValue] = useState("");
+
+  useEffect(() => {
+    (window as any).onPluginMessage = (msg: any) => {
+      switch (msg.type) {
+        // case "param_change": {
+        //   setSliderValue(msg.value);
+        //   break;
+        // }
+        case "instrument_change": {
+          setpresetValue(msg.value);
+          break;
+        }
+      }
+    };
+  }, []);
   return (
-    <html lang="en" onContextMenu={(e) => e.preventDefault()}>
-      <body>
+    <html lang="en">
+      <body onContextMenu={(e) => e.preventDefault()}>
         <StyledJsxRegistry>
-          <Providers defaultTheme={"dark"}>
-            <nav className="header">Toybox</nav>
+          <ConfigProvider>
+            <VSTHeader
+              preset_value={presetValue}
+              //@ts-ignore
+              preset_changed={sendToPlugin({
+                type: "SetPreset",
+                preset: presetValue,
+              })}
+            />
             {children}
-          </Providers>
+          </ConfigProvider>
         </StyledJsxRegistry>
-        <style jsx global>{`
-          body {
-            overflow: hidden;
-            user-select: none;
-          }
-          .header {
-            height: 50px;
-            background-color: ${theme.palette.accents_0};
-            border-bottom: ${theme.palette.border};
-          }
-        `}</style>
       </body>
     </html>
   );

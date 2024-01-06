@@ -1,15 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  output: "export",
+  distDir: "dist",
   typescript: {
     ignoreBuildErrors: true,
   },
-  compress: true,
-  output: "export",
-  distDir: "dist",
-  transpilePackages: [],
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 module.exports = nextConfig;
