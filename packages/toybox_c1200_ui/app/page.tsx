@@ -1,6 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Grid, Select, Slider, Tag, Card, useTheme } from "@himalaya-ui/core";
+import React, { ReactNode } from "react";
+import {
+  Grid,
+  Select,
+  Slider,
+  Tag,
+  Card,
+  useTheme,
+  useScale,
+} from "@himalaya-ui/core";
 import {
   Grid as GridIcon,
   HelpCircle,
@@ -28,10 +37,10 @@ export default function Home() {
     { value: "Cello", name: "Cello" },
     { value: "ChurchOrgan", name: "Church Organ" },
     { value: "Clarinet", name: "Clarinet" },
-    { value: "ElecOrgan1", name: "Elec Organ 1" },
-    { value: "ElecOrgan2", name: "Elec Organ 2" },
-    { value: "ElecOrgan3", name: "Elec Organ 3" },
-    { value: "ElecOrgan4", name: "Elec Organ4" },
+    { value: "ElecOrgan1", name: "Electric Organ 1" },
+    { value: "ElecOrgan2", name: "Electric Organ 2" },
+    { value: "ElecOrgan3", name: "Electric Organ 3" },
+    { value: "ElecOrgan4", name: "Electric Organ 4" },
     { value: "Flute", name: "Flute" },
     { value: "FrenchHorn1", name: "French Horn 1" },
     { value: "FrenchHorn2", name: "French Horn 2" },
@@ -79,7 +88,7 @@ export default function Home() {
     sendToPlugin({ type: "Init" });
   }, []);
   return (
-    <>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <nav
         style={{
           backgroundColor: theme.palette.accents_0,
@@ -135,39 +144,85 @@ export default function Home() {
           }}
         >
           <div style={{ fontSize: 12 }}>Volume</div>
-          <Slider initialValue={20} scale={0.5} width={"150px"} />
+          <Slider initialValue={20} scale={0.5} width={"150px"} hideValue />
           <HelpCircle />
           <Settings />
         </div>
       </nav>
-      <main style={{ height: "100%", width: "100%", background: "green", border: '1px solid blue', paddingBottom: '0' }}>
-        <Grid.Container height={"100%"} width={"100%"} justify="space-around" style={{padding:'10px', gap: '10px'}}>
-          <Grid xs>
-            <Card
-              shadow
-              style={{ height: "100%", width: "100%", background: "orange" }}
-            ></Card>
+      <main
+        style={{
+          height: "calc(100% - 48px)",
+          width: "100%",
+          paddingBottom: "0",
+        }}
+      >
+        <Grid.Container
+          height={"100%"}
+          width={"100%"}
+          justify="space-around"
+          style={{ padding: "10px", gap: "10px" }}
+        >
+          <Grid xs={4}>
+            <Module name="Filter"></Module>
           </Grid>
-          <Grid xs>
-            <Card
-              shadow
-              style={{ height: "100%", width: "100%", background: "orange" }}
-            ></Card>
+          <Grid xs={4}>
+            <Module name="Vibrato"></Module>
           </Grid>
-          <Grid xs>
-            <Card
-              shadow
-              style={{ height: "100%", width: "100%", background: "orange" }}
-            ></Card>
+          <Grid xs={8}>
+            <Module name="Chorus"></Module>
           </Grid>
-          <Grid xs>
-            <Card
-              shadow
-              style={{ height: "100%", width: "100%", background: "orange" }}
-            ></Card>
-          </Grid> 
+          <Grid xs={7}>
+            <Module name="Reverb"></Module>
+          </Grid>
         </Grid.Container>
       </main>
-    </>
+    </div>
   );
 }
+
+interface ModuleProps {
+  children?: ReactNode;
+  name?: string;
+}
+
+const Module: React.FC<ModuleProps> = ({ children, name }) => {
+  const theme = useTheme();
+  const { SCALES } = useScale();
+  return (
+    <Card
+      shadow
+      style={{
+        height: "100%",
+        width: "100%",
+        background: theme.palette.accents_0 + "B2",
+      }}
+    >
+      {name && (
+        <header>
+          <div
+            style={{
+              border: `1px solid ${theme.palette.border}`,
+              backgroundColor: theme.palette.accents_0,
+              color: theme.palette.accents_5,
+              height: "auto",
+              lineHeight: "1.35em",
+              display: "inline-flex",
+              alignItems: "center",
+              fontSize: SCALES.font(0.8125),
+              padding: `${SCALES.font(0.32)} ${SCALES.font(0.5)} ${SCALES.font(
+                0.32
+              )} ${SCALES.font(0.5)}`,
+              width: "auto",
+              borderTopLeftRadius: `calc(${theme.style.radius} - 1px)`,
+              borderBottomRightRadius: theme.style.radius,
+              textTransform: "uppercase",
+            }}
+          >
+            {name}
+          </div>
+        </header>
+      )}
+      <Card.Content>{children}</Card.Content>
+    </Card>
+  );
+};
