@@ -144,7 +144,7 @@ export default function Home() {
           }}
         >
           <div style={{ fontSize: 12 }}>Volume</div>
-          <Slider initialValue={20} scale={0.5} width={"150px"} hideValue />
+          <Slider initialValue={1} scale={0.5} width={"100px"} step={10} />
           <HelpCircle />
           <Settings />
         </div>
@@ -216,6 +216,8 @@ const Module: React.FC<ModuleProps> = ({ children, name }) => {
               borderTopLeftRadius: `calc(${theme.style.radius} - 1px)`,
               borderBottomRightRadius: theme.style.radius,
               textTransform: "uppercase",
+              marginTop: "-1px",
+              marginLeft: "-1px",
             }}
           >
             {name}
