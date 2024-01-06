@@ -15,7 +15,7 @@ export default function RootLayout({
       <body>
         <StyledJsxRegistry>
           <Providers defaultTheme={"dark"}>
-            <header>hello</header>
+            <nav className="header">Toybox</nav>
             {children}
           </Providers>
         </StyledJsxRegistry>
@@ -24,8 +24,10 @@ export default function RootLayout({
             overflow: hidden;
             user-select: none;
           }
-          header {
+          .header {
+            height: 50px;
             background-color: ${theme.palette.accents_0};
+            border-bottom: ${theme.palette.border};
           }
         `}</style>
       </body>
