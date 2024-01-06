@@ -1,6 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Select, useTheme } from "@himalaya-ui/core";
+import { Grid, Select, Slider, Tag, Card, useTheme } from "@himalaya-ui/core";
+import {
+  Grid as GridIcon,
+  HelpCircle,
+  Settings,
+} from "@himalaya-ui/core/icons";
 
 declare global {
   interface Window {
@@ -15,37 +20,37 @@ export default function Home() {
   const theme = useTheme();
   const presets = [
     { value: "Accordion", name: "Accordion" },
-    { value: "AltoSax", name: "AltoSax" },
+    { value: "AltoSax", name: "Alto Sax" },
     { value: "Bandoneon", name: "Bandoneon" },
-    { value: "Brass1", name: "Brass1" },
-    { value: "Brass2", name: "Brass2" },
-    { value: "BrassEnsemble", name: "BrassEnsemble" },
+    { value: "Brass1", name: "Brass 1" },
+    { value: "Brass2", name: "Brass 2" },
+    { value: "BrassEnsemble", name: "Brass Ensemble" },
     { value: "Cello", name: "Cello" },
-    { value: "ChurchOrgan", name: "ChurchOrgan" },
+    { value: "ChurchOrgan", name: "Church Organ" },
     { value: "Clarinet", name: "Clarinet" },
-    { value: "ElecOrgan1", name: "ElecOrgan1" },
-    { value: "ElecOrgan2", name: "ElecOrgan2" },
-    { value: "ElecOrgan3", name: "ElecOrgan3" },
-    { value: "ElecOrgan4", name: "ElecOrgan4" },
+    { value: "ElecOrgan1", name: "Elec Organ 1" },
+    { value: "ElecOrgan2", name: "Elec Organ 2" },
+    { value: "ElecOrgan3", name: "Elec Organ 3" },
+    { value: "ElecOrgan4", name: "Elec Organ4" },
     { value: "Flute", name: "Flute" },
-    { value: "FrenchHorn1", name: "FrenchHorn1" },
-    { value: "FrenchHorn2", name: "FrenchHorn2" },
+    { value: "FrenchHorn1", name: "French Horn 1" },
+    { value: "FrenchHorn2", name: "French Horn 2" },
     { value: "Harmonica", name: "Harmonica" },
     { value: "Harp", name: "Harp" },
     { value: "Oboe", name: "Oboe" },
     { value: "Piccolo", name: "Piccolo" },
-    { value: "PipeOrgan", name: "PipeOrgan" },
+    { value: "PipeOrgan", name: "Pipe Organ" },
     { value: "Recorder", name: "Recorder" },
-    { value: "ReedOrgan", name: "ReedOrgan" },
+    { value: "ReedOrgan", name: "Reed Organ" },
     { value: "SopranoSax", name: "SopranoSax" },
     { value: "Soundtrack", name: "Soundtrack" },
-    { value: "Strings1", name: "Strings1" },
-    { value: "Strings2", name: "Strings2" },
-    { value: "Strings3", name: "Strings3" },
-    { value: "SynPad1", name: "SynPad1" },
-    { value: "SynPad2", name: "SynPad2" },
-    { value: "SynPad3", name: "SynPad3" },
-    { value: "TenorSax", name: "TenorSax" },
+    { value: "Strings1", name: "Strings 1" },
+    { value: "Strings2", name: "Strings 2" },
+    { value: "Strings3", name: "Strings 3" },
+    { value: "SynPad1", name: "Synth Pad 1" },
+    { value: "SynPad2", name: "Synth Pad 2" },
+    { value: "SynPad3", name: "Synth Pad 3" },
+    { value: "TenorSax", name: "Tenor Sax" },
     { value: "Trumpet", name: "Trumpet" },
     { value: "Tuba", name: "Tuba" },
     { value: "Violin", name: "Violin" },
@@ -83,12 +88,28 @@ export default function Home() {
           display: "grid",
           gridTemplateColumns: "auto 1fr auto",
           alignItems: "center",
+          zIndex: 100,
         }}
       >
-        <div style={{ justifySelf: "start" }}>Left Content</div>
-        <div style={{ justifySelf: "center" }}>
+        <div
+          style={{
+            justifySelf: "start",
+            marginLeft: 12,
+            display: "flex",
+            verticalAlign: "middle",
+            gap: "5px",
+          }}
+        >
+          ZMANN
+          <Tag type="primary" scale={0.6}>
+            Alpha
+          </Tag>
+        </div>
+        <div style={{ justifySelf: "center", minWidth: "200px" }}>
           <Select
-            type="success"
+            style={{ width: "100%" }}
+            icon={(props) => <GridIcon size={18} {...props} />}
+            type="primary"
             value={presetValue}
             onChange={(value) =>
               sendToPlugin({
@@ -104,9 +125,49 @@ export default function Home() {
             ))}
           </Select>
         </div>
-        <div style={{ justifySelf: "end" }}>Right Content</div>
+        <div
+          style={{
+            justifySelf: "end",
+            display: "flex",
+            alignItems: "center",
+            gap: "20px",
+            marginRight: "20px",
+          }}
+        >
+          <div style={{ fontSize: 12 }}>Volume</div>
+          <Slider initialValue={20} scale={0.5} width={"150px"} />
+          <HelpCircle />
+          <Settings />
+        </div>
       </nav>
-      <main>hello</main>
+      <main style={{ height: "100%", width: "100%", background: "green", border: '1px solid blue', paddingBottom: '0' }}>
+        <Grid.Container height={"100%"} width={"100%"} justify="space-around" style={{padding:'10px', gap: '10px'}}>
+          <Grid xs>
+            <Card
+              shadow
+              style={{ height: "100%", width: "100%", background: "orange" }}
+            ></Card>
+          </Grid>
+          <Grid xs>
+            <Card
+              shadow
+              style={{ height: "100%", width: "100%", background: "orange" }}
+            ></Card>
+          </Grid>
+          <Grid xs>
+            <Card
+              shadow
+              style={{ height: "100%", width: "100%", background: "orange" }}
+            ></Card>
+          </Grid>
+          <Grid xs>
+            <Card
+              shadow
+              style={{ height: "100%", width: "100%", background: "orange" }}
+            ></Card>
+          </Grid> 
+        </Grid.Container>
+      </main>
     </>
   );
 }
