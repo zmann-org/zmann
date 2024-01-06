@@ -15,6 +15,7 @@ import {
   HelpCircle,
   Settings,
 } from "@himalaya-ui/core/icons";
+import { KnobDecorative } from "@/lib/Knob";
 
 declare global {
   interface Window {
@@ -163,7 +164,7 @@ export default function Home() {
           style={{ padding: "10px", gap: "10px" }}
         >
           <Grid xs={4}>
-            <Module name="Filter"></Module>
+            <Module name="Filter">hello<KnobDecorative valueDefault={74} value01={1}/></Module>
           </Grid>
           <Grid xs={4}>
             <Module name="Vibrato"></Module>
