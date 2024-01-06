@@ -17,6 +17,8 @@ use nih_plug_webview::{
     HTMLSource, WebViewEditor, WebviewEvent,
 };
 use presets::Presets;
+use serde::Deserialize;
+use serde_json::json;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc,
@@ -41,6 +43,14 @@ fn eq_type_to_param(filter_type: BiquadFilterTypeParam) -> BiquadFilterType {
         BiquadFilterTypeParam::LowShelf => BiquadFilterType::LowShelf,
         BiquadFilterTypeParam::HighShelf => BiquadFilterType::HighShelf,
     }
+}
+
+#[derive(Deserialize)]
+#[serde(tag = "type")]
+enum Action {
+    Init,
+    SetGain { value: f32 },
+    SetPreset { preset: Presets },
 }
 
 #[derive(Enum, Debug, PartialEq, Eq, Clone, Copy)]
@@ -419,7 +429,7 @@ impl Plugin for ToyboxC {
 
     fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
         let params = self.params.clone();
-
+        let preset_value_changed = self.params.preset_changed.clone();
         let editor = WebViewEditor::new(
             HTMLSource::URL("https://zmann.localhost/index.html"),
             (800, 300),
@@ -457,7 +467,53 @@ impl Plugin for ToyboxC {
         })
         .with_background_color((31, 31, 31, 255))
         .with_caption_color(0x001F1F1F)
-        .with_developer_mode(true);
+        .with_developer_mode(true)
+        .with_event_loop(move |ctx, setter| {
+            while let Some(event) = ctx.next_event() {
+                match event {
+                    WebviewEvent::JSON(value) => {
+                        if let Ok(action) = serde_json::from_value(value) {
+                            match action {
+                                Action::SetGain { value } => {
+                                    setter.begin_set_parameter(&params.output_gain);
+                                    setter.set_parameter_normalized(&params.output_gain, value);
+                                    setter.end_set_parameter(&params.output_gain);
+                                }
+                                Action::SetPreset { preset } => {
+                                    setter.begin_set_parameter(&params.preset);
+                                    setter.set_parameter(&params.preset, preset);
+                                    setter.end_set_parameter(&params.preset);
+                                }
+                                Action::Init => {
+                                    let _ = ctx.send_json(json!({
+                                        "type": "preset_change",
+                                        "param": "preset_change",
+                                        "value": params.preset.value().to_string(),
+                                        "text": params.preset.to_string()
+                                    }));
+                                }
+                            }
+                        } else {
+                            panic!("Invalid action received from web UI.")
+                        }
+                    }
+                    WebviewEvent::FileDropped(path) => println!("File dropped: {:?}", path),
+                    _ => {}
+                }
+            }
+            
+            if preset_value_changed.swap(false, Ordering::Relaxed) {
+                let _ = ctx.send_json(json!({
+                    "type": "preset_change",
+                    "param": "preset_change",
+                    "value": params.preset.value().to_string(),
+                    "text": params.preset.to_string()
+                }));
+                nih_log!("[webview] preset changed")
+            }
+        });
+
+
         Some(Box::new(editor))
     }
 
@@ -700,8 +756,10 @@ impl Plugin for ToyboxC {
             }
         }
 
-        if preset_value_changed.swap(false, Ordering::Relaxed) {
-            self.load_preset(self.params.preset.value());
+        if preset_value_changed.load(Ordering::Relaxed) {
+            if self.instrument.name != self.params.preset.value().to_string() {
+                self.load_preset(self.params.preset.value());
+            } 
         }
         ProcessStatus::Normal
     }
