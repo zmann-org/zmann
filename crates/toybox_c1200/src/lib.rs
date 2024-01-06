@@ -432,7 +432,7 @@ impl Plugin for ToyboxC {
         let preset_value_changed = self.params.preset_changed.clone();
         let editor = WebViewEditor::new(
             HTMLSource::URL("https://zmann.localhost/index.html"),
-            (800, 300),
+            (800, 350),
         )
         .with_custom_protocol("zmann".to_owned(), move |request| {
             let path = request.uri().path();
