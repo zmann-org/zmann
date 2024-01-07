@@ -164,7 +164,7 @@ export default function Home() {
           style={{ padding: "10px", gap: "10px" }}
         >
           <Grid xs={4}>
-            <Module name="Filter">hello<KnobDecorative valueDefault={74} value01={1}/></Module>
+            <Module name="Filter">hello<KnobDecorative valueDefault={74} value01={1} /></Module>
           </Grid>
           <Grid xs={4}>
             <Module name="Vibrato"></Module>
@@ -191,7 +191,6 @@ const Module: React.FC<ModuleProps> = ({ children, name }) => {
   const { SCALES } = useScale();
   return (
     <Card
-      shadow
       style={{
         height: "100%",
         width: "100%",

@@ -12,7 +12,7 @@ export default function RootLayout({
     <html lang="en">
       <body onContextMenu={(e) => e.preventDefault()}>
         <StyledJsxRegistry>
-          <ConfigProvider>{children}</ConfigProvider>
+          <ConfigProvider themeType={"dark"}>{children}</ConfigProvider>
         </StyledJsxRegistry>
       </body>
     </html>

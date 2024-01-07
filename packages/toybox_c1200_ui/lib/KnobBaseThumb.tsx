@@ -19,7 +19,7 @@ export function KnobBaseThumb({ value01 }: KnobBaseThumbProps) {
         height: "100%",
         position: "absolute",
         filter: "drop-shadow(0px 0px 5px " + UItheme.palette.background + ")",
-        background: "linear-gradient(to bottom, "+UItheme.palette.accents_2+", #2f2f2f)",
+        background: "linear-gradient(to bottom, "+UItheme.palette.accents_2+", "+UItheme.palette.accents_1+")",
       }}
     >
       <div
