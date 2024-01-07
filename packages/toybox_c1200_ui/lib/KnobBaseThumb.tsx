@@ -10,6 +10,7 @@ export function KnobBaseThumb({ value01 }: KnobBaseThumbProps) {
   const angleMin = -145;
   const angleMax = 145;
   const angle = mapFrom01Linear(value01, angleMin, angleMax);
+  
   return (
     <div
       style={{
@@ -17,7 +18,8 @@ export function KnobBaseThumb({ value01 }: KnobBaseThumbProps) {
         width: "100%",
         height: "100%",
         position: "absolute",
-        backgroundColor: UItheme.palette.accents_2,
+        filter: "drop-shadow(0px 0px 5px " + UItheme.palette.background + ")",
+        background: "linear-gradient(to bottom, "+UItheme.palette.accents_2+", #2f2f2f)",
       }}
     >
       <div
@@ -30,12 +32,13 @@ export function KnobBaseThumb({ value01 }: KnobBaseThumbProps) {
       >
         <div
           style={{
+            marginTop: 4,
             borderRadius: "0.125rem",
-            width: 2,
-            height: "50%",
+            width: 4,
+            height: "40%",
             top: 0,
             left: "50%",
-            backgroundColor: UItheme.palette.accents_0,
+            backgroundColor: UItheme.palette.primary.value,
             position: "absolute",
             transform:
               "translateX(-50%) rotate(0) skewX(0) skewY(0) scaleX(1) scaleY(1)",

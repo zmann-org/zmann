@@ -3,6 +3,7 @@ import { useState } from "react";
 import { KnobHeadless } from "react-knob-headless";
 import { mapTo01Linear } from "@dsp-ts/math";
 import { KnobBaseThumb } from "./KnobBaseThumb";
+import useTheme from "@himalaya-ui/core/esm/use-theme";
 
 type KnobBaseThumbProps = React.ComponentProps<typeof KnobBaseThumb>;
 type KnobDecorativeProps = Pick<KnobBaseThumbProps, "value01"> & {
@@ -10,6 +11,7 @@ type KnobDecorativeProps = Pick<KnobBaseThumbProps, "value01"> & {
 };
 
 export function KnobDecorative({ valueDefault }: KnobDecorativeProps) {
+  const theme = useTheme();
   const [valueRaw, setValueRaw] = useState<number>(valueDefault);
   const value01 = mapTo01Linear(valueRaw, valueMin, valueMax);
   return (
@@ -20,6 +22,14 @@ export function KnobDecorative({ valueDefault }: KnobDecorativeProps) {
         width: "4rem",
         height: "4rem",
         position: "relative",
+        background:
+          "linear-gradient(white, white) padding-box, linear-gradient(to bottom," +
+          theme.palette.accents_5 +
+          "B5," +
+          theme.palette.background +
+          ") border-box",
+        borderRadius: "56em",
+        border: "3px solid transparent",
       }}
       aria-label={""}
       valueMin={valueMin}
