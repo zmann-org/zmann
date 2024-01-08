@@ -51,3 +51,9 @@ const dragSensitivity = 0.006;
 const valueRawRoundFn = Math.round;
 const valueRawDisplayFn = (valueRaw: number): string =>
   `${valueRawRoundFn(valueRaw)} units`;
+  const valueMin = 0;
+  const valueMax = 100;
+  const valueDefault = 50;
+  const valueRawRoundFn = Math.round;
+  const valueRawDisplayFn = (valueRaw: number): string =>
+    `${valueRawRoundFn(valueRaw)}%`;

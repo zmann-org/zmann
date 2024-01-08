@@ -51,6 +51,7 @@ enum Action {
     Init,
     SetGain { value: f32 },
     SetPreset { preset: Presets },
+    SetReverbDryWet {value: f32},
 }
 
 #[derive(Enum, Debug, PartialEq, Eq, Clone, Copy)]
@@ -95,6 +96,7 @@ struct ToyboxCParams {
 
     #[id = "reverb-dry-wet"]
     pub reverb_dry_wet_ratio: FloatParam,
+    reverb_dry_wet_changed: Arc<AtomicBool>,
 
     #[id = "reverb-room-size"]
     pub reverb_room_size: FloatParam,
@@ -178,6 +180,14 @@ impl Default for ToyboxCParams {
         let preset_callback = Arc::new(move |_: Presets| {
             preset_changed_mem.store(true, Ordering::Relaxed);
         });
+
+        
+        let reverb_dry_wet_changed = Arc::new(AtomicBool::new(false));
+        let v = reverb_dry_wet_changed.clone();
+        let reverb_dry_wet_value_param_callback = Arc::new(move |_: f32| {
+            v.store(true, Ordering::Relaxed);
+        });
+
         Self {
             reverb_gain: FloatParam::new(
                 "Reverb Gain",
@@ -211,7 +221,8 @@ impl Default for ToyboxCParams {
                 FloatRange::Linear { min: 0.0, max: 1.0 },
             )
             .with_smoother(SmoothingStyle::Linear(50.0))
-            .with_value_to_string(formatters::v2s_f32_rounded(2)),
+            .with_value_to_string(formatters::v2s_f32_rounded(2)).with_callback(reverb_dry_wet_value_param_callback),
+            reverb_dry_wet_changed,
             reverb_room_size: FloatParam::new(
                 "Reverb Room size",
                 0.5,
@@ -429,6 +440,7 @@ impl Plugin for ToyboxC {
 
     fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
         let params = self.params.clone();
+        let reverb_dry_wet_changed = self.params.reverb_dry_wet_changed.clone();
         let preset_value_changed = self.params.preset_changed.clone();
         let editor = WebViewEditor::new(
             HTMLSource::URL("https://zmann.localhost/index.html"),
@@ -445,21 +457,21 @@ impl Plugin for ToyboxC {
             } else if path.ends_with(".png") {
                 "image/png"
             } else {
-                "text/html" // falback, replace with mime_guess
+                "application/octet-stream" // falback, replace with mime_guess
             };
 
             match WEB_ASSETS.get_file(path.trim_start_matches("/")) {
                 Some(content) => {
                     return Response::builder()
                     .header(CONTENT_TYPE, mimetype)
-                    .header("Access-Control-Allow-Origin", "https://toybox.localhost")
+                    .header("Access-Control-Allow-Origin", "https://zmann.localhost")
                     .body(content.contents().into())
                     .map_err(Into::into);
                 }
                 None => {
                     return Response::builder()
                     .header(CONTENT_TYPE, mimetype)
-                    .header("Access-Control-Allow-Origin", "https://toybox.localhost")
+                    .header("Access-Control-Allow-Origin", "https://zmann.localhost")
                     .body((b"not found" as &[u8]).into())
                     .map_err(Into::into);
                 }
@@ -472,7 +484,7 @@ impl Plugin for ToyboxC {
             while let Some(event) = ctx.next_event() {
                 match event {
                     WebviewEvent::JSON(value) => {
-                        if let Ok(action) = serde_json::from_value(value) {
+                        if let Ok(action) = serde_json::from_value(value.clone()) {
                             match action {
                                 Action::SetGain { value } => {
                                     setter.begin_set_parameter(&params.output_gain);
@@ -484,6 +496,11 @@ impl Plugin for ToyboxC {
                                     setter.set_parameter(&params.preset, preset);
                                     setter.end_set_parameter(&params.preset);
                                 }
+                                Action::SetReverbDryWet { value } => {
+                                    setter.begin_set_parameter(&params.reverb_dry_wet_ratio);
+                                    setter.set_parameter_normalized(&params.reverb_dry_wet_ratio, value);
+                                    setter.end_set_parameter(&params.reverb_dry_wet_ratio);
+                                }
                                 Action::Init => {
                                     let _ = ctx.send_json(json!({
                                         "type": "preset_change",
@@ -494,7 +511,7 @@ impl Plugin for ToyboxC {
                                 }
                             }
                         } else {
-                            panic!("Invalid action received from web UI.")
+                            panic!("Invalid action received from web UI. {:?}", value)
                         }
                     }
                     WebviewEvent::FileDropped(path) => println!("File dropped: {:?}", path),
@@ -502,6 +519,16 @@ impl Plugin for ToyboxC {
                 }
             }
             
+            if reverb_dry_wet_changed.swap(false, Ordering::Relaxed)
+            {
+                let _ = ctx.send_json(json!({
+                    "type": "reverb_dry_wet_change",
+                    "param": "reverb_dry_wet_change",
+                    "value": params.reverb_dry_wet_ratio.value().to_string(),
+                    "text": params.reverb_dry_wet_ratio.to_string()
+                }));
+            }
+
             if preset_value_changed.swap(false, Ordering::Relaxed) {
                 let _ = ctx.send_json(json!({
                     "type": "preset_change",
@@ -509,7 +536,6 @@ impl Plugin for ToyboxC {
                     "value": params.preset.value().to_string(),
                     "text": params.preset.to_string()
                 }));
-                nih_log!("[webview] preset changed")
             }
         });
 

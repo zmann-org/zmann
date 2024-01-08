@@ -9,6 +9,7 @@ import {
   Card,
   useTheme,
   useScale,
+  ToggleList,
 } from "@himalaya-ui/core";
 import {
   Grid as GridIcon,
@@ -16,6 +17,7 @@ import {
   Settings,
 } from "@himalaya-ui/core/icons";
 import { KnobDecorative } from "@/lib/Knob";
+import { KnobBase } from "@/lib/percentage/KnobBase";
 
 declare global {
   interface Window {
@@ -70,6 +72,7 @@ export default function Home() {
     window.ipc.postMessage(JSON.stringify(msg));
   };
 
+  const [reverbDryWetValue, setreverbDryWetValue] = useState<number>(50);
   const [presetValue, setpresetValue] = useState<string>("");
 
   useEffect(() => {
@@ -82,6 +85,11 @@ export default function Home() {
       switch (msg.type) {
         case "preset_change": {
           setpresetValue(msg.value);
+          break;
+        }
+        case "reverb_dry_wet_change": {
+          console.log(msg.value * 100);
+          setreverbDryWetValue(msg.value * 100);
           break;
         }
       }
@@ -164,7 +172,14 @@ export default function Home() {
           style={{ padding: "10px", gap: "10px" }}
         >
           <Grid xs={4}>
-            <Module name="Filter">hello<KnobDecorative valueDefault={74} value01={1} /></Module>
+            <Module name="Filter" footer={<ToggleList value="test">
+              <ToggleList.Item value="test">List</ToggleList.Item>
+              <ToggleList.Item value="test2">Grid</ToggleList.Item>
+            </ToggleList>}>
+              <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div>content</div>
+              </div>
+            </Module>
           </Grid>
           <Grid xs={4}>
             <Module name="Vibrato"></Module>
@@ -173,7 +188,12 @@ export default function Home() {
             <Module name="Chorus"></Module>
           </Grid>
           <Grid xs={7}>
-            <Module name="Reverb"></Module>
+            <Module name="Reverb"><KnobBase onValueRawChange={(value) => {
+              sendToPlugin({
+                type: "SetReverbDryWet",
+                value: (value / 100),
+              })
+            }} label='Dry/Wet' value01={reverbDryWetValue / 100} /></Module>
           </Grid>
         </Grid.Container>
       </main>
@@ -183,10 +203,11 @@ export default function Home() {
 
 interface ModuleProps {
   children?: ReactNode;
+  footer?: ReactNode;
   name?: string;
 }
 
-const Module: React.FC<ModuleProps> = ({ children, name }) => {
+const Module: React.FC<ModuleProps> = ({ children, footer, name }) => {
   const theme = useTheme();
   const { SCALES } = useScale();
   return (
@@ -225,6 +246,19 @@ const Module: React.FC<ModuleProps> = ({ children, name }) => {
         </header>
       )}
       <Card.Content>{children}</Card.Content>
+      {footer && (
+        <div
+          style={{
+            position: 'absolute',
+            display: 'flex',
+            justifyContent: 'center',
+            bottom: 0,
+            marginTop: 'auto', // Add this line
+          }}
+        >
+          {footer}
+        </div>
+      )}
     </Card>
   );
 };
