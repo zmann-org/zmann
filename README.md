@@ -4,8 +4,8 @@ Collection of VST's by ZMANN built using [`nih-plug`](https://github.com/robbert
 ## Effects
 
 - [x] gain
-- [ ] chorus
-- [ ] vibrato
+- [x] chorus
+- [x] vibrato
 - [x] reverb (delay?)
 - [x] output
 
