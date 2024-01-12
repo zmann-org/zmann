@@ -2,7 +2,6 @@ use rkyv::{Archive, Deserialize, Serialize};
 use rustc_hash::FxHashMap;
 
 #[derive(Archive, Deserialize, Serialize, Debug)]
-
 pub enum PlayingStyle {
     WhilePressed,
     WhileTrigger,
