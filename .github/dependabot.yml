@@ -2,5 +2,15 @@ version: 2
 updates:
   - package-ecosystem: "cargo"
     directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "bump; "
+      include: "scope"
   - package-ecosystem: "npm"
     directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "bump; "
+      include: "scope"
