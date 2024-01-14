@@ -21,7 +21,7 @@ for more information on each plugin, please refer to their respective product pa
 
 ## Installation
 > [!TIP]
-> You can make a ZMANN folder inside of your VST3 folder to keep your ZMANN plugins all in one place.
+> You can make a `ZMANN` folder inside of your VST3 folder to keep your ZMANN plugins all in one place.
 
 After downloading the latest release, extract the contents of the zip file to your VST3 folder. If you don't know where your VST3 folder is, 
 
