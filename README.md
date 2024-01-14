@@ -14,7 +14,7 @@ As defined in [bundler.toml](./bundler.toml), the following plugins are included
 
 |Product|Build|Pluginval||
 |---|---|---|---|
-|[Toybox C1200](./crates/toybox_c1200/)|![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zmann-org/zmann/monorepo.yml?style=plastic)|![pluginval](https://img.shields.io/badge/pluginval-passed-green.svg?style=plastic)|[Download](https://github.com/zmann-org/zmann/releases)|
+|[Toybox C1200](./crates/toybox_c1200/)|![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zmann-org/zmann/monorepo.yml?style=plastic)|![pluginval](https://img.shields.io/badge/pluginval-passing-green.svg?style=plastic)|[Download](https://github.com/zmann-org/zmann/releases)|
 |   |   |   |   |
 
 for more information on each plugin, please refer to their respective product pages on the zmann website.
@@ -23,7 +23,7 @@ for more information on each plugin, please refer to their respective product pa
 > [!TIP]
 > You can make a `ZMANN` folder inside of your VST3 folder to keep your ZMANN plugins all in one place.
 
-After downloading the latest release, extract the contents of the zip file to your VST3 folder. If you don't know where your VST3 folder is, 
+After downloading the latest release, extract the contents of the zip file to your VST3 folder. <!-- If you don't know where your VST3 folder is, -->
 
 ## Table of Contents
 - [Plugins](#plugins)
