@@ -21,14 +21,5 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch all git history
-        run: git fetch --force --prune --tags --unshallow
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: ${{ matrix.name }}-${{ matrix.cross-target }}
       - uses: 'moonrepo/setup-toolchain@v0'
       - run: 'moon ci'
