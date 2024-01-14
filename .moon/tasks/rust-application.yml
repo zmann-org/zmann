@@ -5,8 +5,7 @@ implicitDeps:
 
 fileGroups:
   sources:
-    - "crates/$project/src/**/*"
-    - "crates/$project/Cargo.toml"
+    - "src/**/*"
     - "Cargo.toml"
 
 tasks:
