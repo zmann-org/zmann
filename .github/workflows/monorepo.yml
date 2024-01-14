@@ -6,11 +6,16 @@ on:
     paths:
       - "crates/**"
       - ".github/workflows/**"
+      - "packages/**"
   pull_request:
     branches: ["main"]
     paths:
       - "crates/**"
       - ".github/workflows/**"
+      - "packages/**"
+
+env:
+  RUSTFLAGS: -C debuginfo=0  # Do not produce debug symbols to keep memory usage down
 
 jobs:
   package:
