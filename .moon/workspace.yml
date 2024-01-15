@@ -1,0 +1,14 @@
+$schema: "https://moonrepo.dev/schemas/workspace.json"
+
+projects:
+  globs:
+    - "crates/*"
+    - "packages/*"
+  sources: {}
+
+vcs:
+  manager: "git"
+  defaultBranch: "main"
+
+constraints:
+  enforceProjectTypeRelationships: false

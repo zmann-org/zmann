@@ -1,0 +1,6 @@
+{
+    "recommendations": [
+        "moonrepo.moon-console",
+        "rust-lang.rust-analyzer"
+    ]
+}

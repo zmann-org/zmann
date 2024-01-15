@@ -1,0 +1,29 @@
+{
+  "name": "toybox_c1200_ui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@fontsource-variable/instrument-sans": "^5.0.3",
+    "@himalaya-ui/core": "^0.1.4",
+    "@types/babel__core": "^7.20.5",
+    "lodash": "^4.17.21",
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-knob-headless": "^0.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4",
+    "typescript": "^5"
+  }
+}

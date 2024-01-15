@@ -1,0 +1,38 @@
+$schema: "https://moonrepo.dev/schemas/tasks.json"
+
+fileGroups:
+  next:
+    - "app/**/*"
+    - "pages/**/*"
+    - "public/**/*"
+    - "src/**/*"
+    - "next-env.d.ts"
+    - "next.config.*"
+
+tasks:
+  # Catch-all for any `next` command
+  next:
+    command: "next"
+    local: true
+
+  # Build the application
+  build:
+    options:
+      cache: false
+    command: "yarn build" # fix cache error
+    inputs:
+      - "@group(next)"
+    outputs:
+      - ".next"
+
+  # Run the development server
+  dev:
+    command: "next dev --turbo"
+    local: true
+
+  # Serve the built application
+  start:
+    command: "next start"
+    deps:
+      - "build"
+    local: true

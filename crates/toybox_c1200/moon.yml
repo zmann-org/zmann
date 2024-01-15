@@ -1,0 +1,12 @@
+type: "application"
+language: "rust"
+
+dependsOn:
+  - id: "fx"
+    scope: "production"
+  - id: "wavekit"
+    scope: "production"
+  - id: "instrument"
+    scope: "production"
+  - id: "toybox_c1200_ui"
+    scope: "build"
