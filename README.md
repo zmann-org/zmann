@@ -56,7 +56,7 @@ For each plugin in the repository, you can build manually by running the followi
 $ moon toybox_c1200:build
 ```
 
-### Cross Compiling
+### Cross-Compiling
 #### Debian/Ubuntu
 Make sure to install the following package and toolchain:
 ```sh
