@@ -6,8 +6,8 @@ on:
       - "**"
     paths:
       - "crates/**"
-      - ".github/workflows/**"
       - "packages/**"
+      - ".github/workflows/**"
 
 env:
   RUSTFLAGS: -C debuginfo=0 # Do not produce debug symbols to keep memory usage down
