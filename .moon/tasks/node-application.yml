@@ -2,37 +2,37 @@ $schema: "https://moonrepo.dev/schemas/tasks.json"
 
 fileGroups:
   next:
-    - 'app/**/*'
-    - 'pages/**/*'
-    - 'public/**/*'
-    - 'src/**/*'
-    - 'next-env.d.ts'
-    - 'next.config.*'
+    - "app/**/*"
+    - "pages/**/*"
+    - "public/**/*"
+    - "src/**/*"
+    - "next-env.d.ts"
+    - "next.config.*"
 
 tasks:
   # Catch-all for any `next` command
   next:
-    command: 'next'
+    command: "next"
     local: true
 
   # Build the application
   build:
-    options: 
+    options:
       cache: false
-    command: 'next build'
+    command: "next build"
     inputs:
-      - '@group(next)'
+      - "@group(next)"
     outputs:
-      - '.next'
+      - ".next"
 
   # Run the development server
   dev:
-    command: 'next dev --turbo'
+    command: "next dev --turbo"
     local: true
 
   # Serve the built application
   start:
-    command: 'next start'
+    command: "next start"
     deps:
-      - 'build'
+      - "build"
     local: true

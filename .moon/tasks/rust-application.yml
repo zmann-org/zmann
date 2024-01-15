@@ -1,7 +1,7 @@
 $schema: "https://moonrepo.dev/schemas/project.json"
 
 implicitDeps:
-  - '^:build'
+  - "^:build"
 
 fileGroups:
   sources:
