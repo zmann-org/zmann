@@ -2033,10 +2033,10 @@ react-is@^16.13.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-knob-headless@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/react-knob-headless/-/react-knob-headless-0.2.0.tgz#ccdc400cf6f83ea8d69e307174978e65367630ff"
-  integrity sha512-BYeiCiaUEN2tVK08PQ7pQ/WgMrXssbnyXlICNikgKxP8sKYpCLJ20pfVKE/04FaxGvUxAfdm19lGUUJIkTkf6Q==
+react-knob-headless@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-knob-headless/-/react-knob-headless-0.3.0.tgz#cbdfb855e09d11e5dd29bcfe7d026b4c735e1101"
+  integrity sha512-YrqH2VMcrJLqlnvlnY0Yi+nJFWlDck75VxNik2gkyw9OYxil3YqXn0tJRJxRxsQGmTmBK02iiNOMsQJFPwGe3Q==
   dependencies:
     "@dsp-ts/math" "^0.1.0"
     "@use-gesture/react" "^10.3.0"
