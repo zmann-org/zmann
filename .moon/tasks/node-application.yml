@@ -19,7 +19,7 @@ tasks:
   build:
     options:
       cache: false
-    command: "next build"
+    command: "yarn build" # fix cache error
     inputs:
       - "@group(next)"
     outputs:
