@@ -14,7 +14,7 @@ use instrument::{
 use nih_plug::prelude::*;
 use nih_plug_webview::{
     http::{header::CONTENT_TYPE, Response},
-    HTMLSource, WebViewEditor, WebviewEvent,
+    HTMLSource, WebViewEditor,
 };
 use presets::Presets;
 use serde::Deserialize;
@@ -51,7 +51,7 @@ enum Action {
     Init,
     SetGain { value: f32 },
     SetPreset { preset: Presets },
-    SetReverbDryWet {value: f32},
+    SetReverbDryWet { value: f32 },
 }
 
 #[derive(Enum, Debug, PartialEq, Eq, Clone, Copy)]
@@ -181,7 +181,6 @@ impl Default for ToyboxCParams {
             preset_changed_mem.store(true, Ordering::Relaxed);
         });
 
-        
         let reverb_dry_wet_changed = Arc::new(AtomicBool::new(false));
         let v = reverb_dry_wet_changed.clone();
         let reverb_dry_wet_value_param_callback = Arc::new(move |_: f32| {
@@ -221,7 +220,8 @@ impl Default for ToyboxCParams {
                 FloatRange::Linear { min: 0.0, max: 1.0 },
             )
             .with_smoother(SmoothingStyle::Linear(50.0))
-            .with_value_to_string(formatters::v2s_f32_rounded(2)).with_callback(reverb_dry_wet_value_param_callback),
+            .with_value_to_string(formatters::v2s_f32_rounded(2))
+            .with_callback(reverb_dry_wet_value_param_callback),
             reverb_dry_wet_changed,
             reverb_room_size: FloatParam::new(
                 "Reverb Room size",
@@ -443,10 +443,10 @@ impl Plugin for ToyboxC {
         let reverb_dry_wet_changed = self.params.reverb_dry_wet_changed.clone();
         let preset_value_changed = self.params.preset_changed.clone();
         let editor = WebViewEditor::new(
-            HTMLSource::URL("https://zmann.localhost/index.html"),
+            HTMLSource::URL("zmann://localhost/index.html"),
             (800, 350),
         )
-        .with_custom_protocol("zmann".to_owned(), move |request| {
+        .with_custom_protocol("zmann".into(), move |request| {
             let path = request.uri().path();
             let mimetype = if path.ends_with(".html") {
                 "text/html"
@@ -463,64 +463,55 @@ impl Plugin for ToyboxC {
             match WEB_ASSETS.get_file(path.trim_start_matches("/")) {
                 Some(content) => {
                     return Response::builder()
-                    .header(CONTENT_TYPE, mimetype)
-                    .header("Access-Control-Allow-Origin", "https://zmann.localhost")
-                    .body(content.contents().into())
-                    .map_err(Into::into);
+                        .header(CONTENT_TYPE, mimetype)
+                        .header("Access-Control-Allow-Origin", "*")
+                        .body(content.contents().into())
+                        .map_err(Into::into);
                 }
                 None => {
                     return Response::builder()
-                    .header(CONTENT_TYPE, mimetype)
-                    .header("Access-Control-Allow-Origin", "https://zmann.localhost")
-                    .body((b"not found" as &[u8]).into())
-                    .map_err(Into::into);
+                        .header(CONTENT_TYPE, "text/html")
+                        .header("Access-Control-Allow-Origin", "*")
+                        .body((b"not found" as &[u8]).into())
+                        .map_err(Into::into);
                 }
             }
         })
         .with_background_color((31, 31, 31, 255))
-        .with_caption_color(0x001F1F1F)
+        // .with_caption_color(0x001F1F1F)
         .with_developer_mode(true)
-        .with_event_loop(move |ctx, setter| {
-            while let Some(event) = ctx.next_event() {
-                match event {
-                    WebviewEvent::JSON(value) => {
-                        if let Ok(action) = serde_json::from_value(value.clone()) {
-                            match action {
-                                Action::SetGain { value } => {
-                                    setter.begin_set_parameter(&params.output_gain);
-                                    setter.set_parameter_normalized(&params.output_gain, value);
-                                    setter.end_set_parameter(&params.output_gain);
-                                }
-                                Action::SetPreset { preset } => {
-                                    setter.begin_set_parameter(&params.preset);
-                                    setter.set_parameter(&params.preset, preset);
-                                    setter.end_set_parameter(&params.preset);
-                                }
-                                Action::SetReverbDryWet { value } => {
-                                    setter.begin_set_parameter(&params.reverb_dry_wet_ratio);
-                                    setter.set_parameter_normalized(&params.reverb_dry_wet_ratio, value);
-                                    setter.end_set_parameter(&params.reverb_dry_wet_ratio);
-                                }
-                                Action::Init => {
-                                    let _ = ctx.send_json(json!({
-                                        "type": "preset_change",
-                                        "param": "preset_change",
-                                        "value": params.preset.value().to_string(),
-                                        "text": params.preset.to_string()
-                                    }));
-                                }
-                            }
-                        } else {
-                            panic!("Invalid action received from web UI. {:?}", value)
+        .with_event_loop(move |ctx, setter, window| {
+            while let Ok(value) = ctx.next_event() {
+                if let Ok(action) = serde_json::from_value(value.clone()) {
+                    match action {
+                        Action::SetGain { value } => {
+                            setter.begin_set_parameter(&params.output_gain);
+                            setter.set_parameter_normalized(&params.output_gain, value);
+                            setter.end_set_parameter(&params.output_gain);
+                        }
+                        Action::SetPreset { preset } => {
+                            setter.begin_set_parameter(&params.preset);
+                            setter.set_parameter(&params.preset, preset);
+                            setter.end_set_parameter(&params.preset);
+                        }
+                        Action::SetReverbDryWet { value } => {
+                            setter.begin_set_parameter(&params.reverb_dry_wet_ratio);
+                            setter.set_parameter_normalized(&params.reverb_dry_wet_ratio, value);
+                            setter.end_set_parameter(&params.reverb_dry_wet_ratio);
+                        }
+                        Action::Init => {
+                            let _ = ctx.send_json(json!({
+                                "type": "preset_change",
+                                "param": "preset_change",
+                                "value": params.preset.value().to_string(),
+                                "text": params.preset.to_string()
+                            }));
                         }
                     }
-                    WebviewEvent::FileDropped(path) => println!("File dropped: {:?}", path),
-                    _ => {}
                 }
             }
-            
-            if reverb_dry_wet_changed.swap(false, Ordering::Relaxed)
-            {
+
+            if reverb_dry_wet_changed.swap(false, Ordering::Relaxed) {
                 let _ = ctx.send_json(json!({
                     "type": "reverb_dry_wet_change",
                     "param": "reverb_dry_wet_change",
@@ -538,7 +529,6 @@ impl Plugin for ToyboxC {
                 }));
             }
         });
-
 
         Some(Box::new(editor))
     }
@@ -645,7 +635,7 @@ impl Plugin for ToyboxC {
                     let frequency = self.params.filter_cutoff_frequency.smoothed.next();
                     let fc = frequency / 48000.0;
                     let q = self.params.filter_q.smoothed.next();
-        
+
                     let gain = self.params.filter_gain.smoothed.next();
                     let gain_db = util::gain_to_db(gain);
                     self.biquad
@@ -785,7 +775,7 @@ impl Plugin for ToyboxC {
         if preset_value_changed.load(Ordering::Relaxed) {
             if self.instrument.name != self.params.preset.value().to_string() {
                 self.load_preset(self.params.preset.value());
-            } 
+            }
         }
         ProcessStatus::Normal
     }
