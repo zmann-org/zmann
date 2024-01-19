@@ -80,13 +80,12 @@
   resolved "https://registry.npmjs.org/@fontsource-variable/instrument-sans/-/instrument-sans-5.0.3.tgz"
   integrity sha512-HlObrvApp8qftNZOS3My3aVHrj0hOMLETJ11GKEyPUB1XQB5+Lkts2SdfYQjgOZOQqvhXtwpvWPrn+uk+lCpgw==
 
-"@himalaya-ui/core@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.npmjs.org/@himalaya-ui/core/-/core-0.1.4.tgz"
-  integrity sha512-jHfRVtI7SxGiqGWc9LmDUkwzJLNql4R7W8sOW2nRf1ujdiPkNIdGCnt5oag1SEf/5dsdp9jTRNzDu/w2kALpRg==
+"@himalaya-ui/core@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@himalaya-ui/core/-/core-0.1.8.tgz#95f735b7a05320fac7e640ad824c194be7a6a4c6"
+  integrity sha512-0cyGfFv5QkEmFnTfALeTjbXdm7YZXvkLuEIAwYIupUtIAEQVBMEw6b9X+mdKECoaUW8+dMGWakp/oh+B6xyVcA==
   dependencies:
     "@babel/runtime" "^7.23.1"
-    "@nestjs/axios" "^3.0.1"
     "@splidejs/splide" "^4.1.4"
     axios "^1.6.2"
     fancy-canvas "^2.1.0"
@@ -167,11 +166,6 @@
   version "1.19.3"
   resolved "https://registry.yarnpkg.com/@moonrepo/core-windows-x64-msvc/-/core-windows-x64-msvc-1.19.3.tgz#daa2bf33322e18a8c5baf2454f8bc956b63bc693"
   integrity sha512-O7FYQ+XDq+Nts2jF9GINJa/jflzAnUjRCygdzQqIB15S6YG8PasXUCMofUQqhHxQjETIddzSra9lblgzfgxAuw==
-
-"@nestjs/axios@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.npmjs.org/@nestjs/axios/-/axios-3.0.1.tgz"
-  integrity sha512-VlOZhAGDmOoFdsmewn8AyClAdGpKXQQaY1+3PGB+g6ceurGIdTxZgRX3VXc1T6Zs60PedWjg3A82TDOB05mrzQ==
 
 "@next/env@14.0.4":
   version "14.0.4"
