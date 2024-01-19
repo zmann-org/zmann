@@ -8,7 +8,7 @@ use fx::{
 };
 use include_dir::{include_dir, Dir};
 use instrument::{
-    binv4::{Instrument, PlayingStyle},
+    binv5::{Instrument, PlayingStyle},
     buffer::Sample,
 };
 use nih_plug::prelude::*;
@@ -371,8 +371,8 @@ impl Default for ToyboxCParams {
 impl ToyboxC {
     fn load_preset(&mut self, preset: Presets) {
         let before = std::time::Instant::now();
-        if let Some(input_file) = ASSETS.get_file(format!("{}.binv4", preset.to_string())) {
-            self.instrument = instrument::binv4::decode(input_file.contents().to_vec());
+        if let Some(input_file) = ASSETS.get_file(format!("{}.binv5", preset.to_string())) {
+            self.instrument = instrument::binv5::decode(input_file.contents().to_vec());
         }
         nih_log!(
             "[Toybox C1200] load_preset: {:.2?} - {:?} - {:?}",
@@ -480,7 +480,7 @@ impl Plugin for ToyboxC {
         .with_background_color((31, 31, 31, 255))
         // .with_caption_color(0x001F1F1F)
         .with_developer_mode(true)
-        .with_event_loop(move |ctx, setter, window| {
+        .with_event_loop(move |ctx, setter, _window| {
             while let Ok(value) = ctx.next_event() {
                 if let Ok(action) = serde_json::from_value(value.clone()) {
                     match action {

@@ -17,5 +17,5 @@ pub const FLUTTER_MAX_FREQUENCY_RATIO: f32 = 0.02;
 pub const FLUTTER_MAX_LFO_FREQUENCY: f32 = 1.79;
 
 // Constants for buffer instantiation
-pub const DEFAULT_SAMPLE_RATE: usize = 48_000;
+pub const DEFAULT_SAMPLE_RATE: usize = 44_100;
 pub const ABLETON_LIVE_MAX_BUFFER_SIZE: usize = 2048;
