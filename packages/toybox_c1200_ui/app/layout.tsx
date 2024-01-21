@@ -9,7 +9,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html>
       <body onContextMenu={(e) => e.preventDefault()}>
         <StyledJsxRegistry>
           <ConfigProvider themeType={"dark"}>{children}</ConfigProvider>
