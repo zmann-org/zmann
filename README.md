@@ -15,6 +15,8 @@ As defined in [bundler.toml](./bundler.toml), the following plugins are included
 |Product|Build|Pluginval||
 |---|---|---|---|
 |[Toybox C1200 (Alpha)](./crates/toybox_c1200/)|![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zmann-org/zmann/monorepo.yml?style=plastic)|![pluginval](https://img.shields.io/badge/pluginval-passing-green.svg?style=plastic)|[Download](https://github.com/zmann-org/zmann/releases)|
+|Bilhorn Reed|   |   |   |
+|Mellotron|   |   |   |
 |   |   |   |   |
 
 for more information on each plugin, please refer to their respective product pages on the zmann website.
