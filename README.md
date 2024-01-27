@@ -98,4 +98,4 @@ The code in this repository is licensed under the GNU General Public License v3.
 The samples included in this repository are owned by their respective owners. Please refer to the individual sample files for their specific licensing information.
 
 ----
-***VST is a registered trademark of Steinberg Media Technologies GmbH. ZMANN is not affilitated with Steinberg.***
+***VST® is a trademark of Steinberg Media Technologies GmbH, registered in Europe and other countries.***
