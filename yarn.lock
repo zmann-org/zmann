@@ -80,10 +80,10 @@
   resolved "https://registry.npmjs.org/@fontsource-variable/instrument-sans/-/instrument-sans-5.0.3.tgz"
   integrity sha512-HlObrvApp8qftNZOS3My3aVHrj0hOMLETJ11GKEyPUB1XQB5+Lkts2SdfYQjgOZOQqvhXtwpvWPrn+uk+lCpgw==
 
-"@himalaya-ui/core@^0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@himalaya-ui/core/-/core-0.2.4.tgz#6c53bc948be6fb4b81a39f685135c4019c45b668"
-  integrity sha512-d4iPkVfP9DoYE8mA1lRyOorj9cBhcg1GLq5GoxkfJIQMBgQXeo7DFkyqPliPURh1N9uN8Jk4uxUcj/m7tPPTZw==
+"@himalaya-ui/core@^0.3.8":
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/@himalaya-ui/core/-/core-0.3.8.tgz#47d303eca1acf5b281896de0875effdb9aab0d77"
+  integrity sha512-0LOMyHwlvsqLhQqzuG8MCgPCTtug8l6N2Q8OTGzzNobH+8dhVALdhuNv/Pq+fDH9uIrlQnkM1uXhUOPtjuCUMw==
   dependencies:
     "@babel/runtime" "^7.23.1"
     "@splidejs/splide" "^4.1.4"
