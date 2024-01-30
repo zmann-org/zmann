@@ -72,7 +72,8 @@ export default function Home() {
     window.ipc.postMessage(JSON.stringify(msg));
   };
 
-  const [reverbDryWetValue, setreverbDryWetValue] = useState<number>(50);
+  const [reverbDryWetValue, setreverbDryWetValue] = useState<number>(0);
+  const [reverbTypeValue, setreverbTypeValue] = useState<string>("");
   const [presetValue, setpresetValue] = useState<string>("");
 
   useEffect(() => {
@@ -89,7 +90,11 @@ export default function Home() {
         }
         case "reverb_dry_wet_change": {
           console.log(msg.value * 100);
-          setreverbDryWetValue(msg.value * 100);
+          setreverbDryWetValue(msg.value);
+          break;
+        }
+        case "reverb_type_changed": {
+          setreverbTypeValue(msg.value);
           break;
         }
       }
@@ -172,28 +177,57 @@ export default function Home() {
           style={{ padding: "10px", gap: "10px" }}
         >
           <Grid xs={4}>
-            <Module name="Filter" footer={<ToggleList value="test">
-              <ToggleList.Item value="test">List</ToggleList.Item>
-              <ToggleList.Item value="test2">Grid</ToggleList.Item>
-            </ToggleList>}>
-              <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <Module
+              name="Filter"
+              footer={
+                <ToggleList
+                  width={"95%"}
+                  margin={0.2}
+                  scale={0.1}
+                  value={reverbTypeValue}
+                  onChange={(value) =>
+                    sendToPlugin({
+                      type: "SetReverbType",
+                      preset: value,
+                    })
+                  }
+                >
+                  <ToggleList.Item value="Freeverb">Frvr</ToggleList.Item>
+                  <ToggleList.Item value="Moorer">Mrrf</ToggleList.Item>
+                </ToggleList>
+              }
+            >
+              <div
+                style={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
                 <div>content</div>
               </div>
             </Module>
           </Grid>
           <Grid xs={4}>
-            <Module name="Vibrato"></Module>
+            <Module name="Vibrato">hello</Module>
           </Grid>
           <Grid xs={8}>
             <Module name="Chorus"></Module>
           </Grid>
           <Grid xs={7}>
-            <Module name="Reverb"><KnobBase onValueRawChange={(value) => {
-              sendToPlugin({
-                type: "SetReverbDryWet",
-                value: (value / 100),
-              })
-            }} label='Dry/Wet' value01={reverbDryWetValue / 100} /></Module>
+            <Module name="Reverb">
+              <KnobBase
+                onValueRawChange={(value) => {
+                  sendToPlugin({
+                    type: "SetReverbDryWet",
+                    value: (value / 100) as number,
+                  });
+                }}
+                label="Dry/Wet"
+                value01={reverbDryWetValue}
+              />
+            </Module>
           </Grid>
         </Grid.Container>
       </main>
@@ -216,6 +250,8 @@ const Module: React.FC<ModuleProps> = ({ children, footer, name }) => {
         height: "100%",
         width: "100%",
         background: theme.palette.accents_0 + "B2",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       {name && (
@@ -249,11 +285,9 @@ const Module: React.FC<ModuleProps> = ({ children, footer, name }) => {
       {footer && (
         <div
           style={{
-            position: 'absolute',
-            display: 'flex',
-            justifyContent: 'center',
-            bottom: 0,
-            marginTop: 'auto', // Add this line
+            display: "flex",
+            justifyContent: "center", // Align footer at the center
+            marginTop: "auto", // Push footer to the bottom
           }}
         >
           {footer}

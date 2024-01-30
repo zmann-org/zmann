@@ -79,7 +79,7 @@ export function KnobBase({
 
 const valueMin = 0;
 const valueMax = 100;
-const valueDefault = 50;
+const valueDefault = 0;
 const valueRawRoundFn = Math.round;
 const valueRawDisplayFn = (valueRaw: number): string =>
   `${valueRawRoundFn(valueRaw)}%`;

@@ -17,6 +17,7 @@ use nih_plug_webview::{
     HTMLSource, WebViewEditor,
 };
 use presets::Presets;
+use strum_macros::Display;
 use serde::Deserialize;
 use serde_json::json;
 use std::sync::{
@@ -52,6 +53,7 @@ enum Action {
     SetGain { value: f32 },
     SetPreset { preset: Presets },
     SetReverbDryWet { value: f32 },
+    SetReverbType { preset: ReverbType },
 }
 
 #[derive(Enum, Debug, PartialEq, Eq, Clone, Copy)]
@@ -65,7 +67,7 @@ pub enum BiquadFilterTypeParam {
     HighShelf,
 }
 
-#[derive(Enum, Debug, PartialEq, Eq)]
+#[derive(Enum, Debug, PartialEq, Eq, Display, Deserialize)]
 pub enum ReverbType {
     #[id = "freeverb"]
     #[name = "Freeverb"]
@@ -109,6 +111,7 @@ struct ToyboxCParams {
 
     #[id = "reverb-type"]
     pub reverb_type: EnumParam<ReverbType>,
+    reverb_type_changed: Arc<AtomicBool>,
 
     #[id = "reverb-width"]
     pub reverb_width: FloatParam,
@@ -187,6 +190,12 @@ impl Default for ToyboxCParams {
             v.store(true, Ordering::Relaxed);
         });
 
+        let reverb_type_changed = Arc::new(AtomicBool::new(false));
+        let v2 = reverb_type_changed.clone();
+        let reverb_type_changed_param_callback = Arc::new(move |_: ReverbType| {
+            v2.store(true, Ordering::Relaxed);
+        });
+
         Self {
             reverb_gain: FloatParam::new(
                 "Reverb Gain",
@@ -238,7 +247,9 @@ impl Default for ToyboxCParams {
             .with_smoother(SmoothingStyle::Linear(50.0))
             .with_value_to_string(formatters::v2s_f32_rounded(2)),
             reverb_frozen: BoolParam::new("Reverb Frozen", false),
-            reverb_type: EnumParam::new("Reverb Type", ReverbType::Freeverb),
+            reverb_type: EnumParam::new("Reverb Type", ReverbType::Freeverb)
+            .with_callback(reverb_type_changed_param_callback),
+            reverb_type_changed,
             reverb_width: FloatParam::new(
                 "Reverb Width",
                 0.5,
@@ -442,6 +453,7 @@ impl Plugin for ToyboxC {
         let params = self.params.clone();
         let reverb_dry_wet_changed = self.params.reverb_dry_wet_changed.clone();
         let preset_value_changed = self.params.preset_changed.clone();
+        let reverb_type_changed = self.params.reverb_type_changed.clone();
         let editor = WebViewEditor::new(
             HTMLSource::URL("zmann://localhost/index.html"),
             (800, 350),
@@ -458,7 +470,7 @@ impl Plugin for ToyboxC {
                 "image/png"
             } else {
                 "application/octet-stream" // falback, replace with mime_guess
-            };
+            };   
 
             match WEB_ASSETS.get_file(path.trim_start_matches("/")) {
                 Some(content) => {
@@ -494,6 +506,11 @@ impl Plugin for ToyboxC {
                             setter.set_parameter(&params.preset, preset);
                             setter.end_set_parameter(&params.preset);
                         }
+                        Action::SetReverbType { preset } => {
+                            setter.begin_set_parameter(&params.reverb_type);
+                            setter.set_parameter(&params.reverb_type, preset);
+                            setter.end_set_parameter(&params.reverb_type);
+                        }
                         Action::SetReverbDryWet { value } => {
                             setter.begin_set_parameter(&params.reverb_dry_wet_ratio);
                             setter.set_parameter_normalized(&params.reverb_dry_wet_ratio, value);
@@ -506,6 +523,18 @@ impl Plugin for ToyboxC {
                                 "value": params.preset.value().to_string(),
                                 "text": params.preset.to_string()
                             }));
+                            ctx.send_json(json!({
+                                "type": "reverb_dry_wet_change",
+                                "param": "reverb_dry_wet_change",
+                                "value": params.reverb_dry_wet_ratio.value().to_string(),
+                                "text": params.reverb_dry_wet_ratio.to_string()
+                            }));
+                            let _ = ctx.send_json(json!({
+                                "type": "reverb_type_changed",
+                                "param": "reverb_type_changed",
+                                "value": params.reverb_type.value().to_string(),
+                                "text": params.reverb_type.to_string()
+                            }));
                         }
                     }
                 }
@@ -517,6 +546,15 @@ impl Plugin for ToyboxC {
                     "param": "reverb_dry_wet_change",
                     "value": params.reverb_dry_wet_ratio.value().to_string(),
                     "text": params.reverb_dry_wet_ratio.to_string()
+                }));
+            }
+
+            if reverb_type_changed.swap(false, Ordering::Relaxed) {
+                let _ = ctx.send_json(json!({
+                    "type": "reverb_type_changed",
+                    "param": "reverb_type_changed",
+                    "value": params.reverb_type.value().to_string(),
+                    "text": params.reverb_type.to_string()
                 }));
             }
 
