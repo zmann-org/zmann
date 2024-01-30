@@ -80,12 +80,18 @@
   resolved "https://registry.npmjs.org/@fontsource-variable/instrument-sans/-/instrument-sans-5.0.3.tgz"
   integrity sha512-HlObrvApp8qftNZOS3My3aVHrj0hOMLETJ11GKEyPUB1XQB5+Lkts2SdfYQjgOZOQqvhXtwpvWPrn+uk+lCpgw==
 
-"@himalaya-ui/core@^0.3.8":
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/@himalaya-ui/core/-/core-0.3.8.tgz#47d303eca1acf5b281896de0875effdb9aab0d77"
-  integrity sha512-0LOMyHwlvsqLhQqzuG8MCgPCTtug8l6N2Q8OTGzzNobH+8dhVALdhuNv/Pq+fDH9uIrlQnkM1uXhUOPtjuCUMw==
+"@fontsource-variable/roboto-mono@^5.0.17":
+  version "5.0.17"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/roboto-mono/-/roboto-mono-5.0.17.tgz#293d600624b1fc1ca2d811c8bbf78b63b04883fe"
+  integrity sha512-+FyoiEmO2r/kiwPnsPtATK2ROMgNwCnVSvvs+K38GMLIgLSSk4cNqU3GCqJDMSvAPHMYd0gFPGKStFh+yLqd9Q==
+
+"@himalaya-ui/core@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@himalaya-ui/core/-/core-0.4.3.tgz#e53e5f6d020d2aac35e458933b9540af84152c4f"
+  integrity sha512-4Wv5LGk8o9LTdDreZ1Lbjav5ZRFp0z8mel2I+fHhlsBHezPxcz5KJcmnm0EFgQaaUlmFVij1HXWF0VB5ceZjEg==
   dependencies:
     "@babel/runtime" "^7.23.1"
+    "@fontsource-variable/roboto-mono" "^5.0.17"
     "@splidejs/splide" "^4.1.4"
     axios "^1.6.2"
     fancy-canvas "^2.1.0"
