@@ -17,4 +17,4 @@ serde_json = { workspace = true }
 wavekit = { path = "../wavekit" }
 instrument = { path = "../instrument" }
 fx = { path = "../fx" }
-strum_macros = "0.25.3"
+strum_macros = "0.26.1"
