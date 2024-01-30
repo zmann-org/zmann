@@ -53,11 +53,13 @@ $ rustup default stable-x86_64-pc-windows-msvc
 ```
 
 ### Building the plugins
-Atleast for now, plugins are required to be built separately. Run *moon* with the [plugin name](#plugins) including `:build` at the end, to target a release build. For example:
+Plugins are required to be built separately from each other. Run the *moon* command with the [plugin name](#plugins) and `:build` at the end to target a release build. For example:
 ```bash
 $ moon toybox_c1200:build
 ```
-Each plugin will make their respective vst3 bundle inside of the `/target/bundled/` folder.
+Moonrepo will now build the *toybox_c1200_ui` before building the plugin itself. After successfully building, each plugin will make their own *.vst3* bundle inside of the `/target/bundled/` folder. 
+
+Optionally by running `./scripts/link-bundled-to-dev.cmd` on Windows, a simlink will be created from the local generated artifacts to the standard vst3 folder to streamline development.
 
 ### Cross-Compiling
 #### Debian/Ubuntu
