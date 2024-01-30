@@ -59,7 +59,7 @@ $ moon toybox_c1200:build
 ```
 Moonrepo will now build the `toybox_c1200_ui` before building the plugin itself. After successfully building, each plugin will make their own *.vst3* bundle inside of the `/target/bundled/` folder. 
 
-Optionally by running `./scripts/link-bundled-to-dev.cmd` on Windows, a simlink will be created from the local generated artifacts folder to the standard vst3 folder to streamline development.
+Optionally by running `./scripts/link-bundled-to-dev.cmd` on Windows, a simlink will be created from the locally generated artifacts folder to the standard vst3 folder to streamline development.
 
 ### Cross-Compiling
 #### Debian/Ubuntu
