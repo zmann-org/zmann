@@ -79,10 +79,6 @@ $ moon plugin_name:build
 ```
 
 ## Acknowledgments
-- **wry** (Modified)
-  - Original Library: [wry](https://github.com/tauri-apps/wry)
-  - License: Apache-2.0
-
 - **nih-plug-webview** (Modified)
   - Original Library: [nih-plug-webview](https://github.com/maxjvh/nih-plug-webview)
   - License: ISC
