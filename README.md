@@ -53,10 +53,11 @@ $ rustup default stable-x86_64-pc-windows-msvc
 ```
 
 ### Building the plugins
-For each plugin in the repository, you can build manually by running the following command:
+Atleast for now, plugins are required to be built separately. Run *moon* with the [plugin name](#plugins) including `:build` at the end, to target a release build. For example:
 ```bash
 $ moon toybox_c1200:build
 ```
+Each plugin will make their respective vst3 bundle inside of the `/target/bundled/` folder.
 
 ### Cross-Compiling
 #### Debian/Ubuntu
