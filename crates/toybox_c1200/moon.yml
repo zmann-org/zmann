@@ -3,10 +3,10 @@ language: "rust"
 
 dependsOn:
   - id: "fx"
-    scope: "production"
+    scope: "build"
   - id: "wavekit"
-    scope: "production"
+    scope: "build"
   - id: "instrument"
-    scope: "production"
+    scope: "build"
   - id: "toybox_c1200_ui"
     scope: "build"
