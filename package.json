@@ -1,7 +1,7 @@
 {
   "private": true,
   "devDependencies": {
-    "@moonrepo/cli": "^1.20.0"
+    "@moonrepo/cli": "^1.20.1"
   },
   "workspaces": [
     "packages/*"
