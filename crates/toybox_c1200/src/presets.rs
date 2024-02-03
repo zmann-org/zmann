@@ -1,8 +1,7 @@
 use nih_plug::prelude::Enum;
 use serde::{Deserialize, Serialize};
-use strum_macros::Display;
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Serialize, Deserialize, Enum, Display)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash, Serialize, Deserialize, Enum, strum::Display)]
 pub enum Presets {
     Accordion,
     AltoSax,

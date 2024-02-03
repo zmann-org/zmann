@@ -17,19 +17,22 @@ use nih_plug_webview::{
     HTMLSource, WebViewEditor,
 };
 use presets::Presets;
-use strum_macros::Display;
 use serde::Deserialize;
 use serde_json::json;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc,
 };
+use rust_embed::RustEmbed;
 
 mod presets;
 
 static WEB_ASSETS: Dir<'_> =
     include_dir!("$CARGO_MANIFEST_DIR/../../packages/toybox_c1200_ui/dist/");
-static ASSETS: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/");
+
+#[derive(RustEmbed)]
+#[folder = "$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/"]
+struct ASSETS;
 
 const MAX_DELAY_TIME_SECONDS: f32 = 5.0;
 const PARAMETER_MINIMUM: f32 = 0.01;
@@ -67,7 +70,7 @@ pub enum BiquadFilterTypeParam {
     HighShelf,
 }
 
-#[derive(Enum, Debug, PartialEq, Eq, Display, Deserialize)]
+#[derive(Enum, Debug, PartialEq, Eq, strum::Display, Deserialize)]
 pub enum ReverbType {
     #[id = "freeverb"]
     #[name = "Freeverb"]
@@ -248,7 +251,7 @@ impl Default for ToyboxCParams {
             .with_value_to_string(formatters::v2s_f32_rounded(2)),
             reverb_frozen: BoolParam::new("Reverb Frozen", false),
             reverb_type: EnumParam::new("Reverb Type", ReverbType::Freeverb)
-            .with_callback(reverb_type_changed_param_callback),
+                .with_callback(reverb_type_changed_param_callback),
             reverb_type_changed,
             reverb_width: FloatParam::new(
                 "Reverb Width",
@@ -382,13 +385,14 @@ impl Default for ToyboxCParams {
 impl ToyboxC {
     fn load_preset(&mut self, preset: Presets) {
         let before = std::time::Instant::now();
-        if let Some(input_file) = ASSETS.get_file(format!("{}.binv5", preset.to_string())) {
-            self.instrument = instrument::binv5::decode(input_file.contents().to_vec());
+        if let Some(input_file) = <ASSETS as rust_embed::RustEmbed>::get(&format!("{}.binv5", preset.to_string())) {
+            self.instrument = instrument::binv5::decode(input_file.data.to_vec());
+            nih_log!("[Toybox C1200] Loaded preset: {:?}", preset.to_string());
         }
         nih_log!(
             "[Toybox C1200] load_preset: {:.2?} - {:?} - {:?}",
             before.elapsed(),
-            preset,
+            preset.to_string(),
             self.params.preset.value()
         );
     }
@@ -454,119 +458,120 @@ impl Plugin for ToyboxC {
         let reverb_dry_wet_changed = self.params.reverb_dry_wet_changed.clone();
         let preset_value_changed = self.params.preset_changed.clone();
         let reverb_type_changed = self.params.reverb_type_changed.clone();
-        let editor = WebViewEditor::new(
-            HTMLSource::URL("zmann://localhost/index.html"),
-            (800, 350),
-        )
-        .with_custom_protocol("zmann".into(), move |request| {
-            let path = request.uri().path();
-            let mimetype = if path.ends_with(".html") {
-                "text/html"
-            } else if path.ends_with(".js") {
-                "text/javascript"
-            } else if path.ends_with(".css") {
-                "text/css"
-            } else if path.ends_with(".png") {
-                "image/png"
-            } else {
-                "application/octet-stream" // falback, replace with mime_guess
-            };   
+        let editor =
+            WebViewEditor::new(HTMLSource::URL("zmann://localhost/index.html"), (800, 350))
+                .with_custom_protocol("zmann".into(), move |request| {
+                    let path = request.uri().path();
+                    let mimetype = if path.ends_with(".html") {
+                        "text/html"
+                    } else if path.ends_with(".js") {
+                        "text/javascript"
+                    } else if path.ends_with(".css") {
+                        "text/css"
+                    } else if path.ends_with(".png") {
+                        "image/png"
+                    } else {
+                        "application/octet-stream" // falback, replace with mime_guess
+                    };
 
-            match WEB_ASSETS.get_file(path.trim_start_matches("/")) {
-                Some(content) => {
-                    return Response::builder()
-                        .header(CONTENT_TYPE, mimetype)
-                        .header("Access-Control-Allow-Origin", "*")
-                        .body(content.contents().into())
-                        .map_err(Into::into);
-                }
-                None => {
-                    return Response::builder()
-                        .header(CONTENT_TYPE, "text/html")
-                        .header("Access-Control-Allow-Origin", "*")
-                        .body((b"not found" as &[u8]).into())
-                        .map_err(Into::into);
-                }
-            }
-        })
-        .with_background_color((31, 31, 31, 255))
-        .with_caption_color(0x001F1F1F)
-        .with_developer_mode(true)
-        .with_event_loop(move |ctx, setter, _window| {
-            while let Ok(value) = ctx.next_event() {
-                if let Ok(action) = serde_json::from_value(value.clone()) {
-                    match action {
-                        Action::SetGain { value } => {
-                            setter.begin_set_parameter(&params.output_gain);
-                            setter.set_parameter_normalized(&params.output_gain, value);
-                            setter.end_set_parameter(&params.output_gain);
+                    match WEB_ASSETS.get_file(path.trim_start_matches("/")) {
+                        Some(content) => {
+                            return Response::builder()
+                                .header(CONTENT_TYPE, mimetype)
+                                .header("Access-Control-Allow-Origin", "*")
+                                .body(content.contents().into())
+                                .map_err(Into::into);
                         }
-                        Action::SetPreset { preset } => {
-                            setter.begin_set_parameter(&params.preset);
-                            setter.set_parameter(&params.preset, preset);
-                            setter.end_set_parameter(&params.preset);
-                        }
-                        Action::SetReverbType { preset } => {
-                            setter.begin_set_parameter(&params.reverb_type);
-                            setter.set_parameter(&params.reverb_type, preset);
-                            setter.end_set_parameter(&params.reverb_type);
-                        }
-                        Action::SetReverbDryWet { value } => {
-                            setter.begin_set_parameter(&params.reverb_dry_wet_ratio);
-                            setter.set_parameter_normalized(&params.reverb_dry_wet_ratio, value);
-                            setter.end_set_parameter(&params.reverb_dry_wet_ratio);
-                        }
-                        Action::Init => {
-                            let _ = ctx.send_json(json!({
-                                "type": "preset_change",
-                                "param": "preset_change",
-                                "value": params.preset.value().to_string(),
-                                "text": params.preset.to_string()
-                            }));
-                            ctx.send_json(json!({
-                                "type": "reverb_dry_wet_change",
-                                "param": "reverb_dry_wet_change",
-                                "value": params.reverb_dry_wet_ratio.value().to_string(),
-                                "text": params.reverb_dry_wet_ratio.to_string()
-                            }));
-                            let _ = ctx.send_json(json!({
-                                "type": "reverb_type_changed",
-                                "param": "reverb_type_changed",
-                                "value": params.reverb_type.value().to_string(),
-                                "text": params.reverb_type.to_string()
-                            }));
+                        None => {
+                            return Response::builder()
+                                .header(CONTENT_TYPE, "text/html")
+                                .header("Access-Control-Allow-Origin", "*")
+                                .body((b"not found" as &[u8]).into())
+                                .map_err(Into::into);
                         }
                     }
-                }
-            }
+                })
+                .with_background_color((31, 31, 31, 255))
+                .with_caption_color(0x001F1F1F)
+                .with_developer_mode(true)
+                .with_event_loop(move |ctx, setter, _window| {
+                    while let Ok(value) = ctx.next_event() {
+                        if let Ok(action) = serde_json::from_value(value.clone()) {
+                            match action {
+                                Action::SetGain { value } => {
+                                    setter.begin_set_parameter(&params.output_gain);
+                                    setter.set_parameter_normalized(&params.output_gain, value);
+                                    setter.end_set_parameter(&params.output_gain);
+                                }
+                                Action::SetPreset { preset } => {
+                                    setter.begin_set_parameter(&params.preset);
+                                    setter.set_parameter(&params.preset, preset);
+                                    setter.end_set_parameter(&params.preset);
+                                }
+                                Action::SetReverbType { preset } => {
+                                    setter.begin_set_parameter(&params.reverb_type);
+                                    setter.set_parameter(&params.reverb_type, preset);
+                                    setter.end_set_parameter(&params.reverb_type);
+                                }
+                                Action::SetReverbDryWet { value } => {
+                                    setter.begin_set_parameter(&params.reverb_dry_wet_ratio);
+                                    setter.set_parameter_normalized(
+                                        &params.reverb_dry_wet_ratio,
+                                        value,
+                                    );
+                                    setter.end_set_parameter(&params.reverb_dry_wet_ratio);
+                                }
+                                Action::Init => {
+                                    let _ = ctx.send_json(json!({
+                                        "type": "preset_change",
+                                        "param": "preset_change",
+                                        "value": params.preset.value().to_string(),
+                                        "text": params.preset.to_string()
+                                    }));
+                                    let _ = ctx.send_json(json!({
+                                        "type": "reverb_dry_wet_change",
+                                        "param": "reverb_dry_wet_change",
+                                        "value": params.reverb_dry_wet_ratio.value().to_string(),
+                                        "text": params.reverb_dry_wet_ratio.to_string()
+                                    }));
+                                    let _ = ctx.send_json(json!({
+                                        "type": "reverb_type_changed",
+                                        "param": "reverb_type_changed",
+                                        "value": params.reverb_type.value().to_string(),
+                                        "text": params.reverb_type.to_string()
+                                    }));
+                                }
+                            }
+                        }
+                    }
 
-            if reverb_dry_wet_changed.swap(false, Ordering::Relaxed) {
-                let _ = ctx.send_json(json!({
-                    "type": "reverb_dry_wet_change",
-                    "param": "reverb_dry_wet_change",
-                    "value": params.reverb_dry_wet_ratio.value().to_string(),
-                    "text": params.reverb_dry_wet_ratio.to_string()
-                }));
-            }
+                    if reverb_dry_wet_changed.swap(false, Ordering::Relaxed) {
+                        let _ = ctx.send_json(json!({
+                            "type": "reverb_dry_wet_change",
+                            "param": "reverb_dry_wet_change",
+                            "value": params.reverb_dry_wet_ratio.value().to_string(),
+                            "text": params.reverb_dry_wet_ratio.to_string()
+                        }));
+                    }
 
-            if reverb_type_changed.swap(false, Ordering::Relaxed) {
-                let _ = ctx.send_json(json!({
-                    "type": "reverb_type_changed",
-                    "param": "reverb_type_changed",
-                    "value": params.reverb_type.value().to_string(),
-                    "text": params.reverb_type.to_string()
-                }));
-            }
+                    if reverb_type_changed.swap(false, Ordering::Relaxed) {
+                        let _ = ctx.send_json(json!({
+                            "type": "reverb_type_changed",
+                            "param": "reverb_type_changed",
+                            "value": params.reverb_type.value().to_string(),
+                            "text": params.reverb_type.to_string()
+                        }));
+                    }
 
-            if preset_value_changed.swap(false, Ordering::Relaxed) {
-                let _ = ctx.send_json(json!({
-                    "type": "preset_change",
-                    "param": "preset_change",
-                    "value": params.preset.value().to_string(),
-                    "text": params.preset.to_string()
-                }));
-            }
-        });
+                    if preset_value_changed.swap(false, Ordering::Relaxed) {
+                        let _ = ctx.send_json(json!({
+                            "type": "preset_change",
+                            "param": "preset_change",
+                            "value": params.preset.value().to_string(),
+                            "text": params.preset.to_string()
+                        }));
+                    }
+                });
 
         Some(Box::new(editor))
     }

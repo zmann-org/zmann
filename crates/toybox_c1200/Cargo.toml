@@ -17,4 +17,5 @@ serde_json = { workspace = true }
 wavekit = { path = "../wavekit" }
 instrument = { path = "../instrument" }
 fx = { path = "../fx" }
-strum_macros = "0.26.1"
+strum = { version = "0.26", features = ["derive"] }
+rust-embed = { version = "8.2.0", features = ["interpolate-folder-path"] }
