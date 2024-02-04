@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import React, { ReactNode } from "react";
 import {
   Grid,
@@ -16,8 +16,6 @@ import {
   HelpCircle,
   Settings,
 } from "@himalaya-ui/core/icons";
-import { KnobDecorative } from "@/lib/Knob";
-import { KnobBase } from "@/lib/percentage/KnobBase";
 
 declare global {
   interface Window {
@@ -72,10 +70,40 @@ export default function Home() {
     window.ipc.postMessage(JSON.stringify(msg));
   };
 
+  function degreeChange() {
+    console.log(`event value is `);
+  }
+
   const [reverbDryWetValue, setreverbDryWetValue] = useState<number>(0);
   const [reverbTypeValue, setreverbTypeValue] = useState<string>("");
   const [presetValue, setpresetValue] = useState<string>("");
+  const inputRef = useRef(null);
 
+  //@ts-ignore
+  useEffect(() => {
+    // Use the inputRef to interact with the third-party script
+    // For example, if the third-party script is modifying the input, you might need to trigger a change event manually
+    // inputRef.current.dispatchEvent(new Event('change'));
+
+    // Or add event listeners directly to the inputRef
+    const inputElement = inputRef.current;
+    //@ts-ignore
+    inputElement.addEventListener("input", handleInputChange);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      //@ts-ignore
+      inputElement.removeEventListener("input", handleInputChange);
+    };
+  }, []);
+
+  //@ts-ignore
+  const handleInputChange = (event) => {
+    sendToPlugin({
+      type: "SetReverbDryWet",
+      value: Number(event.target.value),
+    });
+  };
   useEffect(() => {
     window.sendToPlugin = sendToPlugin;
     window.onPluginMessageInternal = function (msg) {
@@ -83,13 +111,13 @@ export default function Home() {
       window.onPluginMessage && window.onPluginMessage(json);
     };
     window.onPluginMessage = (msg: any) => {
+      console.log("[" + msg.type + "] {" + msg.value + "}");
       switch (msg.type) {
         case "preset_change": {
           setpresetValue(msg.value);
           break;
         }
         case "reverb_dry_wet_change": {
-          console.log(msg.value * 100);
           setreverbDryWetValue(msg.value);
           break;
         }
@@ -192,7 +220,7 @@ export default function Home() {
                     })
                   }
                 >
-                  <ToggleList.Item value="Freeverb">Frvr</ToggleList.Item>
+                  <ToggleList.Item value="Freeverb">Free</ToggleList.Item>
                   <ToggleList.Item value="Moorer">Mrrf</ToggleList.Item>
                 </ToggleList>
               }
@@ -204,9 +232,7 @@ export default function Home() {
                   flexDirection: "column",
                   justifyContent: "space-between",
                 }}
-              >
-                <div>content</div>
-              </div>
+              ></div>
             </Module>
           </Grid>
           <Grid xs={4}>
@@ -217,15 +243,35 @@ export default function Home() {
           </Grid>
           <Grid xs={7}>
             <Module name="Reverb">
-              <KnobBase
-                onValueRawChange={(value) => {
+              <input
+                type="range"
+                className="input-knob"
+                max={100}
+                min={0}
+                onChange={(event) => {
+                  console.log(event + "fire");
+                }}
+                onInput={(event) => {
+                  console.log(event + "fire");
+                }}
+              ></input>
+              <input
+                type="range"
+                ref={inputRef}
+                value={reverbDryWetValue}
+                max={1}
+                min={0}
+                step={0.01}
+                className="input-knob"
+                data-src="https://i.imgur.com/K5NDNNK.png"
+                data-sprites="78"
+                onChange={(event) => {
+                  console.log(event + "event");
                   sendToPlugin({
                     type: "SetReverbDryWet",
-                    value: (value / 100) as number,
+                    value: Number(event.target.value),
                   });
                 }}
-                label="Dry/Wet"
-                value01={reverbDryWetValue}
               />
             </Module>
           </Grid>

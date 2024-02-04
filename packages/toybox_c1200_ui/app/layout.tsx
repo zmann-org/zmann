@@ -2,6 +2,7 @@
 import { ConfigProvider, StyledJsxRegistry } from "@himalaya-ui/core";
 import "@fontsource-variable/instrument-sans";
 import "./globals.css";
+import Script from "next/script";
 
 export default function RootLayout({
   children,
@@ -14,6 +15,10 @@ export default function RootLayout({
         <StyledJsxRegistry>
           <ConfigProvider themeType={"dark"}>{children}</ConfigProvider>
         </StyledJsxRegistry>
+        <Script
+          src="/input-knobs.js"
+          strategy="beforeInteractive"
+        />
       </body>
     </html>
   );
