@@ -15,6 +15,7 @@ tasks:
       - "@globs(sources)"
     options:
       runFromWorkspaceRoot: true
+      cache: false
   check:
     command: "cargo check --workspace"
     inputs:
