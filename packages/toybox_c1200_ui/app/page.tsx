@@ -204,9 +204,18 @@ export default function Home() {
           justify="space-around"
           style={{ padding: "10px", gap: "10px" }}
         >
+          <Grid xs={7}>
+            <Module name="Filter">filter</Module>
+          </Grid>
+          <Grid xs={4}>
+            <Module name="Vibrato">hello</Module>
+          </Grid>
+          <Grid xs={8}>
+            <Module name="Chorus"></Module>
+          </Grid>
           <Grid xs={4}>
             <Module
-              name="Filter"
+              name="Reverb"
               footer={
                 <ToggleList
                   width={"95%"}
@@ -232,47 +241,26 @@ export default function Home() {
                   flexDirection: "column",
                   justifyContent: "space-between",
                 }}
-              ></div>
-            </Module>
-          </Grid>
-          <Grid xs={4}>
-            <Module name="Vibrato">hello</Module>
-          </Grid>
-          <Grid xs={8}>
-            <Module name="Chorus"></Module>
-          </Grid>
-          <Grid xs={7}>
-            <Module name="Reverb">
-              <input
-                type="range"
-                className="input-knob"
-                max={100}
-                min={0}
-                onChange={(event) => {
-                  console.log(event + "fire");
-                }}
-                onInput={(event) => {
-                  console.log(event + "fire");
-                }}
-              ></input>
-              <input
-                type="range"
-                ref={inputRef}
-                value={reverbDryWetValue}
-                max={1}
-                min={0}
-                step={0.01}
-                className="input-knob"
-                data-src="https://i.imgur.com/K5NDNNK.png"
-                data-sprites="78"
-                onChange={(event) => {
-                  console.log(event + "event");
-                  sendToPlugin({
-                    type: "SetReverbDryWet",
-                    value: Number(event.target.value),
-                  });
-                }}
-              />
+              >
+                <input
+                  type="range"
+                  ref={inputRef}
+                  value={reverbDryWetValue}
+                  max={1}
+                  min={0}
+                  step={0.01}
+                  className="input-knob"
+                  data-src="https://i.imgur.com/K5NDNNK.png"
+                  data-sprites="78"
+                  onChange={(event) => {
+                    console.log(event + "event");
+                    sendToPlugin({
+                      type: "SetReverbDryWet",
+                      value: Number(event.target.value),
+                    });
+                  }}
+                />
+              </div>
             </Module>
           </Grid>
         </Grid.Container>
