@@ -10,12 +10,16 @@ import {
   useTheme,
   useScale,
   ToggleList,
+  Description,
+  Button,
 } from "@himalaya-ui/core";
 import {
   Grid as GridIcon,
   HelpCircle,
   Settings,
 } from "@himalaya-ui/core/icons";
+import Badge from "@/lib/Badge";
+import Toybox from "@/lib/toybox";
 
 declare global {
   interface Window {
@@ -130,142 +134,193 @@ export default function Home() {
     sendToPlugin({ type: "Init" });
   }, []);
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <nav
-        style={{
-          backgroundColor: theme.palette.accents_0,
-          borderBottom: "1px solid " + theme.palette.secondary.value,
-          height: "48px",
-          display: "grid",
-          gridTemplateColumns: "auto 1fr auto",
-          alignItems: "center",
-          zIndex: 100,
-        }}
+    <>
+      <div
+        style={{ display: "flex", flexDirection: "column", height: "100vh" }}
       >
-        <div
+        <nav
           style={{
-            justifySelf: "start",
-            marginLeft: 12,
-            display: "flex",
-            verticalAlign: "middle",
-            gap: "5px",
-          }}
-        >
-          ZMANN
-          <Tag type="primary" scale={0.6}>
-            Alpha
-          </Tag>
-        </div>
-        <div style={{ justifySelf: "center", minWidth: "200px" }}>
-          <Select
-            style={{ width: "100%" }}
-            icon={(props) => <GridIcon size={18} {...props} />}
-            type="primary"
-            value={presetValue}
-            onChange={(value) =>
-              sendToPlugin({
-                type: "SetPreset",
-                preset: value,
-              })
-            }
-          >
-            {presets.map((preset) => (
-              <Select.Option key={preset.value} value={preset.value}>
-                {preset.name}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-        <div
-          style={{
-            justifySelf: "end",
-            display: "flex",
+            backgroundColor: theme.palette.accents_0,
+            borderBottom: "1px solid #515151",
+            height: "48px",
+            display: "grid",
+            gridTemplateColumns: "auto 1fr auto",
             alignItems: "center",
-            gap: "20px",
-            marginRight: "20px",
+            zIndex: 100,
           }}
         >
-          <div style={{ fontSize: 12 }}>Volume</div>
-          <Slider initialValue={1} scale={0.5} width={"100px"} step={10} />
-          <HelpCircle />
-          <Settings />
-        </div>
-      </nav>
-      <main
-        style={{
-          height: "calc(100% - 48px)",
-          width: "100%",
-          paddingBottom: "0",
-        }}
-      >
-        <Grid.Container
-          height={"100%"}
-          width={"100%"}
-          justify="space-around"
-          style={{ padding: "10px", gap: "10px" }}
-        >
-          <Grid xs={7}>
-            <Module name="Filter">filter</Module>
-          </Grid>
-          <Grid xs={4}>
-            <Module name="Vibrato">hello</Module>
-          </Grid>
-          <Grid xs={8}>
-            <Module name="Chorus"></Module>
-          </Grid>
-          <Grid xs={4}>
-            <Module
-              name="Reverb"
-              footer={
-                <ToggleList
-                  width={"95%"}
-                  margin={0.2}
-                  scale={0.1}
-                  value={reverbTypeValue}
-                  onChange={(value) =>
-                    sendToPlugin({
-                      type: "SetReverbType",
-                      preset: value,
-                    })
-                  }
-                >
-                  <ToggleList.Item value="Freeverb">Free</ToggleList.Item>
-                  <ToggleList.Item value="Moorer">Mrrf</ToggleList.Item>
-                </ToggleList>
+          <div
+            style={{
+              justifySelf: "start",
+              marginLeft: 12,
+              display: "flex",
+              verticalAlign: "middle",
+              gap: "5px",
+            }}
+          >
+            <Badge size="md" icon={<Toybox />}>
+              Toybox C1200
+            </Badge>
+          </div>
+          <div style={{ justifySelf: "center", minWidth: "200px" }}>
+            <Select
+              style={{ width: "100%" }}
+              // icon={(props) => <GridIcon size={18} {...props} />}
+              type="primary"
+              value={presetValue}
+              onChange={(value) =>
+                sendToPlugin({
+                  type: "SetPreset",
+                  preset: value,
+                })
               }
             >
-              <div
-                style={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                }}
+              {presets.map((preset) => (
+                <Select.Option key={preset.value} value={preset.value}>
+                  {preset.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+          <div
+            style={{
+              justifySelf: "end",
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              marginRight: "10px",
+            }}
+          >
+            <div style={{ fontSize: 12 }}>Volume</div>
+            <Slider
+              initialValue={1}
+              scale={0.5}
+              width={"100px"}
+              max={30}
+              min={-30}
+              step={1}
+            />
+            <Button type="abort" auto icon={<HelpCircle />}></Button>
+            <Button type="abort" auto icon={<Settings />}></Button>
+          </div>
+        </nav>
+        <main
+          style={{
+            height: "calc(100% - 48px)",
+            width: "100%",
+            paddingBottom: "0",
+          }}
+        >
+          <Grid.Container
+            height={"100%"}
+            width={"100%"}
+            justify="space-around"
+            style={{ padding: "10px", gap: "10px" }}
+          >
+            <Grid xs={7}>
+              <Module name="Filter">filter</Module>
+            </Grid>
+            <Grid xs={4}>
+              <Module name="Vibrato">hello</Module>
+            </Grid>
+            <Grid xs={8}>
+              <Module name="Chorus"></Module>
+            </Grid>
+            <Grid xs={4}>
+              <Module
+                name="Reverb"
+                footer={
+                  <Description
+                    title={
+                      <span style={{ margin: "-2px 6px" }}>REVERB TYPE</span>
+                    }
+                    content={
+                      <ToggleList
+                        width={"95%"}
+                        margin={0.2}
+                        scale={0.1}
+                        value={reverbTypeValue}
+                        onChange={(value) =>
+                          sendToPlugin({
+                            type: "SetReverbType",
+                            preset: value,
+                          })
+                        }
+                      >
+                        <ToggleList.Item value="Freeverb">Free</ToggleList.Item>
+                        <ToggleList.Item value="Moorer">Mrrf</ToggleList.Item>
+                      </ToggleList>
+                    }
+                  />
+                }
               >
-                <input
-                  type="range"
-                  ref={inputRef}
-                  value={reverbDryWetValue}
-                  max={1}
-                  min={0}
-                  step={0.01}
-                  className="input-knob"
-                  data-src="https://i.imgur.com/K5NDNNK.png"
-                  data-sprites="78"
-                  onChange={(event) => {
-                    console.log(event + "event");
-                    sendToPlugin({
-                      type: "SetReverbDryWet",
-                      value: Number(event.target.value),
-                    });
+                <div
+                  style={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    alignItems: "center", // Center child div horizontally
                   }}
-                />
-              </div>
-            </Module>
-          </Grid>
-        </Grid.Container>
-      </main>
-    </div>
+                >
+                  <div style={{ textAlign: "center", marginBottom: "5px" }}> {/* Center input-text */}
+                    <input
+                      type="range"
+                      ref={inputRef}
+                      value={reverbDryWetValue}
+                      max={1}
+                      min={0}
+                      step={0.01}
+                      className="input-knob"
+                      data-src="https://i.imgur.com/K5NDNNK.png"
+                      data-sprites="78"
+                      onChange={(event) => {
+                        console.log(event + "event");
+                        sendToPlugin({
+                          type: "SetReverbDryWet",
+                          value: Number(event.target.value),
+                        });
+                      }}
+                    />
+                    <span className="input-text">DRY/WET</span>
+                  </div>
+                  <div style={{ textAlign: "center", marginBottom: "5px" }}> {/* Center input-text */}
+                    <input
+                      type="range"
+                      max={1}
+                      min={0}
+                      step={0.01}
+                      className="input-knob"
+                      data-src="https://i.imgur.com/K5NDNNK.png"
+                      data-sprites="78"
+                      onChange={(event) => {
+                        console.log(event + "event");
+                      }}
+                    />
+                    <span className="input-text">ROOMSIZE</span>
+                  </div>
+                </div>
+              </Module>
+            </Grid>
+          </Grid.Container>
+        </main>
+      </div>
+      <style jsx>{`
+        .input-text {
+          font-size: 0.75em;
+          line-height: 1em;
+          margin-bottom: 0.5em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          color: #969698;
+          font-weight: 500;
+          display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;
+        }
+      `}</style>
+    </>
   );
 }
 
@@ -320,8 +375,8 @@ const Module: React.FC<ModuleProps> = ({ children, footer, name }) => {
         <div
           style={{
             display: "flex",
-            justifyContent: "center", // Align footer at the center
-            marginTop: "auto", // Push footer to the bottom
+            justifyContent: "center",
+            marginTop: "auto",
           }}
         >
           {footer}
