@@ -6,7 +6,6 @@ use fx::{
     DEFAULT_SAMPLE_RATE, FLUTTER_MAX_FREQUENCY_RATIO, FLUTTER_MAX_LFO_FREQUENCY,
     WOW_MAX_FREQUENCY_RATIO, WOW_MAX_LFO_FREQUENCY,
 };
-use include_dir::{include_dir, Dir};
 use instrument::{
     binv5::{Instrument, PlayingStyle},
     buffer::Sample,
@@ -27,12 +26,12 @@ use rust_embed::RustEmbed;
 
 mod presets;
 
-static WEB_ASSETS: Dir<'_> =
-    include_dir!("$CARGO_MANIFEST_DIR/../../packages/toybox_c1200_ui/dist/");
-
+#[derive(RustEmbed)]
+#[folder = "$CARGO_MANIFEST_DIR/../../packages/toybox_c1200_ui/dist/"]
+struct WebAssets;
 #[derive(RustEmbed)]
 #[folder = "$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/"]
-struct ASSETS;
+struct Assets;
 
 const MAX_DELAY_TIME_SECONDS: f32 = 5.0;
 const PARAMETER_MINIMUM: f32 = 0.01;
@@ -95,9 +94,6 @@ struct ToyboxC {
 struct ToyboxCParams {
     #[id = "output-gain"]
     pub output_gain: FloatParam,
-
-    #[id = "reverb-gain"]
-    pub reverb_gain: FloatParam,
 
     #[id = "reverb-dry-wet"]
     pub reverb_dry_wet_ratio: FloatParam,
@@ -200,19 +196,6 @@ impl Default for ToyboxCParams {
         });
 
         Self {
-            reverb_gain: FloatParam::new(
-                "Reverb Gain",
-                util::db_to_gain(0.0),
-                FloatRange::Skewed {
-                    min: util::db_to_gain(-30.0),
-                    max: util::db_to_gain(30.0),
-                    factor: FloatRange::gain_skew_factor(-30.0, 30.0),
-                },
-            )
-            .with_smoother(SmoothingStyle::Logarithmic(50.0))
-            .with_unit(" dB")
-            .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
-            .with_string_to_value(formatters::s2v_f32_gain_to_db()),
             output_gain: FloatParam::new(
                 "Output gain",
                 util::db_to_gain(0.0),
@@ -385,7 +368,7 @@ impl Default for ToyboxCParams {
 impl ToyboxC {
     fn load_preset(&mut self, preset: Presets) {
         let before = std::time::Instant::now();
-        if let Some(input_file) = <ASSETS as rust_embed::RustEmbed>::get(&format!("{}.binv5", preset.to_string())) {
+        if let Some(input_file) = <Assets as rust_embed::RustEmbed>::get(&format!("{}.binv5", preset.to_string())) {
             self.instrument = instrument::binv5::decode(input_file.data.to_vec());
             nih_log!("[Toybox C1200] Loaded preset: {:?}", preset.to_string());
         }
@@ -474,13 +457,13 @@ impl Plugin for ToyboxC {
                         "application/octet-stream" // falback, replace with mime_guess
                     };
 
-                    match WEB_ASSETS.get_file(path.trim_start_matches("/")) {
+                    match <WebAssets as rust_embed::RustEmbed>::get(path.trim_start_matches("/")) {
                         Some(content) => {
                             return Response::builder()
                                 .header(CONTENT_TYPE, mimetype)
                                 .header("Access-Control-Allow-Origin", "*")
-                                .body(content.contents().into())
-                                .map_err(Into::into);
+                                .body(content.data.to_vec().into())
+                                .map_err(Into::into)
                         }
                         None => {
                             return Response::builder()
@@ -660,7 +643,6 @@ impl Plugin for ToyboxC {
                 next_event = context.next_event();
             }
 
-            let reverb_gain = self.params.reverb_gain.smoothed.next();
             let output_gain = self.params.output_gain.smoothed.next();
 
             for (i, sample) in channel_samples.iter_mut().enumerate() {
@@ -784,9 +766,6 @@ impl Plugin for ToyboxC {
                 let reverb = self.params.reverb_dry_wet_ratio.smoothed.next();
                 if reverb > 0.0 {
                     self.update_reverbs();
-
-                    // Process with reverb
-                    input *= reverb_gain;
                     let frame_out = match self.params.reverb_type.value() {
                         ReverbType::Freeverb => {
                             if i % 2 == 0 {
