@@ -11,7 +11,7 @@ import {
   Button,
   Card,
 } from "@himalaya-ui/core";
-import { HelpCircle, Settings } from "@himalaya-ui/core/icons";
+import { Settings } from "@himalaya-ui/core/icons";
 import Badge from "@/lib/Badge";
 import Toybox from "@/lib/toybox";
 import { Module, CustomSlider } from "@repo/ui";
@@ -72,6 +72,9 @@ export default function Home() {
   const [reverbDryWetValue, setreverbDryWetValue] = useState<number>(0);
   const [reverbTypeValue, setreverbTypeValue] = useState<string>("");
   const [presetValue, setpresetValue] = useState<string>("");
+  const [filterTypeValue, setFilterTypeValue] = useState<string>("Off");
+  const [outputGain, setoutputGain] = useState<number>(0.5);
+
 
   const inputRef = useRef(null);
 
@@ -120,6 +123,14 @@ export default function Home() {
         }
         case "reverb_type_changed": {
           setreverbTypeValue(msg.value);
+          break;
+        }
+        case "filter_type_changed": {
+          setFilterTypeValue(msg.value);
+          break;
+        }
+        case "output_gain_changed": {
+          setoutputGain(msg.value);
           break;
         }
       }
@@ -186,14 +197,15 @@ export default function Home() {
           >
             <div style={{ fontSize: 12 }}>Volume</div>
             <Slider
-              initialValue={1}
+              value={outputGain}
+              hideValue
+              onChange={(value) => { sendToPlugin({ type: "SetOutputGain", value: value }) }}
               scale={0.5}
               width={"100px"}
-              max={30}
-              min={-30}
-              step={1}
+              max={1.0}
+              min={0}
+              step={0.01}
             />
-            <Button type="abort" auto icon={<HelpCircle />}></Button>
             <Button type="abort" auto icon={<Settings />}></Button>
           </div>
         </nav>
@@ -219,13 +231,19 @@ export default function Home() {
                       <span style={{ margin: "-2px 6px" }}>FILTER TYPE</span>
                     }
                     content={
-                      <ToggleList margin={0.2} scale={0.1}>
+                      <ToggleList margin={0.2} scale={0.1} value={filterTypeValue}
+                        onChange={(value) =>
+                          sendToPlugin({
+                            type: "SetFilterType",
+                            preset: value,
+                          })
+                        }>
+                        <ToggleList.Item value="Off">
+                          Off
+                        </ToggleList.Item>
                         <ToggleList.Item value="LowPass">LP</ToggleList.Item>
                         <ToggleList.Item value="HighPass">HP</ToggleList.Item>
                         <ToggleList.Item value="BandPass">BP</ToggleList.Item>
-                        <ToggleList.Item value="ParametricEQ">
-                          PEQ
-                        </ToggleList.Item>
                       </ToggleList>
                     }
                   />

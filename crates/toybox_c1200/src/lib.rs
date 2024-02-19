@@ -53,7 +53,7 @@ fn eq_type_to_param(filter_type: BiquadFilterTypeParam) -> BiquadFilterType {
         BiquadFilterTypeParam::LowPass => BiquadFilterType::LowPass,
         BiquadFilterTypeParam::HighPass => BiquadFilterType::HighPass,
         BiquadFilterTypeParam::BandPass => BiquadFilterType::BandPass,
-        BiquadFilterTypeParam::ParametricEQ => BiquadFilterType::ParametricEQ,
+        BiquadFilterTypeParam::Off => BiquadFilterType::LowPass,
     }
 }
 
@@ -65,14 +65,16 @@ enum Action {
     SetPreset { preset: Presets },
     SetReverbDryWet { value: f32 },
     SetReverbType { preset: ReverbType },
+    SetFilterType { preset: BiquadFilterTypeParam },
+    SetOutputGain { value: f32 },
 }
 
-#[derive(Enum, Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Enum, Debug, PartialEq, Eq, strum::Display, Deserialize)]
 pub enum BiquadFilterTypeParam {
     LowPass,
     HighPass,
     BandPass,
-    ParametricEQ,
+    Off,
 }
 
 #[derive(Enum, Debug, PartialEq, Eq, strum::Display, Deserialize)]
@@ -100,82 +102,92 @@ struct ToyboxC {
 struct ToyboxCParams {
     #[id = "output-gain"]
     pub output_gain: FloatParam,
+    #[allow(dead_code)]
     output_gain_changed: Arc<AtomicBool>,
 
     #[id = "reverb-dry-wet"]
     pub reverb_dry_wet_ratio: FloatParam,
+    #[allow(dead_code)]
     reverb_dry_wet_changed: Arc<AtomicBool>,
 
     #[id = "reverb-room-size"]
     pub reverb_room_size: FloatParam,
+    #[allow(dead_code)]
     pub reverb_room_size_changed: Arc<AtomicBool>,
 
     #[id = "reverb-dampening"]
     pub reverb_damping: FloatParam,
+    #[allow(dead_code)]
     pub reverb_damping_changed: Arc<AtomicBool>,
 
     #[id = "reverb-type"]
     pub reverb_type: EnumParam<ReverbType>,
+    #[allow(dead_code)]
     reverb_type_changed: Arc<AtomicBool>,
 
     #[id = "reverb-width"]
     pub reverb_width: FloatParam,
+    #[allow(dead_code)]
     pub reverb_width_changed: Arc<AtomicBool>,
 
     #[id = "chorus"]
     pub chorus: BoolParam,
+    #[allow(dead_code)]
     pub chorus_changed: Arc<AtomicBool>,
 
     #[id = "chorus-rate"]
     pub chorus_rate: FloatParam,
+    #[allow(dead_code)]
     pub chorus_rate_changed: Arc<AtomicBool>,
 
     #[id = "chorus-lfo-amount"]
     pub chorus_lfo_amount: FloatParam,
+    #[allow(dead_code)]
     pub chorus_lfo_amount_changed: Arc<AtomicBool>,
 
     #[id = "chorus-depth"]
     pub chorus_depth: FloatParam,
+    #[allow(dead_code)]
     pub chorus_depth_changed: Arc<AtomicBool>,
 
     #[id = "chorus-width"]
     pub chorus_width: FloatParam,
+    #[allow(dead_code)]
     pub chorus_width_changed: Arc<AtomicBool>,
 
     #[id = "chorus-feedback"]
     pub chorus_feedback: FloatParam,
+    #[allow(dead_code)]
     pub chorus_feedback_changed: Arc<AtomicBool>,
 
     #[id = "vibrato-wow"]
     pub vibrato_wow: FloatParam,
+    #[allow(dead_code)]
     pub vibrato_wow_changed: Arc<AtomicBool>,
 
     #[id = "vibrato-flutter"]
     pub vibrato_flutter: FloatParam,
+    #[allow(dead_code)]
     pub vibrato_flutter_changed: Arc<AtomicBool>,
 
     #[id = "filter-cutoff-frequency"]
     pub filter_cutoff_frequency: FloatParam,
+    #[allow(dead_code)]
     pub filter_cutoff_frequency_changed: Arc<AtomicBool>,
 
     #[id = "filter-q"]
     pub filter_q: FloatParam,
+    #[allow(dead_code)]
     pub filter_q_changed: Arc<AtomicBool>,
 
     #[id = "filter-type"]
     pub filter_type: EnumParam<BiquadFilterTypeParam>,
+    #[allow(dead_code)]
     pub filter_type_changed: Arc<AtomicBool>,
-
-    #[id = "filter-gain"]
-    pub filter_gain: FloatParam,
-    pub filter_gain_changed: Arc<AtomicBool>,
-
-    #[id = "filter"]
-    pub filter: BoolParam,
-    pub filter_changed: Arc<AtomicBool>,
 
     #[id = "preset"]
     pub preset: EnumParam<Presets>,
+    #[allow(dead_code)]
     preset_changed: Arc<AtomicBool>,
 }
 
@@ -228,9 +240,6 @@ impl Default for ToyboxCParams {
         let (filter_q_changed, filter_q_changed_param_callback) = create_callback(|_: f32| {});
         let (filter_type_changed, filter_type_changed_param_callback) =
             create_callback(|_: BiquadFilterTypeParam| {});
-        let (filter_gain_changed, filter_gain_changed_param_callback) =
-            create_callback(|_: f32| {});
-        let (filter_changed, filter_changed_param_callback) = create_callback(|_: bool| {});
         let (output_gain_changed, output_gain_changed_param_callback) =
             create_callback(|_: f32| {});
 
@@ -381,23 +390,6 @@ impl Default for ToyboxCParams {
             .with_value_to_string(formatters::v2s_f32_rounded(2))
             .with_callback(vibrato_flutter_changed_param_callback),
             vibrato_flutter_changed,
-            filter: BoolParam::new("Filter", false).with_callback(filter_changed_param_callback),
-            filter_changed,
-            filter_gain: FloatParam::new(
-                "Filter Gain",
-                util::db_to_gain(0.0),
-                FloatRange::Skewed {
-                    min: util::db_to_gain(-30.0),
-                    max: util::db_to_gain(30.0),
-                    factor: FloatRange::gain_skew_factor(-30.0, 30.0),
-                },
-            )
-            .with_smoother(SmoothingStyle::Logarithmic(50.0))
-            .with_unit(" dB")
-            .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
-            .with_string_to_value(formatters::s2v_f32_gain_to_db())
-            .with_callback(filter_gain_changed_param_callback),
-            filter_gain_changed,
             filter_cutoff_frequency: FloatParam::new(
                 "Filter Cutoff",
                 1_000.0,
@@ -425,7 +417,7 @@ impl Default for ToyboxCParams {
             .with_value_to_string(formatters::v2s_f32_rounded(2))
             .with_callback(filter_q_changed_param_callback),
             filter_q_changed,
-            filter_type: EnumParam::new("Filter Type", BiquadFilterTypeParam::LowPass)
+            filter_type: EnumParam::new("Filter Type", BiquadFilterTypeParam::Off)
                 .with_callback(filter_type_changed_param_callback),
             filter_type_changed,
             preset: EnumParam::new("Preset", Presets::default())
@@ -509,6 +501,9 @@ impl Plugin for ToyboxC {
         let reverb_dry_wet_changed = self.params.reverb_dry_wet_changed.clone();
         let preset_value_changed = self.params.preset_changed.clone();
         let reverb_type_changed = self.params.reverb_type_changed.clone();
+        let filter_type_changed = self.params.filter_type_changed.clone();
+        let output_gain_changed = self.params.output_gain_changed.clone();
+
         let editor =
             WebViewEditor::new(HTMLSource::URL("zmann://localhost/index.html"), (800, 350))
                 .with_custom_protocol("zmann".into(), move |request| {
@@ -564,6 +559,11 @@ impl Plugin for ToyboxC {
                                     setter.set_parameter(&params.reverb_type, preset);
                                     setter.end_set_parameter(&params.reverb_type);
                                 }
+                                Action::SetFilterType { preset } => {
+                                    setter.begin_set_parameter(&params.filter_type);
+                                    setter.set_parameter(&params.filter_type, preset);
+                                    setter.end_set_parameter(&params.filter_type);
+                                }
                                 Action::SetReverbDryWet { value } => {
                                     setter.begin_set_parameter(&params.reverb_dry_wet_ratio);
                                     setter.set_parameter_normalized(
@@ -572,24 +572,31 @@ impl Plugin for ToyboxC {
                                     );
                                     setter.end_set_parameter(&params.reverb_dry_wet_ratio);
                                 }
+                                Action::SetOutputGain { value } => {
+                                    setter.begin_set_parameter(&params.output_gain);
+                                    setter.set_parameter_normalized(&params.output_gain, value);
+                                    setter.end_set_parameter(&params.output_gain);
+                                }
                                 Action::Init => {
                                     let _ = ctx.send_json(json!({
                                         "type": "preset_change",
-                                        "param": "preset_change",
                                         "value": params.preset.value().to_string(),
-                                        "text": params.preset.to_string()
                                     }));
                                     let _ = ctx.send_json(json!({
                                         "type": "reverb_dry_wet_change",
-                                        "param": "reverb_dry_wet_change",
                                         "value": params.reverb_dry_wet_ratio.value().to_string(),
-                                        "text": params.reverb_dry_wet_ratio.to_string()
                                     }));
                                     let _ = ctx.send_json(json!({
                                         "type": "reverb_type_changed",
-                                        "param": "reverb_type_changed",
                                         "value": params.reverb_type.value().to_string(),
-                                        "text": params.reverb_type.to_string()
+                                    }));
+                                    let _ = ctx.send_json(json!({
+                                        "type": "filter_type_changed",
+                                        "value": params.filter_type.value().to_string(),
+                                    }));
+                                    let _ = ctx.send_json(json!({
+                                        "type": "output_gain_changed",
+                                        "value": params.output_gain.modulated_normalized_value().to_string(),
                                     }));
                                 }
                             }
@@ -599,27 +606,36 @@ impl Plugin for ToyboxC {
                     if reverb_dry_wet_changed.swap(false, Ordering::Relaxed) {
                         let _ = ctx.send_json(json!({
                             "type": "reverb_dry_wet_change",
-                            "param": "reverb_dry_wet_change",
                             "value": params.reverb_dry_wet_ratio.value().to_string(),
-                            "text": params.reverb_dry_wet_ratio.to_string()
                         }));
                     }
 
                     if reverb_type_changed.swap(false, Ordering::Relaxed) {
                         let _ = ctx.send_json(json!({
                             "type": "reverb_type_changed",
-                            "param": "reverb_type_changed",
                             "value": params.reverb_type.value().to_string(),
-                            "text": params.reverb_type.to_string()
                         }));
                     }
 
                     if preset_value_changed.swap(false, Ordering::Relaxed) {
                         let _ = ctx.send_json(json!({
                             "type": "preset_change",
-                            "param": "preset_change",
                             "value": params.preset.value().to_string(),
                             "text": params.preset.to_string()
+                        }));
+                    }
+
+                    if filter_type_changed.swap(false, Ordering::Relaxed) {
+                        let _ = ctx.send_json(json!({
+                            "type": "filter_type_changed",
+                            "value": params.filter_type.value().to_string(),
+                        }));
+                    }
+
+                    if output_gain_changed.swap(false, Ordering::Relaxed) {
+                        let _ = ctx.send_json(json!({
+                            "type": "output_gain_changed",
+                            "value": params.output_gain.modulated_normalized_value().to_string(),
                         }));
                     }
                 });
@@ -681,13 +697,6 @@ impl Plugin for ToyboxC {
                     } => {
                         if let Some(data) = self.instrument.notes.get(&note) {
                             self.buffer.push(Sample::new(data.to_vec(), note));
-                        } else {
-                            nih_log!(
-                                "[Toybox] NO NOTE: {} - Buffer - {:?} Instrument - {:?}",
-                                note,
-                                std::thread::current().id(),
-                                &self.params.preset.value()
-                            );
                         }
                     }
                     NoteEvent::NoteOff {
@@ -725,31 +734,28 @@ impl Plugin for ToyboxC {
                 let wow = self.params.vibrato_wow.smoothed.next();
                 let flutter = self.params.vibrato_flutter.smoothed.next();
 
-                if self.params.filter.value() {
+                if self.params.filter_type.value() != BiquadFilterTypeParam::Off {
                     let filter_type = self.params.filter_type.value();
                     let frequency = self.params.filter_cutoff_frequency.smoothed.next();
-                    let fc = frequency / 48000.0;
+                    let fc = frequency / DEFAULT_SAMPLE_RATE as f32;
                     let q = self.params.filter_q.smoothed.next();
 
-                    let gain = self.params.filter_gain.smoothed.next();
-                    let gain_db = util::gain_to_db(gain);
-                    self.biquad
-                        .set_biquads(eq_type_to_param(filter_type), fc, q, gain_db);
+                    self.biquad.set_biquads(
+                        eq_type_to_param(filter_type),
+                        fc,
+                        q,
+                        util::gain_to_db(0.0),
+                    );
 
                     if self.params.filter_cutoff_frequency.smoothed.is_smoothing() {
                         let cutoff_frequency_smoothed =
                             self.params.filter_cutoff_frequency.smoothed.next();
-                        let fc = cutoff_frequency_smoothed / 48000.0;
+                        let fc = cutoff_frequency_smoothed / DEFAULT_SAMPLE_RATE as f32;
                         self.biquad.set_fc(fc);
                     }
                     if self.params.filter_q.smoothed.is_smoothing() {
                         let q_smoothed = self.params.filter_q.smoothed.next();
                         self.biquad.set_q(q_smoothed);
-                    }
-                    if self.params.filter_gain.smoothed.is_smoothing() {
-                        let gain_smoothed = self.params.filter_gain.smoothed.next();
-                        let gain_db = util::gain_to_db(gain_smoothed);
-                        self.biquad.set_peak_gain(gain_db);
                     }
                     input = if i % 2 == 0 {
                         self.biquad.process((input, 0.0)).0
@@ -780,7 +786,6 @@ impl Plugin for ToyboxC {
                     };
                 }
 
-                // Apply flutter
                 if flutter > PARAMETER_MINIMUM {
                     input = if i % 2 == 0 {
                         self.flutter.process_with_vibrato(
@@ -807,7 +812,6 @@ impl Plugin for ToyboxC {
                     let width = self.params.chorus_width.smoothed.next() * 0.5;
                     let feedback = self.params.chorus_feedback.smoothed.next();
 
-                    // this is neccicary to deinterleave the stereo signal
                     input = if i % 2 == 0 {
                         self.chorus
                             .process_with_chorus(
@@ -834,7 +838,7 @@ impl Plugin for ToyboxC {
                 }
 
                 let reverb = self.params.reverb_dry_wet_ratio.smoothed.next();
-                if reverb > 0.0 {
+                if reverb > PARAMETER_MINIMUM {
                     self.update_reverbs();
                     let frame_out = match self.params.reverb_type.value() {
                         ReverbType::Freeverb => {
@@ -874,7 +878,7 @@ impl Plugin for ToyboxC {
 }
 
 impl Vst3Plugin for ToyboxC {
-    const VST3_CLASS_ID: [u8; 16] = *b"zmann.c120012345";
+    const VST3_CLASS_ID: [u8; 16] = *b"zmann.c120012345"; // NOTE: change to standard ID following our naming convention
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
         &[Vst3SubCategory::Sampler, Vst3SubCategory::Instrument];
 }
