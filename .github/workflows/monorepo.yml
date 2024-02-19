@@ -2,11 +2,10 @@ name: Moonrepo CI
 
 on:
   push:
-    branches:
-      - "**"
+    branches: [ main ]
   pull_request:
-    branches:
-      - "**"
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
 
 env:
   RUSTFLAGS: -C debuginfo=0 # Do not produce debug symbols to keep memory usage down
