@@ -4,10 +4,9 @@ on:
   push:
     branches:
       - "**"
-    paths:
-      - "crates/**"
-      - "packages/**"
-      - ".github/workflows/**"
+  pull_request:
+    branches:
+      - "**"
 
 env:
   RUSTFLAGS: -C debuginfo=0 # Do not produce debug symbols to keep memory usage down
