@@ -24,6 +24,3 @@ strip = "symbols"
 inherits = "release"
 debug = true
 strip = "none"
-
-[build]
-jobs = 1 

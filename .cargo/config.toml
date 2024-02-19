@@ -1,2 +1,5 @@
 [alias]
 xtask = "run --package xtask --release --"
+
+[build]
+jobs = 1 
