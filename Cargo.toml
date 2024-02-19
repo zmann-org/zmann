@@ -1,7 +1,6 @@
 [workspace]
 members = [
     "crates/toybox_c1200",
-
     "crates/wavekit",
     "crates/instrument",
     "crates/xtask",
@@ -14,6 +13,8 @@ nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 nih_plug_webview = { git = "https://github.com/AZProductions/nih-plug-webview.git" }
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0"
+rust-embed = { version = "8.2.0", features = ["interpolate-folder-path"] }
+strum = { version = "0.26", features = ["derive"] }
 
 [profile.release]
 lto = "thin"
@@ -23,3 +24,6 @@ strip = "symbols"
 inherits = "release"
 debug = true
 strip = "none"
+
+[build]
+jobs = 1 

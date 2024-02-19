@@ -13,8 +13,8 @@ nih_plug = { workspace = true }
 nih_plug_webview = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
+rust-embed = { workspace = true }
 wavekit = { path = "../wavekit" }
 instrument = { path = "../instrument" }
 fx = { path = "../fx" }
-strum = { version = "0.26", features = ["derive"] }
-rust-embed = { version = "8.2.0", features = ["interpolate-folder-path"] }
+strum = { workspace = true }
