@@ -9,14 +9,12 @@ import {
   ToggleList,
   Description,
   Button,
+  Card,
 } from "@himalaya-ui/core";
-import {
-  HelpCircle,
-  Settings,
-} from "@himalaya-ui/core/icons";
+import { HelpCircle, Settings } from "@himalaya-ui/core/icons";
 import Badge from "@/lib/Badge";
 import Toybox from "@/lib/toybox";
-import { Module } from "@repo/ui";
+import { Module, CustomSlider } from "@repo/ui";
 
 declare global {
   interface Window {
@@ -71,13 +69,10 @@ export default function Home() {
     window.ipc.postMessage(JSON.stringify(msg));
   };
 
-  function degreeChange() {
-    console.log(`event value is `);
-  }
-
   const [reverbDryWetValue, setreverbDryWetValue] = useState<number>(0);
   const [reverbTypeValue, setreverbTypeValue] = useState<string>("");
   const [presetValue, setpresetValue] = useState<string>("");
+
   const inputRef = useRef(null);
 
   //@ts-ignore
@@ -105,6 +100,7 @@ export default function Home() {
       value: Number(event.target.value),
     });
   };
+
   useEffect(() => {
     window.sendToPlugin = sendToPlugin;
     window.onPluginMessageInternal = function (msg) {
@@ -215,20 +211,66 @@ export default function Home() {
             style={{ padding: "10px", gap: "10px" }}
           >
             <Grid xs={7}>
-              <Module name="Filter">filter</Module>
+              <Module
+                name="Filter"
+                footer={
+                  <Description
+                    title={
+                      <span style={{ margin: "-2px 6px" }}>FILTER TYPE</span>
+                    }
+                    content={
+                      <ToggleList margin={0.2} scale={0.1}>
+                        <ToggleList.Item value="LowPass">LP</ToggleList.Item>
+                        <ToggleList.Item value="HighPass">HP</ToggleList.Item>
+                        <ToggleList.Item value="BandPass">BP</ToggleList.Item>
+                        <ToggleList.Item value="ParametricEQ">
+                          PEQ
+                        </ToggleList.Item>
+                      </ToggleList>
+                    }
+                  />
+                }
+              >
+                Help
+              </Module>
             </Grid>
             <Grid xs={4}>
-              <Module name="Vibrato">hello</Module>
+              <Module name="Vibrato">
+                <Grid.Container
+                  gap={2}
+                  justify="space-between"
+                  style={{ height: "100%", width: "100%" }}
+                >
+                  <Grid xs={24}>
+                    <Card shadow width="100%" height="50px" />
+                  </Grid>
+                  <Grid xs={24}>
+                    <Card shadow width="100%" height="50px" />
+                  </Grid>
+                </Grid.Container>
+              </Module>
             </Grid>
             <Grid xs={8}>
-              <Module name="Chorus"></Module>
+              <Module name="Chorus">
+                <Grid.Container gap={2} justify="center" direction="row">
+                  <Grid xs={24}>
+                    <Card shadow width="100%" height="50px" />
+                  </Grid>
+                  <Grid xs={24}>
+                    <Card shadow width="100%" height="50px" />
+                  </Grid>
+                  <Grid xs={24}>
+                    <Card shadow width="100%" height="50px" />
+                  </Grid>
+                </Grid.Container>
+              </Module>
             </Grid>
             <Grid xs={4}>
               <Module
                 name="Reverb"
                 footer={
                   <Description
-                  style={{marginTop: '-24px'}}
+                    style={{ marginTop: "-24px" }}
                     title={
                       <span style={{ margin: "-2px 6px" }}>REVERB TYPE</span>
                     }
@@ -261,7 +303,9 @@ export default function Home() {
                     alignItems: "center", // Center child div horizontally
                   }}
                 >
-                  <div style={{ textAlign: "center", marginBottom: "5px" }}> {/* Center input-text */}
+                  <div style={{ textAlign: "center", marginBottom: "5px" }}>
+                    {" "}
+                    {/* Center input-text */}
                     <input
                       type="range"
                       ref={inputRef}
@@ -282,19 +326,7 @@ export default function Home() {
                     />
                     <span className="input-text">DRY/WET</span>
                   </div>
-                  <div style={{ textAlign: "center", marginBottom: "5px" }}> {/* Center input-text */}
-                    <input
-                      type="range"
-                      max={1}
-                      min={0}
-                      step={0.01}
-                      className="input-knob"
-                      data-src="https://i.imgur.com/K5NDNNK.png"
-                      data-sprites="78"
-                      onChange={(event) => {
-                        console.log(event + "event");
-                      }}
-                    />
+                  <div style={{ textAlign: "center", marginBottom: "5px" }}>
                     <span className="input-text">ROOMSIZE</span>
                   </div>
                 </div>
