@@ -1,12 +1,13 @@
-import { ReactNode } from "react";
+import { ReactNode, HTMLAttributes } from "react";
 import { Card, useTheme, useScale } from "@himalaya-ui/core";
-interface ModuleProps {
+
+export interface ModuleProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
   footer?: ReactNode;
   name?: string;
 }
 
-const Module: React.FC<ModuleProps> = ({ children, footer, name }) => {
+export function Module({ children, footer, name, ...other }: ModuleProps) {
   const theme = useTheme();
   const { SCALES } = useScale();
   return (
@@ -18,6 +19,7 @@ const Module: React.FC<ModuleProps> = ({ children, footer, name }) => {
         display: "flex",
         flexDirection: "column",
       }}
+      {...other}
     >
       {name && (
         <header>
@@ -60,6 +62,6 @@ const Module: React.FC<ModuleProps> = ({ children, footer, name }) => {
       )}
     </Card>
   );
-};
+}
 
-export default Module;
+Module.displayName = "Module";

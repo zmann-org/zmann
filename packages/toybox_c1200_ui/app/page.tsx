@@ -11,13 +11,12 @@ import {
   Button,
 } from "@himalaya-ui/core";
 import {
-  Grid as GridIcon,
   HelpCircle,
   Settings,
 } from "@himalaya-ui/core/icons";
 import Badge from "@/lib/Badge";
 import Toybox from "@/lib/toybox";
-import Module from "@repo/ui/module";
+import { Module } from "@repo/ui";
 
 declare global {
   interface Window {
