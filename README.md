@@ -10,25 +10,26 @@
 ![Static Badge](https://img.shields.io/badge/VST3-C90827?style=for-the-badge&logo=steinberg&labelColor=000)
 
 ## Plugins
-As defined in [bundler.toml](./bundler.toml), the following plugins are included in this repository, for more information on each plugin, please refer to their respective product pages on the zmann website.
+As defined in [bundler.toml](./bundler.toml), the following plugins are included in this repository, for more information on each plugin, please refer to their respective product pages on **zmann.org**.
 
-|Product|Build|Pluginval||
+|Product|CI/CD||TYPE|
 |---|---|---|---|
-|[Toybox C1200](https://zmann.org/product/toybox-c1200)|![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zmann-org/zmann/monorepo.yml?style=for-the-badge&labelColor=000)|![pluginval](https://img.shields.io/badge/pluginval-passing-green.svg?style=for-the-badge&labelColor=000)|[Download](https://github.com/zmann-org/zmann/releases)|
-|[Bilhorn Reed](https://zmann.org/product/bilhorn-reed)|   |   |   |
-|Mellotron|   |   |   |
+|[Toybox C1200](https://zmann.org/product/toybox-c1200)|![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zmann-org/zmann/monorepo.yml?style=for-the-badge&labelColor=000)|![pluginval](https://img.shields.io/badge/pluginval-passing-green.svg?style=for-the-badge&labelColor=000)|![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
+|[Bilhorn Reed](https://zmann.org/product/bilhorn-reed)|Issue tracking for [#258](https://github.com/zmann-org/zmann/issues/258).|   |![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
+|Mellotron|Issue tracking for [#258](https://github.com/zmann-org/zmann/issues/258).|   |![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
 |   |   |   |   |
+|NoiseG8|   |   |![Tool](https://img.shields.io/badge/DAW%20Tool-orange?style=for-the-badge)|
+
 
 ## Installation
 > [!TIP]
 > You can make a `ZMANN` folder inside of your VST3 folder to keep your ZMANN plugins all in one place.
-
-After downloading the latest release, extract the contents of the zip file to your VST3 folder. <!-- If you don't know where your VST3 folder is, -->
+After downloading the latest release, extract the contents of the zip file to your VST3 folder.
 
 ## Table of Contents
 - [Plugins](#plugins)
 - [Installation](#installation)
-- [Screenshots](#screenshots)
+- [Demonstration](#demonstration)
 - [Documentation](#documentation)
 - [Building](#building)
   - [Prerequisites](#prerequisites)
