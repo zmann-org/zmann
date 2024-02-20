@@ -10,7 +10,7 @@
 ![Static Badge](https://img.shields.io/badge/VST3-C90827?style=for-the-badge&logo=steinberg&labelColor=000)
 
 ## Plugins
-As defined in [bundler.toml](./bundler.toml), the following plugins are included in this repository:
+As defined in [bundler.toml](./bundler.toml), the following plugins are included in this repository, for more information on each plugin, please refer to their respective product pages on the zmann website.
 
 |Product|Build|Pluginval||
 |---|---|---|---|
@@ -18,8 +18,6 @@ As defined in [bundler.toml](./bundler.toml), the following plugins are included
 |[Bilhorn Reed](https://zmann.org/product/bilhorn-reed)|   |   |   |
 |Mellotron|   |   |   |
 |   |   |   |   |
-
-for more information on each plugin, please refer to their respective product pages on the zmann website.
 
 ## Installation
 > [!TIP]
