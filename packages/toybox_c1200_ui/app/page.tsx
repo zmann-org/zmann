@@ -227,11 +227,15 @@ export default function Home() {
                 name="Filter"
                 footer={
                   <Description
+                    style={
+                      { width: "100%", marginTop: "-24px" }
+                    }
                     title={
                       <span style={{ margin: "-2px 6px" }}>FILTER TYPE</span>
                     }
                     content={
-                      <ToggleList margin={0.2} scale={0.1} value={filterTypeValue}
+                      <ToggleList margin={0.2} scale={0.1} width={"98%"} value={filterTypeValue}
+                        style={{ paddingLeft: '5px !important' }}
                         onChange={(value) =>
                           sendToPlugin({
                             type: "SetFilterType",
