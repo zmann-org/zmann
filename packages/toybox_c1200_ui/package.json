@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@fontsource-variable/instrument-sans": "^5.0.3",
-    "@himalaya-ui/core": "^1.0.2",
+    "@himalaya-ui/core": "^1.1.2",
     "@types/babel__core": "^7.20.5",
     "lodash": "^4.17.21",
     "next": "14.1.0",
