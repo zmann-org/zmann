@@ -253,37 +253,49 @@ export default function Home() {
                   />
                 }
               >
-                Help
+                <Grid.Container gap={2} justify="center" height={"100%"}>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                </Grid.Container>
               </Module>
             </Grid>
             <Grid xs={4}>
               <Module name="Vibrato">
-                <Grid.Container
-                  gap={2}
-                  justify="space-between"
-                  style={{ height: "100%", width: "100%" }}
-                >
-                  <Grid xs={24}>
-                    <Card shadow width="100%" height="50px" />
-                  </Grid>
-                  <Grid xs={24}>
-                    <Card shadow width="100%" height="50px" />
-                  </Grid>
-                </Grid.Container>
+                <Grid xs={24} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <input
+                      type="range"
+                      className="input-knob"
+                      data-src="https://i.imgur.com/K5NDNNK.png"
+                      data-sprites="78"
+                    />
+                    <span className="input-text">Flutter</span>
+                  </div>
+                  <div>
+                    <input
+                      type="range"
+                      className="input-knob"
+                      data-src="https://i.imgur.com/K5NDNNK.png"
+                      data-sprites="78"
+                    />
+                    <span className="input-text">Wow</span>
+                  </div>
+                </Grid>
               </Module>
             </Grid>
             <Grid xs={8}>
               <Module name="Chorus">
-                <Grid.Container gap={2} justify="center" direction="row">
-                  <Grid xs={24}>
-                    <Card shadow width="100%" height="50px" />
-                  </Grid>
-                  <Grid xs={24}>
-                    <Card shadow width="100%" height="50px" />
-                  </Grid>
-                  <Grid xs={24}>
-                    <Card shadow width="100%" height="50px" />
-                  </Grid>
+                <Grid.Container gap={2} justify="center" height={"100%"}>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
                 </Grid.Container>
               </Module>
             </Grid>
@@ -326,8 +338,6 @@ export default function Home() {
                   }}
                 >
                   <div style={{ textAlign: "center", marginBottom: "5px" }}>
-                    {" "}
-                    {/* Center input-text */}
                     <input
                       type="range"
                       ref={inputRef}
@@ -349,6 +359,12 @@ export default function Home() {
                     <span className="input-text">DRY/WET</span>
                   </div>
                   <div style={{ textAlign: "center", marginBottom: "5px" }}>
+                    <input
+                      type="range"
+                      className="input-knob"
+                      data-src="https://i.imgur.com/K5NDNNK.png"
+                      data-sprites="78"
+                    />
                     <span className="input-text">ROOMSIZE</span>
                   </div>
                 </div>
@@ -370,6 +386,7 @@ export default function Home() {
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;
+          justify-content: center;
         }
       `}</style>
     </>
