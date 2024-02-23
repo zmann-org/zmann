@@ -3,7 +3,12 @@
 **ZMANN**
 =======
 ###### **Explore a range of instruments, designed to elevate your audio production experience.**
-----
+<h1 align="center">
+
+![gh-banner](https://raw.githubusercontent.com/zmann-org/zmann/react-components/.github/marketing/header-transparent-crop.png)
+
+</h1>
+
 ![ZMANN Badge](https://img.shields.io/badge/zmann%20product-000.svg?style=for-the-badge&labelColor=000&logo=data:image/svg%2bxml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDYwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0zMjIuMDMgNkwwLjgwMTA2NiA2LjAwMDAxTDAgNi43OTcwMUwxNTUuNDA3IDE2MS40MThIMzMwLjA0TDUxLjI2ODQgNDM4Ljc3OUwxNTUuNDA3IDU0Mi4zOTFDMTkyLjI1NiA1NzkuMDU0IDI0My41MjUgNTk0LjE5NyAyODcuNTg0IDU5NC4xOTdINjAwTDQ0My43OTIgNDM4Ljc3OUgyNjkuMTU5TDU0OC43MzIgMTYwLjYyMUw0NzAuMjI3IDgyLjUxMzZDNDA2LjE0MiAxOC43NTIyIDM0Mi4wNTYgNS45OTk5NiAzMjIuMDMgNloiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=)
 ![GitHub License](https://img.shields.io/github/license/zmann-org/zmann?style=for-the-badge&labelColor=000)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/zmann-org/zmann/total?style=for-the-badge&labelColor=000)
@@ -16,6 +21,7 @@ As defined in [bundler.toml](./bundler.toml), the following plugins are included
 |---|---|---|---|
 |[Toybox C1200](https://zmann.org/product/toybox-c1200)|![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zmann-org/zmann/monorepo.yml?style=for-the-badge&labelColor=000)|![pluginval](https://img.shields.io/badge/pluginval-passing-green.svg?style=for-the-badge&labelColor=000)|![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
 |[Bilhorn Reed](https://zmann.org/product/bilhorn-reed)|Issue tracking for [#258](https://github.com/zmann-org/zmann/issues/258).|   |![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
+|Hohner Melodica|Issue tracking for [#258](https://github.com/zmann-org/zmann/issues/258).|   |![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
 |Mellotron|Issue tracking for [#258](https://github.com/zmann-org/zmann/issues/258).|   |![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
 |   |   |   |   |
 |NoiseG8|   |   |![Tool](https://img.shields.io/badge/DAW%20Tool-orange?style=for-the-badge)|
