@@ -5,7 +5,7 @@
 ###### **Explore a range of instruments, designed to elevate your audio production experience.**
 <h1 align="center">
 
-![gh-banner](https://raw.githubusercontent.com/zmann-org/zmann/react-components/.github/marketing/header-transparent-crop.png)
+![gh-banner](https://raw.githubusercontent.com/zmann-org/zmann/main/.github/marketing/header-transparent-crop.png)
 
 </h1>
 
