@@ -1,9 +1,14 @@
 {
   "private": true,
   "devDependencies": {
+    "@repo/typescript-config": "*",
+    "prettier": "^3.1.1",
     "@moonrepo/cli": "^1.21.4"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "engines": {
+    "node": ">=18"
+  }
 }

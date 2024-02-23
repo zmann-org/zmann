@@ -5,20 +5,16 @@ import {
   Grid,
   Select,
   Slider,
-  Card,
   useTheme,
-  useScale,
   ToggleList,
   Description,
   Button,
+  Card,
 } from "@himalaya-ui/core";
-import {
-  Grid as GridIcon,
-  HelpCircle,
-  Settings,
-} from "@himalaya-ui/core/icons";
+import { Settings } from "@himalaya-ui/core/icons";
 import Badge from "@/lib/Badge";
 import Toybox from "@/lib/toybox";
+import { Module, CustomSlider } from "@repo/ui";
 
 declare global {
   interface Window {
@@ -73,13 +69,13 @@ export default function Home() {
     window.ipc.postMessage(JSON.stringify(msg));
   };
 
-  function degreeChange() {
-    console.log(`event value is `);
-  }
-
   const [reverbDryWetValue, setreverbDryWetValue] = useState<number>(0);
   const [reverbTypeValue, setreverbTypeValue] = useState<string>("");
   const [presetValue, setpresetValue] = useState<string>("");
+  const [filterTypeValue, setFilterTypeValue] = useState<string>("Off");
+  const [outputGain, setoutputGain] = useState<number>(0.5);
+
+
   const inputRef = useRef(null);
 
   //@ts-ignore
@@ -107,6 +103,7 @@ export default function Home() {
       value: Number(event.target.value),
     });
   };
+
   useEffect(() => {
     window.sendToPlugin = sendToPlugin;
     window.onPluginMessageInternal = function (msg) {
@@ -126,6 +123,14 @@ export default function Home() {
         }
         case "reverb_type_changed": {
           setreverbTypeValue(msg.value);
+          break;
+        }
+        case "filter_type_changed": {
+          setFilterTypeValue(msg.value);
+          break;
+        }
+        case "output_gain_changed": {
+          setoutputGain(msg.value);
           break;
         }
       }
@@ -192,14 +197,15 @@ export default function Home() {
           >
             <div style={{ fontSize: 12 }}>Volume</div>
             <Slider
-              initialValue={1}
+              value={outputGain}
+              hideValue
+              onChange={(value) => { sendToPlugin({ type: "SetOutputGain", value: value }) }}
               scale={0.5}
               width={"100px"}
-              max={30}
-              min={-30}
-              step={1}
+              max={1.0}
+              min={0}
+              step={0.01}
             />
-            <Button type="abort" auto icon={<HelpCircle />}></Button>
             <Button type="abort" auto icon={<Settings />}></Button>
           </div>
         </nav>
@@ -217,19 +223,88 @@ export default function Home() {
             style={{ padding: "10px", gap: "10px" }}
           >
             <Grid xs={7}>
-              <Module name="Filter">filter</Module>
+              <Module
+                name="Filter"
+                footer={
+                  <Description
+                    style={
+                      { width: "100%", marginTop: "-24px" }
+                    }
+                    title={
+                      <span style={{ margin: "-2px 6px" }}>FILTER TYPE</span>
+                    }
+                    content={
+                      <ToggleList margin={0.2} scale={0.1} width={"98%"} value={filterTypeValue}
+                        style={{ paddingLeft: '5px !important' }}
+                        onChange={(value) =>
+                          sendToPlugin({
+                            type: "SetFilterType",
+                            preset: value,
+                          })
+                        }>
+                        <ToggleList.Item value="Off">
+                          Off
+                        </ToggleList.Item>
+                        <ToggleList.Item value="LowPass">LP</ToggleList.Item>
+                        <ToggleList.Item value="HighPass">HP</ToggleList.Item>
+                        <ToggleList.Item value="BandPass">BP</ToggleList.Item>
+                      </ToggleList>
+                    }
+                  />
+                }
+              >
+                <Grid.Container gap={2} justify="center" height={"100%"}>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                </Grid.Container>
+              </Module>
             </Grid>
             <Grid xs={4}>
-              <Module name="Vibrato">hello</Module>
+              <Module name="Vibrato">
+                <Grid xs={24} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <input
+                      type="range"
+                      className="input-knob"
+                      data-src="https://i.imgur.com/K5NDNNK.png"
+                      data-sprites="78"
+                    />
+                    <span className="input-text">Flutter</span>
+                  </div>
+                  <div>
+                    <input
+                      type="range"
+                      className="input-knob"
+                      data-src="https://i.imgur.com/K5NDNNK.png"
+                      data-sprites="78"
+                    />
+                    <span className="input-text">Wow</span>
+                  </div>
+                </Grid>
+              </Module>
             </Grid>
             <Grid xs={8}>
-              <Module name="Chorus"></Module>
+              <Module name="Chorus">
+                <Grid.Container gap={2} justify="center" height={"100%"}>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                  <Grid xs={12}><Card hoverable width="100%" height="50px" /></Grid>
+                </Grid.Container>
+              </Module>
             </Grid>
             <Grid xs={4}>
               <Module
                 name="Reverb"
                 footer={
                   <Description
+                    style={{ marginTop: "-24px" }}
                     title={
                       <span style={{ margin: "-2px 6px" }}>REVERB TYPE</span>
                     }
@@ -262,7 +337,7 @@ export default function Home() {
                     alignItems: "center", // Center child div horizontally
                   }}
                 >
-                  <div style={{ textAlign: "center", marginBottom: "5px" }}> {/* Center input-text */}
+                  <div style={{ textAlign: "center", marginBottom: "5px" }}>
                     <input
                       type="range"
                       ref={inputRef}
@@ -283,18 +358,12 @@ export default function Home() {
                     />
                     <span className="input-text">DRY/WET</span>
                   </div>
-                  <div style={{ textAlign: "center", marginBottom: "5px" }}> {/* Center input-text */}
+                  <div style={{ textAlign: "center", marginBottom: "5px" }}>
                     <input
                       type="range"
-                      max={1}
-                      min={0}
-                      step={0.01}
                       className="input-knob"
                       data-src="https://i.imgur.com/K5NDNNK.png"
                       data-sprites="78"
-                      onChange={(event) => {
-                        console.log(event + "event");
-                      }}
                     />
                     <span className="input-text">ROOMSIZE</span>
                   </div>
@@ -317,70 +386,9 @@ export default function Home() {
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;
+          justify-content: center;
         }
       `}</style>
     </>
   );
 }
-
-interface ModuleProps {
-  children?: ReactNode;
-  footer?: ReactNode;
-  name?: string;
-}
-
-const Module: React.FC<ModuleProps> = ({ children, footer, name }) => {
-  const theme = useTheme();
-  const { SCALES } = useScale();
-  return (
-    <Card
-      style={{
-        height: "100%",
-        width: "100%",
-        background: theme.palette.accents_0 + "B2",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {name && (
-        <header>
-          <div
-            style={{
-              border: `1px solid ${theme.palette.border}`,
-              backgroundColor: theme.palette.accents_0,
-              color: theme.palette.accents_5,
-              height: "auto",
-              lineHeight: "1.35em",
-              display: "inline-flex",
-              alignItems: "center",
-              fontSize: SCALES.font(0.8125),
-              padding: `${SCALES.font(0.32)} ${SCALES.font(0.5)} ${SCALES.font(
-                0.32
-              )} ${SCALES.font(0.5)}`,
-              width: "auto",
-              borderTopLeftRadius: `calc(${theme.style.radius} - 1px)`,
-              borderBottomRightRadius: theme.style.radius,
-              textTransform: "uppercase",
-              marginTop: "-1px",
-              marginLeft: "-1px",
-            }}
-          >
-            {name}
-          </div>
-        </header>
-      )}
-      <Card.Content>{children}</Card.Content>
-      {footer && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "auto",
-          }}
-        >
-          {footer}
-        </div>
-      )}
-    </Card>
-  );
-};
