@@ -45,12 +45,13 @@ After downloading the latest release, extract the contents of the zip file to yo
 
 ## Building
 > [!WARNING]  
-> As of writing, only Windows is supported for building. Linux cross-compilation might work, but is not stable at this time. [Read more about cross-compilation](#cross-compiling).
+> As of writing, only Windows is supported for building. Linux cross-compilation might work, but is not stable at this time. Currently we don't have any motivation in supporting Mac OS, although the plugins should be compatible without many modifications. [Read more about cross-compilation](#cross-compiling).
 ### Prerequisites
 - [Moonrepo](https://moonrepo.dev/docs/install#windows)
 - [Node.js 18.17](https://nodejs.org/en/) or later
 - [rustup](https://www.rust-lang.org/tools/install)
 
+#### Windows
 ZMANN uses Moonrepo as its build tooling, make sure to install it before continuing.
 Once installed, make sure that rustup is installed with **msvc** if building on Windows:
 ```bash
