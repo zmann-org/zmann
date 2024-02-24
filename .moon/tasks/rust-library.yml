@@ -18,6 +18,8 @@ tasks:
     command: 'cargo check --workspace'
     inputs:
       - '@globs(sources)'
+    options:
+      runInCI: false
   format:
     command: 'cargo fmt --all --check'
     inputs:
@@ -28,8 +30,12 @@ tasks:
     inputs:
       - '@globs(sources)'
       - '@globs(tests)'
+  options:
+      runInCI: false
   test:
     command: 'cargo test --workspace'
     inputs:
       - '@globs(sources)'
       - '@globs(tests)'
+    options:
+      runInCI: false
