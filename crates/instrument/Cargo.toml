@@ -8,7 +8,7 @@ authors.workspace = true
 [dependencies]
 zstd = "0.13.0"
 bincode = "1.3.3"
-serde_derive = "1.0.190"
+serde_derive = { workspace = true }
 serde = { workspace = true }
 rkyv = "0.7.43"
 rustc-hash = "1.1.0"
