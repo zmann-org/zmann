@@ -1,9 +1,9 @@
 [package]
 name = "toybox_c1200"
-version = "0.0.0"
-edition = "2021"
 authors = ["ZMANN <info@example.com>"]
-license = "GPL-3.0-or-later"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
 
 [lib]
 crate-type = ["cdylib"]
