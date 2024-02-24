@@ -8,6 +8,10 @@ members = [
 ]
 resolver = "2"
 
+[workspace.package]
+version = "0.0.0"
+license = "GPL-3.0-or-later"
+
 [workspace.dependencies]
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 nih_plug_webview = { git = "https://github.com/AZProductions/nih-plug-webview.git" }
