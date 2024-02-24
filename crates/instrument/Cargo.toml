@@ -9,6 +9,6 @@ authors.workspace = true
 zstd = "0.13.0"
 bincode = "1.3.3"
 serde_derive = "1.0.190"
-serde = "1.0.190"
+serde = { workspace = true }
 rkyv = "0.7.43"
 rustc-hash = "1.1.0"
