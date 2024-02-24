@@ -1,6 +1,6 @@
 [package]
 name = "toybox_c1200"
-authors = ["ZMANN <info@example.com>"]
+authors.workspace = true
 version.workspace = true
 edition.workspace = true
 license.workspace = true
