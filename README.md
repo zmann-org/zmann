@@ -63,7 +63,12 @@ Plugins are required to be built separately from each other. Run the *moon* comm
 ```bash
 $ moon toybox_c1200:build
 ```
-Moonrepo will now build the `toybox_c1200_ui` before building the plugin itself. After successfully building, each plugin will make their own *.vst3* bundle inside of the `/target/bundled/` folder. 
+Moonrepo will now build the *toybox_c1200_ui* before building the plugin itself. After successfully building, each plugin will make their own *.vst3* bundle inside of the `/target/bundled/` folder. 
+
+Or to build all projects inside of the repository, run:
+```bash
+$ moon run :build
+```
 
 Optionally by running `mklink /j "%COMMONPROGRAMFILES%\VST3\zmann-dev" "%~dp0target\bundled\"` on Windows, a simlink will be created from the locally generated artifacts folder to the standard vst3 folder to streamline development.
 
