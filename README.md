@@ -28,9 +28,20 @@ As defined in [bundler.toml](./bundler.toml), the following plugins are included
 
 
 ## Installation
+
+1. **Download the Plugin:**
+   - Visit [ZMANN.org or the Releases section](https://github.com/zmann-org/zmann/releases).
+   - Download the desired ZMANN VST3 plugin file(s).
+
+2. **Extract the Plugin:**
+   - If the plugin is distributed as a zip file, extract the contents to a location on your computer.
+
+3. **Copy to VST3 Folder:**
+   - Locate your VST3 folder on your computer. This is typically a directory where your DAW looks for plugins.
+   - Copy the extracted `.vst3` file of the desired ZMANN plugin to your VST3 folder.
+
 > [!TIP]
-> You can make a `ZMANN` folder inside of your VST3 folder to keep your ZMANN plugins all in one place.
-After downloading the latest release, extract the contents of the zip file to your VST3 folder.
+> Create a dedicated folder within your VST3 directory, e.g., `ZMANN`, for better organization.
 
 ## Table of Contents
 - [Plugins](#plugins)
