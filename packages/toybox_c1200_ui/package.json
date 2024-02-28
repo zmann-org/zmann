@@ -11,7 +11,7 @@
   "dependencies": {
     "@repo/ui": "*",
     "@fontsource-variable/instrument-sans": "^5.0.3",
-    "@himalaya-ui/core": "^1.4.1",
+    "@himalaya-ui/core": "^1.6.1",
     "@types/babel__core": "^7.20.5",
     "lodash": "^4.17.21",
     "next": "14.1.0",

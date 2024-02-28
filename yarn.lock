@@ -97,10 +97,10 @@
   resolved "https://registry.yarnpkg.com/@fontsource-variable/roboto-mono/-/roboto-mono-5.0.17.tgz#293d600624b1fc1ca2d811c8bbf78b63b04883fe"
   integrity sha512-+FyoiEmO2r/kiwPnsPtATK2ROMgNwCnVSvvs+K38GMLIgLSSk4cNqU3GCqJDMSvAPHMYd0gFPGKStFh+yLqd9Q==
 
-"@himalaya-ui/core@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@himalaya-ui/core/-/core-1.4.1.tgz#f337c0215dea34b1b1373bd488dfac83973571d0"
-  integrity sha512-MXh4oa2RZGBGPAR3J0YGlsq1McettO6+FOGDm63JYYioURgBI7zUFgVvOEsulJ4NIjpvelvyHG2hw4H22C9ikw==
+"@himalaya-ui/core@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@himalaya-ui/core/-/core-1.6.1.tgz#1f989a7dddf2f32e49ad3dc7b511d1820a9f9acb"
+  integrity sha512-Fo8FddSVeRHSGAIieezRNkkFW6XQUzAIxs0rSrJIQY89z/0DT2h80JWjtn7Wkb8iOzq0Ac47nhMIncmRvMdVWQ==
   dependencies:
     "@babel/runtime" "^7.23.1"
     "@fontsource-variable/roboto-mono" "^5.0.17"
