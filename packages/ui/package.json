@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "*",
-    "@types/eslint": "^8.56.3",
+    "@types/eslint": "^8.56.4",
     "@types/node": "^20.11.20",
     "@types/react": "^18.2.60",
     "@types/react-dom": "^18.2.18",
