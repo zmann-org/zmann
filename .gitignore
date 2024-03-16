@@ -146,3 +146,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# artifacts
+*.binv3
+*.binv4
+*.binv5
+*.zip
