@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import React, { ReactNode } from "react";
+import React from "react";
 import {
   Grid,
   Select,
-  Slider,
   useTheme,
   ToggleList,
   Description,
   Button,
   Card,
+  Slider,
 } from "@himalaya-ui/core";
 import { Settings } from "@himalaya-ui/core/icons";
 import Badge from "@/lib/Badge";
@@ -201,7 +201,6 @@ export default function Home() {
               hideValue
               onChange={(value) => { sendToPlugin({ type: "SetOutputGain", value: value }) }}
               scale={0.5}
-              width={"100px"}
               max={1.0}
               min={0}
               step={0.01}
