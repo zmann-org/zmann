@@ -1,7 +1,7 @@
 "use client";
-import { ConfigProvider, StyledJsxRegistry } from "@himalaya-ui/core";
+import { ConfigProvider } from "@himalaya-ui/core";
+import NextStyleRegistry from "@himalaya-ui/core/next/registry";
 import "@fontsource-variable/instrument-sans";
-import "./globals.css";
 import Script from "next/script";
 
 export default function RootLayout({
@@ -12,14 +12,18 @@ export default function RootLayout({
   return (
     <html>
       <body onContextMenu={(e) => e.preventDefault()}>
-        <StyledJsxRegistry>
+        <NextStyleRegistry>
           <ConfigProvider themeType={"dark"}>{children}</ConfigProvider>
-        </StyledJsxRegistry>
-        <Script
-          src="/input-knobs.js"
-          strategy="beforeInteractive"
-        />
+        </NextStyleRegistry>
+        <Script src="/input-knobs.js" strategy="beforeInteractive" />
       </body>
+      <style jsx global>{`
+        body {
+          color-scheme: dark;
+          user-select: none;
+          overflow: hidden;
+        }
+      `}</style>
     </html>
   );
 }
