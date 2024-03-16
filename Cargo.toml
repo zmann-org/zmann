@@ -3,8 +3,9 @@ members = [
     "crates/toybox_c1200",
     "crates/wavekit",
     "crates/instrument",
-    "crates/xtask",
     "crates/fx",
+    "crates/nih_plug_webview",
+    "crates/xtask",
 ]
 resolver = "2"
 
@@ -16,7 +17,7 @@ edition = "2021"
 
 [workspace.dependencies]
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
-nih_plug_webview = { git = "https://github.com/AZProductions/nih-plug-webview.git" }
+nih_plug_webview = { path = "crates/nih_plug_webview" }
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0"
 serde_derive = "1.0.190"
