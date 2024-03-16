@@ -152,6 +152,7 @@ dist
 *.binv4
 *.binv5
 *.zip
+samples/
 
 # Don't include vscode config
 .vscode
