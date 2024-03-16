@@ -156,3 +156,19 @@ samples/
 
 # Don't include vscode config
 .vscode
+
+**/*.trace
+**/*.zip
+**/*.tar.gz
+**/*.tgz
+**/*.log
+**/*.bun
+
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# production
+/build
