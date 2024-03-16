@@ -69,6 +69,12 @@ Once installed, make sure that rustup is installed with **msvc** if building on 
 $ rustup default stable-x86_64-pc-windows-msvc
 ```
 
+### Adding the artifacts
+As of writing, we aren't including the samples (.binv5 files) in the repository. For the builds not to fail, supply a `/samples/Toybox_C1200` folder using:
+```bash
+$ mkdir /samples/Toybox_C1200
+```
+
 ### Building the plugins
 Plugins are required to be built separately from each other. Run the *moon* command with the [plugin name](#plugins) and `:build` at the end to target a release build. For example:
 ```bash
