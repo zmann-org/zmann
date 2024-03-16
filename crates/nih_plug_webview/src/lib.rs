@@ -1,27 +1,15 @@
-use baseview::{Event, Size, Window, WindowHandle, WindowOpenOptions, WindowScalePolicy};
-use nih_plug::{
-    editor::ParentWindowHandle,
-    prelude::{Editor, GuiContext, ParamSetter},
-};
-use raw_window_handle::{HasRawWindowHandle, RawWindowHandle, Win32WindowHandle};
+use baseview::{ Event, Size, Window, WindowHandle, WindowOpenOptions, WindowScalePolicy };
+use nih_plug::{ editor::ParentWindowHandle, prelude::{ Editor, GuiContext, ParamSetter } };
+use raw_window_handle::{ HasRawWindowHandle, RawWindowHandle, Win32WindowHandle };
 use serde_json::Value;
-use std::{
-    borrow::Cow,
-    sync::{
-        atomic::{AtomicU32, Ordering},
-        Arc,
-    },
-};
+use std::{ borrow::Cow, sync::{ atomic::{ AtomicU32, Ordering }, Arc } };
 use windows::Win32::{
     Foundation::COLORREF,
-    Graphics::Dwm::{DwmSetWindowAttribute, DWMWA_CAPTION_COLOR},
+    Graphics::Dwm::{ DwmSetWindowAttribute, DWMWA_CAPTION_COLOR },
 };
-use wry::{
-    http::{Request, Response},
-    WebContext, WebView, WebViewBuilder,
-};
+use wry::{ http::{ Request, Response }, WebContext, WebView, WebViewBuilder };
 
-use crossbeam::channel::{unbounded, Receiver};
+use crossbeam::channel::{ unbounded, Receiver };
 
 pub struct ParentWindowHandleAdapter(ParentWindowHandle);
 
@@ -40,14 +28,17 @@ unsafe impl HasRawWindowHandle for ParentWindowHandleAdapter {
 
 pub use wry::http;
 
-pub use baseview::{DropData, DropEffect, EventStatus, MouseEvent};
+pub use baseview::{ DropData, DropEffect, EventStatus, MouseEvent };
 pub use keyboard_types::*;
 
 type EventLoopHandler = dyn Fn(&WindowHandler, ParamSetter, &mut Window) + Send + Sync;
-type KeyboardHandler = dyn Fn(KeyboardEvent) -> bool + Send + Sync;
-type MouseHandler = dyn Fn(MouseEvent) -> EventStatus + Send + Sync;
-type CustomProtocolHandler =
-    dyn Fn(&Request<Vec<u8>>) -> wry::Result<Response<Cow<'static, [u8]>>> + Send + Sync;
+type KeyboardHandler = dyn (Fn(KeyboardEvent) -> bool) + Send + Sync;
+type MouseHandler = dyn (Fn(MouseEvent) -> EventStatus) + Send + Sync;
+type CustomProtocolHandler = dyn (Fn(
+    &Request<Vec<u8>>
+) -> wry::Result<Response<Cow<'static, [u8]>>>) +
+    Send +
+    Sync;
 
 pub struct WebViewEditor {
     source: Arc<HTMLSource>,
@@ -59,6 +50,7 @@ pub struct WebViewEditor {
     custom_protocol: Option<(String, Arc<CustomProtocolHandler>)>,
     developer_mode: bool,
     background_color: (u8, u8, u8, u8),
+    #[cfg(windows)]
     caption_color: u32,
 }
 
@@ -81,6 +73,7 @@ impl WebViewEditor {
             keyboard_handler: Arc::new(|_| false),
             mouse_handler: Arc::new(|_| EventStatus::Ignored),
             custom_protocol: None,
+            #[cfg(windows)]
             caption_color: 0,
         }
     }
@@ -91,19 +84,18 @@ impl WebViewEditor {
     }
 
     pub fn with_custom_protocol<F>(mut self, name: String, handler: F) -> Self
-    where
-        F: Fn(&Request<Vec<u8>>) -> wry::Result<Response<Cow<'static, [u8]>>>
-            + 'static
-            + Send
-            + Sync,
+        where
+            F: Fn(&Request<Vec<u8>>) -> wry::Result<Response<Cow<'static, [u8]>>> +
+                'static +
+                Send +
+                Sync
     {
         self.custom_protocol = Some((name, Arc::new(handler)));
         self
     }
 
     pub fn with_event_loop<F>(mut self, handler: F) -> Self
-    where
-        F: Fn(&WindowHandler, ParamSetter, &mut baseview::Window) + 'static + Send + Sync,
+        where F: Fn(&WindowHandler, ParamSetter, &mut baseview::Window) + 'static + Send + Sync
     {
         self.event_loop_handler = Arc::new(handler);
         self
@@ -115,21 +107,20 @@ impl WebViewEditor {
     }
 
     pub fn with_keyboard_handler<F>(mut self, handler: F) -> Self
-    where
-        F: Fn(KeyboardEvent) -> bool + Send + Sync + 'static,
+        where F: Fn(KeyboardEvent) -> bool + Send + Sync + 'static
     {
         self.keyboard_handler = Arc::new(handler);
         self
     }
 
     pub fn with_mouse_handler<F>(mut self, handler: F) -> Self
-    where
-        F: Fn(MouseEvent) -> EventStatus + Send + Sync + 'static,
+        where F: Fn(MouseEvent) -> EventStatus + Send + Sync + 'static
     {
         self.mouse_handler = Arc::new(handler);
         self
     }
 
+    #[cfg(windows)]
     pub fn with_caption_color(mut self, color: u32) -> Self {
         self.caption_color = color;
         self
@@ -218,7 +209,7 @@ impl Editor for WebViewEditor {
     fn spawn(
         &self,
         parent: nih_plug::prelude::ParentWindowHandle,
-        context: Arc<dyn GuiContext>,
+        context: Arc<dyn GuiContext>
     ) -> Box<dyn std::any::Any + Send> {
         let options = WindowOpenOptions {
             scale: WindowScalePolicy::SystemScaleFactor,
@@ -232,20 +223,21 @@ impl Editor for WebViewEditor {
         #[cfg(target_os = "windows")]
         {
             if self.caption_color != 0 {
-                let hwnd: *mut std::ffi::c_void =
-                    match ParentWindowHandleAdapter(parent).raw_window_handle() {
-                        RawWindowHandle::Win32(handle) => handle.hwnd,
-                        _ => panic!("Unsupported window handle type"),
-                    };
+                let hwnd: *mut std::ffi::c_void = match
+                    ParentWindowHandleAdapter(parent).raw_window_handle()
+                {
+                    RawWindowHandle::Win32(handle) => handle.hwnd,
+                    _ => panic!("Unsupported window handle type"),
+                };
                 unsafe {
                     let _ = DwmSetWindowAttribute(
                         std::mem::transmute::<
                             *mut std::ffi::c_void,
-                            windows::Win32::Foundation::HWND,
+                            windows::Win32::Foundation::HWND
                         >(hwnd),
                         DWMWA_CAPTION_COLOR,
                         &COLORREF(self.caption_color) as *const _ as *const _,
-                        std::mem::size_of::<COLORREF>() as u32,
+                        std::mem::size_of::<COLORREF>() as u32
                     );
                 }
             }
@@ -288,18 +280,20 @@ impl Editor for WebViewEditor {
 
             if let Some(custom_protocol) = custom_protocol.as_ref() {
                 let handler = custom_protocol.1.clone();
-                webview_builder = webview_builder
-                    .with_custom_protocol(custom_protocol.0.to_owned(), move |request| {
-                        handler(&request).unwrap()
-                    });
+                webview_builder = webview_builder.with_custom_protocol(
+                    custom_protocol.0.to_owned(),
+                    move |request| { handler(&request).unwrap() }
+                );
             }
 
-            let webview = match source.as_ref() {
-                HTMLSource::String(html_str) => webview_builder.with_html(*html_str),
-                HTMLSource::URL(url) => webview_builder.with_url(*url),
-            }
-            .unwrap()
-            .build();
+            let webview = (
+                match source.as_ref() {
+                    HTMLSource::String(html_str) => webview_builder.with_html(*html_str),
+                    HTMLSource::URL(url) => webview_builder.with_url(*url),
+                }
+            )
+                .unwrap()
+                .build();
 
             WindowHandler {
                 context,
@@ -316,10 +310,7 @@ impl Editor for WebViewEditor {
     }
 
     fn size(&self) -> (u32, u32) {
-        (
-            self.width.load(Ordering::Relaxed),
-            self.height.load(Ordering::Relaxed),
-        )
+        (self.width.load(Ordering::Relaxed), self.height.load(Ordering::Relaxed))
     }
 
     fn set_scale_factor(&self, _factor: f32) -> bool {
