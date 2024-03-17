@@ -55,7 +55,7 @@ function App() {
           style={{ padding: "10px", gap: "10px" }}
         >
           <Grid xs={7}>
-            <Module name="Loading">hello</Module>
+            <Module name="Filter">hello</Module>
           </Grid>
           <Grid xs={4}>
             <Module name="Vibrato">hello</Module>
