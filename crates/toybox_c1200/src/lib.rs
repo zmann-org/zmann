@@ -521,7 +521,7 @@ impl Plugin for ToyboxC {
                     }
                 }
             })
-            .with_background_color((31, 31, 31, 255))
+            .with_background_color((40, 39, 41, 255))
             .with_developer_mode(true)
             .with_event_loop(move |ctx, setter, _window| {
                 while let Ok(value) = ctx.next_event() {
