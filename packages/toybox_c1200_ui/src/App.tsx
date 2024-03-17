@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Grid, Module, BadgeLegacy, Select, Slider } from "altea";
+import { Grid, Module, BadgeLegacy, Select, Slider, Button } from "altea";
 import { Header, HeaderCenter, HeaderLeft, HeaderRight } from "./header";
 import View from "./view";
 import Container from "./container";
@@ -54,7 +54,7 @@ function App() {
           style={{ padding: "10px", gap: "10px" }}
         >
           <Grid xs={7}>
-            <Module name="Filter">hello</Module>
+		  <Module name="Filter"><Button onClick={() => setPreset('FrenchHorn1')}></Button></Module>
           </Grid>
           <Grid xs={4}>
             <Module name="Vibrato">hello</Module>
