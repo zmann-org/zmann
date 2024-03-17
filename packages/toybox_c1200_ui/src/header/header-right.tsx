@@ -10,12 +10,15 @@ const HeaderRight: React.FC<HeaderRightProps> = ({ children }) => {
       <div className="header-right">{children}</div>
       <style jsx>{`
         .header-right {
-          width: 100%;
+          align-items: center;
+          justify-content: flex-end;
           justify-self: end;
           display: flex;
           align-items: center;
           gap: 5px;
-          margin-right: 10px;
+          min-width: 124.34px;
+          width: 210px;
+          margin-left: calc(-1 * calc(210px - 123.34px));
         }
       `}</style>
     </>

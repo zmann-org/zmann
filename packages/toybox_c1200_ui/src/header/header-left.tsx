@@ -10,8 +10,9 @@ const HeaderLeft: React.FC<HeaderLeftProps> = ({ children }) => {
       <div className="header-left">{children}</div>
       <style jsx>{`
         .header-left {
-          justify-self: start;
-          margin-left: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
           display: flex;
           vertical-align: middle;
           gap: 5px;

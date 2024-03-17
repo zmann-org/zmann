@@ -10,8 +10,9 @@ const HeaderCenter: React.FC<HeaderCenterProps> = ({ children }) => {
       <div className="header-center">{children}</div>
       <style jsx>{`
         .header-center {
-          justify-self: center;
-          min-width: 200px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       `}</style>
     </>

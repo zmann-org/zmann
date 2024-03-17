@@ -27,6 +27,9 @@ const Container: React.FC<ContainerProps> = ({ children }) => {
         .content {
           color: #fff !important;
         }
+        main {
+          background: #121113 !important;
+        }
       `}</style>
     </>
   );

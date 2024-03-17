@@ -24,7 +24,7 @@ function App() {
           </BadgeLegacy>
         </HeaderLeft>
         <HeaderCenter>
-          <Select style={{ width: "100%" }} type="success">
+          <Select type="success">
             {presets.map((preset) => (
               <Select.Option key={preset.value} value={preset.value}>
                 {preset.name}
@@ -33,7 +33,7 @@ function App() {
           </Select>
         </HeaderCenter>
         <HeaderRight>
-          <div style={{ fontSize: 12 }}>Volume</div>
+          <div style={{ fontSize: 12, marginRight: '18px' }}>Volume</div>
           <Slider
             hideValue
             scale={0.5}
@@ -43,7 +43,7 @@ function App() {
             style={{ width: "100%" }}
           />
           <Button type="abort" auto>
-            test
+            s
           </Button>
         </HeaderRight>
       </Header>

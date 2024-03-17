@@ -24,6 +24,22 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         overflow: hidden;
         background: #121113;
       }
+      // Custom select dropdown
+      .select-dropdown {
+        background: #2c2c2c !important;
+      }
+      .select-dropdown .option:not(:hover) {
+        background: inherit !important;
+        border-radius: 4px;
+      }
+      .select-dropdown .option:hover {
+        background: #9f9f9f !important;
+        border-radius: 4px;
+        color: #000 !important;
+      }
+      .select {
+        background: #212023 !important;
+      }
     `}</style>
   </React.StrictMode>
 );

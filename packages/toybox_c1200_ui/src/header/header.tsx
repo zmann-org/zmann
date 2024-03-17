@@ -10,11 +10,12 @@ const Header: React.FC<HeaderProps> = ({ children }) => {
       <nav>{children}</nav>
       <style jsx>{`
         nav {
+          padding: 0px 12px;
           background-color: #282729;
           border-bottom: 1px solid #515151;
           height: 48px;
-          display: grid;
-          grid-template-columns: auto 1fr auto;
+          display: flex;
+          justify-content: space-between;
           align-items: center;
           z-index: 100;
         }
