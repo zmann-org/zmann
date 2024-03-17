@@ -17,8 +17,6 @@ const HeaderRight: React.FC<HeaderRightProps> = ({ children }) => {
           align-items: center;
           gap: 5px;
           min-width: 124.34px;
-          width: 210px;
-          margin-left: calc(-1 * calc(210px - 123.34px));
         }
       `}</style>
     </>

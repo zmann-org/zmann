@@ -33,7 +33,6 @@ function App() {
           </Select>
         </HeaderCenter>
         <HeaderRight>
-          <div style={{ fontSize: 12, marginRight: '18px' }}>Volume</div>
           <Slider
             hideValue
             scale={0.5}
@@ -41,10 +40,7 @@ function App() {
             min={0}
             step={0.01}
             style={{ width: "100%" }}
-          />
-          <Button type="abort" auto>
-            s
-          </Button>
+   	   />
         </HeaderRight>
       </Header>
       <Container>
