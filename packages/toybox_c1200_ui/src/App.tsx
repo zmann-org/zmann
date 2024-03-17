@@ -1,4 +1,5 @@
-import { Grid, Module, BadgeLegacy, Select, Slider, Button } from "altea";
+import { useState } from "react";
+import { Grid, Module, BadgeLegacy, Select, Slider } from "altea";
 import { Header, HeaderCenter, HeaderLeft, HeaderRight } from "./header";
 import View from "./view";
 import Container from "./container";
@@ -15,6 +16,8 @@ declare global {
 }
 
 function App() {
+  const [preset, setPreset] = useState<string>("ElecOrgan4");
+  // const [output, setOutput] = useState<number>(0.5);
   return (
     <View>
       <Header>
@@ -24,7 +27,7 @@ function App() {
           </BadgeLegacy>
         </HeaderLeft>
         <HeaderCenter>
-          <Select type="success">
+          <Select type="success" value={preset}>
             {presets.map((preset) => (
               <Select.Option key={preset.value} value={preset.value}>
                 {preset.name}
@@ -38,8 +41,8 @@ function App() {
             scale={0.5}
             max={1.0}
             min={0}
-            step={0.01}
-            style={{ width: "100%" }}
+            value={0.5}
+	    step={0.01}  
    	   />
         </HeaderRight>
       </Header>
