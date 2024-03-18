@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Grid, Module, BadgeLegacy, Select, Slider, Button } from "altea";
+import { useEffect, useState } from "react";
+import { Grid, Module, BadgeLegacy, Select, Slider } from "altea";
 import { Header, HeaderCenter, HeaderLeft, HeaderRight } from "./header";
 import View from "./view";
 import Container from "./container";
@@ -15,9 +15,38 @@ declare global {
   }
 }
 
+const sendToPlugin = (msg: any) => {
+  window.ipc.postMessage(JSON.stringify(msg));
+};
+
 function App() {
   const [preset, setPreset] = useState<string>("ElecOrgan4");
-  // const [output, setOutput] = useState<number>(0.5);
+  const [output, setOutput] = useState<number>(0.5);
+
+  useEffect(() => {
+    window.sendToPlugin = sendToPlugin;
+    window.onPluginMessageInternal = function (msg) {
+      const json = JSON.parse(msg);
+      window.onPluginMessage && window.onPluginMessage(json);
+    };
+
+    window.onPluginMessage = (msg: any) => {
+      console.log(msg);
+      switch (msg.type) {
+        case "preset_change": {
+          setPreset(msg.value);
+          break;
+        }
+        case "output_gain_changed": {
+          setOutput(msg.value);
+          break;
+        }
+      }
+    };
+
+    sendToPlugin({ type: "Init" });
+  }, []);
+
   return (
     <View>
       <Header>
@@ -27,7 +56,16 @@ function App() {
           </BadgeLegacy>
         </HeaderLeft>
         <HeaderCenter>
-          <Select type="success" value={preset}>
+          <Select
+            type="success"
+            value={preset}
+            onChange={(value) =>
+              sendToPlugin({
+                type: "SetPreset",
+                preset: value,
+              })
+            }
+          >
             {presets.map((preset) => (
               <Select.Option key={preset.value} value={preset.value}>
                 {preset.name}
@@ -41,9 +79,12 @@ function App() {
             scale={0.5}
             max={1.0}
             min={0}
-            value={0.5}
-	    step={0.01}  
-   	   />
+            onChange={(value) => {
+              sendToPlugin({ type: "SetOutputGain", value: value });
+            }}
+            value={output}
+            step={0.01}
+          />
         </HeaderRight>
       </Header>
       <Container>
@@ -54,10 +95,14 @@ function App() {
           style={{ padding: "10px", gap: "10px" }}
         >
           <Grid xs={7}>
-		  <Module name="Filter"><Button onClick={() => setPreset('FrenchHorn1')}></Button></Module>
+            <Module name="Filter">
+              hello
+            </Module>
           </Grid>
           <Grid xs={4}>
-            <Module name="Vibrato">hello</Module>
+            <Module name="Vibrato">
+              hello
+            </Module>
           </Grid>
           <Grid xs={8}>
             <Module name="Chorus">hello</Module>
