@@ -619,7 +619,6 @@ impl Plugin for ToyboxC {
                         json!({
                             "type": "preset_change",
                             "value": params.preset.value().to_string(),
-                            "text": params.preset.to_string()
                         })
                     );
                 }
