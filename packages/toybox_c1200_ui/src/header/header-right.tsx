@@ -19,6 +19,14 @@ const HeaderRight: React.FC<HeaderRightProps> = ({ children }) => {
           min-width: 124.34px;
         }
       `}</style>
+      <style jsx global>{`
+      .slider .dot {
+        min-height: unset !important;
+        min-width: unset !important;
+        height: 16px !important;
+        width: 2px !important;
+      }
+      `}</style>
     </>
   );
 };
