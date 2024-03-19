@@ -14,7 +14,7 @@
     "@repo/ui": "*",
     "@types/babel__core": "^7.20.5",
     "lodash": "^4.17.21",
-    "next": "^14.2.0-canary.24",
+    "next": "^14.2.0-canary.31",
     "react": "^18",
     "react-dom": "^18"
   },
