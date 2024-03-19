@@ -7,7 +7,7 @@ use windows::Win32::{
     Foundation::COLORREF,
     Graphics::Dwm::{ DwmSetWindowAttribute, DWMWA_CAPTION_COLOR },
 };
-use wry::{ http::{ Request, Response }, WebContext, WebView, WebViewBuilder };
+use wry::{ http::{ Request, Response }, WebContext, WebView, WebViewBuilder, WebViewBuilderExtWindows };
 
 use crossbeam::channel::{ unbounded, Receiver };
 
@@ -276,7 +276,9 @@ impl Editor for WebViewEditor {
                         panic!("Invalid JSON from web view: {}.", msg);
                     }
                 })
-                .with_background_color(background_color);
+                .with_background_color(background_color)
+                .with_browser_accelerator_keys(false)
+                .with_additional_browser_args("--disable-features=ElasticOverscroll");
 
             if let Some(custom_protocol) = custom_protocol.as_ref() {
                 let handler = custom_protocol.1.clone();
