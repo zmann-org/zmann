@@ -20,7 +20,7 @@ const sendToPlugin = (msg: any) => {
 };
 
 function App() {
-  const [preset, setPreset] = useState<string>("ElecOrgan4");
+  const [preset, setPreset] = useState<string>("");
   const [output, setOutput] = useState<number>(0.5);
 
   useEffect(() => {
@@ -95,14 +95,10 @@ function App() {
           style={{ padding: "10px", gap: "10px" }}
         >
           <Grid xs={7}>
-            <Module name="Filter">
-              hello
-            </Module>
+            <Module name="Filter">hello</Module>
           </Grid>
           <Grid xs={4}>
-            <Module name="Vibrato">
-              hello
-            </Module>
+            <Module name="Vibrato">hello</Module>
           </Grid>
           <Grid xs={8}>
             <Module name="Chorus">hello</Module>
