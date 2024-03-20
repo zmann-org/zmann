@@ -2,7 +2,7 @@ use baseview::{ Event, Size, Window, WindowHandle, WindowOpenOptions, WindowScal
 use nih_plug::{ editor::ParentWindowHandle, prelude::{ Editor, GuiContext, ParamSetter } };
 use raw_window_handle::{ HasRawWindowHandle, RawWindowHandle, Win32WindowHandle };
 use serde_json::Value;
-use std::{ borrow::Cow, sync::{ atomic::{ AtomicU32, Ordering }, Arc } };
+use std::{ borrow::Cow, env, sync::{ atomic::{ AtomicU32, Ordering }, Arc } };
 use windows::Win32::{
     Foundation::COLORREF,
     Graphics::Dwm::{ DwmSetWindowAttribute, DWMWA_CAPTION_COLOR },
@@ -52,6 +52,7 @@ pub struct WebViewEditor {
     background_color: (u8, u8, u8, u8),
     #[cfg(windows)]
     caption_color: u32,
+    browser_accelerator_keys: bool,
 }
 
 pub enum HTMLSource {
@@ -75,6 +76,7 @@ impl WebViewEditor {
             custom_protocol: None,
             #[cfg(windows)]
             caption_color: 0,
+            browser_accelerator_keys: true,
         }
     }
 
@@ -123,6 +125,11 @@ impl WebViewEditor {
     #[cfg(windows)]
     pub fn with_caption_color(mut self, color: u32) -> Self {
         self.caption_color = color;
+        self
+    }
+
+    pub fn with_browser_accelerator_keys(mut self, enabled: bool) -> Self {
+        self.browser_accelerator_keys = enabled;
         self
     }
 }
@@ -248,11 +255,14 @@ impl Editor for WebViewEditor {
         let developer_mode = self.developer_mode;
         let source = self.source.clone();
         let background_color = self.background_color;
+        let browser_accelerator_keys = self.browser_accelerator_keys;
         let custom_protocol = self.custom_protocol.clone();
         let event_loop_handler = self.event_loop_handler.clone();
         let keyboard_handler = self.keyboard_handler.clone();
         let mouse_handler = self.mouse_handler.clone();
 
+        env::set_var("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "FF121113");
+        
         let window_handle = baseview::Window::open_parented(&parent, options, move |window| {
             let (events_sender, events_receiver) = unbounded();
 
@@ -277,7 +287,7 @@ impl Editor for WebViewEditor {
                     }
                 })
                 .with_background_color(background_color)
-                .with_browser_accelerator_keys(false)
+                .with_browser_accelerator_keys(browser_accelerator_keys)
                 .with_additional_browser_args("--disable-features=ElasticOverscroll");
 
             if let Some(custom_protocol) = custom_protocol.as_ref() {

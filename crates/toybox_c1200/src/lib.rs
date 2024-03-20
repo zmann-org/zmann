@@ -644,7 +644,7 @@ impl Plugin for ToyboxC {
 
             #[cfg(windows)]
             {
-                editor = editor.with_caption_color(0x00292728);
+                editor = editor.with_caption_color(0x00292728).with_browser_accelerator_keys(false);
             }
             
         Some(Box::new(editor))
