@@ -261,7 +261,7 @@ impl Editor for WebViewEditor {
         let keyboard_handler = self.keyboard_handler.clone();
         let mouse_handler = self.mouse_handler.clone();
 
-        env::set_var("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "FF121113");
+        env::set_var("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0x121113");
         
         let window_handle = baseview::Window::open_parented(&parent, options, move |window| {
             let (events_sender, events_receiver) = unbounded();
