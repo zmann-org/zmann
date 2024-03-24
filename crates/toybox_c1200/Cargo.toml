@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 nih_plug = { workspace = true }
-nih_plug_webview = { workspace = true }
+nih_plug_webview = { path = "../nih_plug_webview" }
 serde = { workspace = true }
 serde_json = { workspace = true }
 rust-embed = { workspace = true }

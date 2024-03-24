@@ -1,38 +1,35 @@
-$schema: "https://moonrepo.dev/schemas/tasks.json"
+$schema: 'https://moonrepo.dev/schemas/tasks.json'
 
 fileGroups:
-  next:
-    - "app/**/*"
-    - "pages/**/*"
-    - "public/**/*"
-    - "src/**/*"
-    - "next-env.d.ts"
-    - "next.config.*"
-
+  vite:
+    - 'public/**/*'
+    - 'src/**/*'
+    - 'vite.config.*'
+  sources: []
+  
 tasks:
-  # Catch-all for any `next` command
-  next:
-    command: "next"
-    local: true
-
   # Build the application
   build:
-    options:
-      cache: false
-    command: "yarn build" # fix cache error
+    command: 'vite build'
     inputs:
-      - "@group(next)"
+      - '@group(vite)'
+      - '@group(sources)'
     outputs:
-      - ".next"
+      - 'dist'
 
   # Run the development server
   dev:
-    command: "next dev --turbo"
+    command: 'vite dev'
     local: true
 
-  # Serve the built application
-  start:
-    command: "next start"
+  # Optimize dependencies
+  optimize:
+    command: 'vite optimize'
+    local: true
+
+  # Preview the built application
+  preview:
+    command: 'vite preview'
     deps:
-      - "build"
+      - 'build'
     local: true

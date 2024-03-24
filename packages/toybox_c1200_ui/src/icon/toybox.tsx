@@ -1,7 +1,17 @@
-"use client";
 import React from "react";
-import { IconPropsNative } from "@himalaya-ui/core/icons/";
-const Toybox = ({ size = 24, color, style, ...props }: IconPropsNative) => {
+
+interface ToyboxProps {
+  size?: number;
+  color?: string;
+  style?: React.CSSProperties;
+}
+
+const Toybox: React.FC<ToyboxProps> = ({
+  size = 24,
+  color,
+  style,
+  ...props
+}) => {
   return (
     <svg
       fill="none"
