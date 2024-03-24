@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Grid, Module, BadgeLegacy, Select, Slider } from "altea";
+import {
+  Grid,
+  Module,
+  BadgeLegacy,
+  Select,
+  Slider,
+  Description,
+  ToggleList,
+} from "altea";
 import { Header, HeaderCenter, HeaderLeft, HeaderRight } from "./header";
 import View from "./view";
 import Container from "./container";
@@ -22,6 +30,7 @@ const sendToPlugin = (msg: any) => {
 function App() {
   const [preset, setPreset] = useState<string>("");
   const [output, setOutput] = useState<number>(0.5);
+  const [reverbType, setReverbType] = useState<string>("");
 
   useEffect(() => {
     window.sendToPlugin = sendToPlugin;
@@ -39,6 +48,10 @@ function App() {
         }
         case "output_gain_changed": {
           setOutput(msg.value);
+          break;
+        }
+        case "reverb_type_changed": {
+          setReverbType(msg.value);
           break;
         }
       }
@@ -104,7 +117,36 @@ function App() {
             <Module name="Chorus">hello</Module>
           </Grid>
           <Grid xs={4}>
-            <Module name="Reverb">hello</Module>
+            <Module
+              name="Reverb"
+              footer={
+                <Description
+                  title={
+                    <span style={{ margin: "-2px 6px" }}>REVERB TYPE</span>
+                  }
+                  content={
+                    <ToggleList
+                      marginLeft={"1px"}
+                      width={"126px"}
+                      margin={0.2}
+                      scale={0.1}
+                      value={reverbType}
+                      onChange={(value) =>
+                        sendToPlugin({
+                          type: "SetReverbType",
+                          preset: value,
+                        })
+                      }
+                    >
+                      <ToggleList.Item value="Freeverb">Free</ToggleList.Item>
+                      <ToggleList.Item value="Moorer">Mrrf</ToggleList.Item>
+                    </ToggleList>
+                  }
+                />
+              }
+            >
+              hello
+            </Module>
           </Grid>
         </Grid.Container>
       </Container>

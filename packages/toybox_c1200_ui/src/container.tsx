@@ -30,6 +30,15 @@ const Container: React.FC<ContainerProps> = ({ children }) => {
         main {
           background: #121113 !important;
         }
+        .toggle-list {
+          background: #282729 !important;
+          border: 1px solid #333 !important;
+        }
+        .module-footer .description {
+          margin: 0px 2px !important;
+          width: 100% !important;
+          margin-top: -24px !important;
+        }
       `}</style>
     </>
   );
