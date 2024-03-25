@@ -21,6 +21,6 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
-    "@himalaya-ui/core": "1.10.4"
+    "@himalaya-ui/core": "1.15.0"
   }
 }
