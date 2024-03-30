@@ -1,7 +1,7 @@
 pub fn resample(
     data: &[f32],
-    sample_rate0: u32,
-    sample_rate: u32,
+    sample_rate0: f32,
+    sample_rate: f32,
 ) -> Vec<f32> {
     use dasp::{interpolate::linear::Linear, signal, Signal};
     let n = data.len() / (2 as usize);

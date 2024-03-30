@@ -1,6 +1,6 @@
 use nih_plug::prelude::*;
 use presets::Presets;
-use std::sync::{atomic::Ordering, Arc};
+use std::sync::{ atomic::Ordering, Arc };
 use crate::params::OrchestronParams;
 use instrument::microbuffer::Sample;
 use crate::resampler::{ calc_hertz, resample };
@@ -20,6 +20,7 @@ struct Orchestron {
     params: Arc<OrchestronParams>,
     pub buffer: Vec<Sample>,
     instrument: Instrument,
+    sample_rate: f32,
 }
 
 impl Default for Orchestron {
@@ -28,6 +29,7 @@ impl Default for Orchestron {
             params: Arc::new(OrchestronParams::default()),
             buffer: vec![],
             instrument: Instrument::default(),
+            sample_rate: 44100.0,
         }
     }
 }
@@ -68,9 +70,10 @@ impl Plugin for Orchestron {
     fn initialize(
         &mut self,
         _audio_io_layout: &AudioIOLayout,
-        _buffer_config: &BufferConfig,
+        buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>
     ) -> bool {
+        self.sample_rate = buffer_config.sample_rate;
         if self.instrument.f0.is_empty() {
             self.load_preset(self.params.preset.value());
         }
@@ -97,17 +100,19 @@ impl Plugin for Orchestron {
                 }
                 match event {
                     NoteEvent::NoteOn { timing: _, voice_id: _, channel: _, note, velocity } => {
-                        self.buffer.push(
-                            Sample::new(
-                                resample(
-                                    &self.instrument.c2.to_vec(),
-                                    44100,
-                                    calc_hertz(44100.0, 60 - (note as i32)) as u32
-                                ),
-                                note,
-                                1.0 // velocity * 1.5
-                            )
-                        );
+                        if note >= 12 && note <= 60 {
+                            self.buffer.push(
+                                Sample::new(
+                                    resample(
+                                        &self.instrument.c3.to_vec(),
+                                        self.sample_rate,
+                                        calc_hertz(self.sample_rate, 60 - (note as i32))
+                                    ),
+                                    note,
+                                    velocity
+                                )
+                            );
+                        }
                     }
                     NoteEvent::NoteOff {
                         timing: _,
