@@ -449,7 +449,7 @@ impl Plugin for ToyboxC {
     const NAME: &'static str = "Toybox C1200";
     const VENDOR: &'static str = "ZMANN";
     const URL: &'static str = env!("CARGO_PKG_HOMEPAGE");
-    const EMAIL: &'static str = "info@example.com";
+    const EMAIL: &'static str = "info@zmann.org";
 
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
