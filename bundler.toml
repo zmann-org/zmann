@@ -6,3 +6,6 @@
 
 [toybox_c1200]
 name = "Toybox_C1200"
+
+[orchestron]
+name = "Orchestron"
