@@ -10,3 +10,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 nih_plug = { workspace = true }
+serde = { workspace = true }
+strum = { workspace = true }
+rkyv = { workspace = true }
+instrument = { path = "../instrument" }

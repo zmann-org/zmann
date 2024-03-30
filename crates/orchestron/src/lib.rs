@@ -1,36 +1,25 @@
 use nih_plug::prelude::*;
 use std::sync::Arc;
+use crate::params::OrchestronParams;
+use instrument::buffer::Sample;
+
+mod instruments;
+mod params;
+mod presets;
 
 struct Orchestron {
     params: Arc<OrchestronParams>,
+    pub buffer: Vec<Sample>,
+    // instrument: Instrument,
 }
 
-#[derive(Params)]
-struct OrchestronParams {
-    #[id = "gain"]
-    pub gain: FloatParam,
-}
 
 impl Default for Orchestron {
     fn default() -> Self {
         Self {
             params: Arc::new(OrchestronParams::default()),
-        }
-    }
-}
-
-impl Default for OrchestronParams {
-    fn default() -> Self {
-        Self {
-            gain: FloatParam::new("Gain", util::db_to_gain(0.0), FloatRange::Skewed {
-                min: util::db_to_gain(-30.0),
-                max: util::db_to_gain(30.0),
-                factor: FloatRange::gain_skew_factor(-30.0, 30.0),
-            })
-                .with_smoother(SmoothingStyle::Logarithmic(50.0))
-                .with_unit(" dB")
-                .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
-                .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+            buffer: vec![],
+            // instrument: Instrument::default(),
         }
     }
 }
@@ -43,8 +32,6 @@ impl Plugin for Orchestron {
 
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
-    // The first audio IO layout is used as the default. The other layouts may be selected either
-    // explicitly or automatically by the host or the user depending on the plugin API/backend.
     const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[
         AudioIOLayout {
             main_input_channels: NonZeroU32::new(2),
@@ -76,9 +63,7 @@ impl Plugin for Orchestron {
         _buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>
     ) -> bool {
-        // Resize buffers and perform other potentially expensive initialization operations here.
-        // The `reset()` function is always called right after this function. You can remove this
-        // function if you do not need it.
+       
         true
     }
 
