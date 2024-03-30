@@ -1,0 +1,23 @@
+[package]
+name = "nih_plug_webview"
+version.workspace = true
+edition.workspace = true
+authors = ["Max Huttunen <max.huttunen@gmail.com>, ZMANN <info@zmann.org>"]
+license = "ISC"
+
+[dependencies]
+nih_plug = { workspace = true }
+parking_lot = "0.12.1"
+serde_json = { workspace = true }
+wry = { version = "0.35.2" }
+baseview = { git = "https://github.com/RustAudio/baseview" }
+raw-window-handle = "0.5"
+crossbeam = "0.8.2"
+keyboard-types = "0.6.2"
+
+[target."cfg(target_os = \"windows\")".dependencies.windows]
+version = "0.52.0"
+features = [
+  "Win32_Graphics_Gdi",
+  "Win32_Graphics_Dwm",
+]
