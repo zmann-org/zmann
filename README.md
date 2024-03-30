@@ -20,6 +20,7 @@ As defined in [bundler.toml](./bundler.toml), the following plugins are included
 |Product|CI/CD||TYPE|
 |---|---|---|---|
 |[Toybox C1200](https://zmann.org/product/toybox-c1200)|![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zmann-org/zmann/monorepo.yml?style=for-the-badge&labelColor=000)|![pluginval](https://img.shields.io/badge/pluginval-passing-green.svg?style=for-the-badge&labelColor=000)|![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
+|Orchestron|Issue tracking for [#258](https://github.com/zmann-org/zmann/issues/258).|   |![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
 |[Bilhorn Reed](https://zmann.org/product/bilhorn-reed)|Issue tracking for [#258](https://github.com/zmann-org/zmann/issues/258).|   |![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
 |Hohner Melodica|Issue tracking for [#258](https://github.com/zmann-org/zmann/issues/258).|   |![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
 |Mellotron|Issue tracking for [#258](https://github.com/zmann-org/zmann/issues/258).|   |![Series 1](https://img.shields.io/badge/Series%201-blue?style=for-the-badge)|
