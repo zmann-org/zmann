@@ -9,6 +9,7 @@ pub enum PlayingStyle {
 
 #[derive(Archive, Deserialize, Serialize, Debug)]
 pub struct Instrument {
+    pub name: String,
     pub f0: Vec<f32>,
     pub f1: Vec<f32>,
     pub c2: Vec<f32>,
@@ -22,6 +23,7 @@ impl Instrument {
             f1: vec![],
             c2: vec![],
             c3: vec![],
+            name: String::new(),
         }
     }
 }

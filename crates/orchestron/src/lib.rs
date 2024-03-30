@@ -1,14 +1,20 @@
 use nih_plug::prelude::*;
-use std::sync::Arc;
+use presets::Presets;
+use std::sync::{atomic::Ordering, Arc};
 use crate::params::OrchestronParams;
 use instrument::microbuffer::Sample;
 use crate::resampler::{ calc_hertz, resample };
 use instrument::microbin::{ self, Instrument };
+use rust_embed::RustEmbed;
 
 mod params;
 mod presets;
 mod resources;
 mod resampler;
+
+#[derive(RustEmbed)]
+#[folder = "$CARGO_MANIFEST_DIR/../../samples/Orchestron/"]
+struct Assets;
 
 struct Orchestron {
     params: Arc<OrchestronParams>,
@@ -65,11 +71,9 @@ impl Plugin for Orchestron {
         _buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>
     ) -> bool {
-        // self.load_instrument(
-        //     include_bytes!(
-        //         "D:/Github/zmann/samples/Orchestron input/Orchestron 441/Demo.microbin"
-        //     ).to_vec()
-        // );
+        if self.instrument.f0.is_empty() {
+            self.load_preset(self.params.preset.value());
+        }
         true
     }
 
@@ -84,6 +88,8 @@ impl Plugin for Orchestron {
         context: &mut impl ProcessContext<Self>
     ) -> ProcessStatus {
         let mut next_event = context.next_event();
+        let preset_value_changed = self.params.preset_changed.clone();
+
         for (sample_id, channel_samples) in buffer.iter_samples().enumerate() {
             while let Some(event) = next_event {
                 if event.timing() > (sample_id as u32) {
@@ -99,7 +105,7 @@ impl Plugin for Orchestron {
                                     calc_hertz(44100.0, 60 - (note as i32)) as u32
                                 ),
                                 note,
-                                velocity
+                                1.0 // velocity * 1.5
                             )
                         );
                     }
@@ -133,13 +139,25 @@ impl Plugin for Orchestron {
             }
         }
 
+        if preset_value_changed.swap(false, Ordering::Relaxed) {
+            if self.instrument.name != self.params.preset.value().to_string() {
+                self.load_preset(self.params.preset.value());
+            }
+        }
+
         ProcessStatus::Normal
     }
 }
 
 impl Orchestron {
-    pub fn load_instrument(&mut self, data: Vec<u8>) {
-        self.instrument = microbin::decode(data);
+    pub fn load_preset(&mut self, preset: Presets) {
+        if
+            let Some(input_file) = <Assets as rust_embed::RustEmbed>::get(
+                &format!("{}.microbin", preset.to_string())
+            )
+        {
+            self.instrument = microbin::decode(input_file.data.to_vec());
+        }
     }
 }
 
