@@ -1,9 +1,12 @@
 use nih_plug::prelude::*;
+use crate::presets::Presets;
 
 #[derive(Params)]
 pub struct OrchestronParams {
     #[id = "gain"]
     pub gain: FloatParam,
+    #[id = "preset"]
+    pub preset: EnumParam<Presets>,
 }
 
 impl Default for OrchestronParams {
@@ -18,6 +21,8 @@ impl Default for OrchestronParams {
                 .with_unit(" dB")
                 .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
                 .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+            preset: EnumParam::new("Preset", Presets::default()),
+            // .hide(),
         }
     }
 }

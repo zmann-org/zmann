@@ -1,25 +1,27 @@
 use nih_plug::prelude::*;
 use std::sync::Arc;
 use crate::params::OrchestronParams;
-use instrument::buffer::Sample;
+use instrument::microbuffer::Sample;
+use crate::resampler::{ calc_hertz, resample };
+use instrument::microbin::{ self, Instrument };
 
-mod instruments;
 mod params;
 mod presets;
+mod resources;
+mod resampler;
 
 struct Orchestron {
     params: Arc<OrchestronParams>,
     pub buffer: Vec<Sample>,
-    // instrument: Instrument,
+    instrument: Instrument,
 }
-
 
 impl Default for Orchestron {
     fn default() -> Self {
         Self {
             params: Arc::new(OrchestronParams::default()),
             buffer: vec![],
-            // instrument: Instrument::default(),
+            instrument: Instrument::default(),
         }
     }
 }
@@ -63,31 +65,81 @@ impl Plugin for Orchestron {
         _buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>
     ) -> bool {
-       
+        // self.load_instrument(
+        //     include_bytes!(
+        //         "D:/Github/zmann/samples/Orchestron input/Orchestron 441/Demo.microbin"
+        //     ).to_vec()
+        // );
         true
     }
 
     fn reset(&mut self) {
-        // Reset buffers and envelopes here. This can be called from the audio thread and may not
-        // allocate. You can remove this function if you do not need it.
+        self.buffer.clear();
     }
 
     fn process(
         &mut self,
         buffer: &mut Buffer,
         _aux: &mut AuxiliaryBuffers,
-        _context: &mut impl ProcessContext<Self>
+        context: &mut impl ProcessContext<Self>
     ) -> ProcessStatus {
-        for channel_samples in buffer.iter_samples() {
-            // Smoothing is optionally built into the parameters themselves
+        let mut next_event = context.next_event();
+        for (sample_id, channel_samples) in buffer.iter_samples().enumerate() {
+            while let Some(event) = next_event {
+                if event.timing() > (sample_id as u32) {
+                    break;
+                }
+                match event {
+                    NoteEvent::NoteOn { timing: _, voice_id: _, channel: _, note, velocity } => {
+                        self.buffer.push(
+                            Sample::new(
+                                resample(
+                                    &self.instrument.c2.to_vec(),
+                                    44100,
+                                    calc_hertz(44100.0, 60 - (note as i32)) as u32
+                                ),
+                                note,
+                                velocity
+                            )
+                        );
+                    }
+                    NoteEvent::NoteOff {
+                        timing: _,
+                        voice_id: _,
+                        channel: _,
+                        note,
+                        velocity: _,
+                    } => {
+                        if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note)) {
+                            self.buffer.remove(index);
+                        }
+                    }
+                    _ => (),
+                }
+
+                next_event = context.next_event();
+            }
+
             let gain = self.params.gain.smoothed.next();
 
             for sample in channel_samples {
+                for playing_sample in &mut self.buffer {
+                    *sample += playing_sample.get_next_sample() * playing_sample.get_velocity();
+                }
+
                 *sample *= gain;
+
+                self.buffer.retain(|e| !e.should_be_removed());
             }
         }
 
         ProcessStatus::Normal
+    }
+}
+
+impl Orchestron {
+    pub fn load_instrument(&mut self, data: Vec<u8>) {
+        self.instrument = microbin::decode(data);
     }
 }
 

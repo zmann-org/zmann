@@ -13,3 +13,9 @@ pub enum Presets {
     Saxophone,
     Violins,
 }
+
+impl Default for Presets {
+    fn default() -> Self {
+        Presets::Cello
+    }
+}

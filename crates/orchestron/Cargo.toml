@@ -14,3 +14,4 @@ serde = { workspace = true }
 strum = { workspace = true }
 rkyv = { workspace = true }
 instrument = { path = "../instrument" }
+dasp = { version = "0.11", features = ["signal", "interpolate-linear", "interpolate"] }
