@@ -105,7 +105,7 @@ impl Plugin for Orchestron {
                                 Sample::new(
                                     resample(
                                         &self.instrument.c3.to_vec(),
-                                        self.sample_rate,
+                                        44100.0,
                                         calc_hertz(self.sample_rate, 60 - (note as i32))
                                     ),
                                     note,
