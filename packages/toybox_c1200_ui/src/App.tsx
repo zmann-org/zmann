@@ -31,6 +31,7 @@ function App() {
   const [preset, setPreset] = useState<string>("");
   const [output, setOutput] = useState<number>(0.5);
   const [reverbType, setReverbType] = useState<string>("");
+  const [filterType, setFilterType] = useState<string>("");
 
   useEffect(() => {
     window.sendToPlugin = sendToPlugin;
@@ -52,6 +53,10 @@ function App() {
         }
         case "reverb_type_changed": {
           setReverbType(msg.value);
+          break;
+        }
+        case "filter_type_changed": {
+          setFilterType(msg.value);
           break;
         }
       }
@@ -108,7 +113,37 @@ function App() {
           style={{ padding: "10px", gap: "10px" }}
         >
           <Grid xs={7}>
-            <Module name="Filter">hello</Module>
+            <Module
+              name="Filter"
+              footer={
+                <Description
+                  title={
+                    <span style={{ margin: "-2px 6px" }}>FILTER TYPE</span>
+                  }
+                  content={
+                    <ToggleList
+                      margin={0.2}
+                      scale={0.1}
+                      width={"98%"}
+                      value={filterType}
+                      onChange={(value) =>
+                        sendToPlugin({
+                          type: "SetFilterType",
+                          preset: value,
+                        })
+                      }
+                    >
+                      <ToggleList.Item value="Off">Off</ToggleList.Item>
+                      <ToggleList.Item value="LowPass">LP</ToggleList.Item>
+                      <ToggleList.Item value="HighPass">HP</ToggleList.Item>
+                      <ToggleList.Item value="BandPass">BP</ToggleList.Item>
+                    </ToggleList>
+                  }
+                />
+              }
+            >
+              hello
+            </Module>
           </Grid>
           <Grid xs={4}>
             <Module name="Vibrato">hello</Module>
