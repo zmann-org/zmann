@@ -10,6 +10,7 @@ use rust_embed::RustEmbed;
 mod params;
 mod presets;
 mod resampler;
+mod editor;
 
 #[derive(RustEmbed)]
 #[folder = "$CARGO_MANIFEST_DIR/../../samples/Orchestron/"]
@@ -64,6 +65,10 @@ impl Plugin for Orchestron {
 
     fn params(&self) -> Arc<dyn Params> {
         self.params.clone()
+    }
+
+    fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> { 
+        editor::create(self.params.clone())
     }
 
     fn initialize(
