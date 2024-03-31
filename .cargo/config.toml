@@ -2,4 +2,8 @@
 xtask = "run --package xtask --release --"
 
 [build]
-jobs = 1 
+jobs = 1
+
+[env]
+ORCHESTRON_UI_DIST = { value = "packages/orchestron_ui/dist/", relative = true }
+TOYBOX_C1200_UI_DIST = { value = "packages/toybox_c1200_ui/dist/", relative = true }

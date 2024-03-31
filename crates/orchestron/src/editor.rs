@@ -21,7 +21,7 @@ enum Action {
 }
 
 #[derive(RustEmbed)]
-#[folder = "$CARGO_MANIFEST_DIR/../../packages/orchestron_ui/dist/"]
+#[folder = "$ORCHESTRON_UI_DIST"]
 struct WebAssets;
 
 pub(crate) fn create(params: Arc<OrchestronParams>) -> Option<Box<dyn Editor>> {
