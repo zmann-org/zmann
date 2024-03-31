@@ -41,7 +41,16 @@ function App() {
     };
 
     window.onPluginMessage = (msg: any) => {
-      console.log(msg);
+      if (Array.isArray(msg)) {
+        msg.forEach((item) => {
+          handlePluginMessage(item);
+        });
+      } else {
+        handlePluginMessage(msg);
+      }
+    };
+
+    const handlePluginMessage = (msg: any) => {
       switch (msg.type) {
         case "preset_change": {
           setPreset(msg.value);

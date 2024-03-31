@@ -562,34 +562,22 @@ impl Plugin for ToyboxC {
                             }
                             Action::Init => {
                                 let _ = ctx.send_json(
-                                    json!({
+                                    json!([{
                                         "type": "preset_change",
                                         "value": params.preset.value().to_string(),
-                                    })
-                                );
-                                let _ = ctx.send_json(
-                                    json!({
+                                    },{
                                         "type": "reverb_dry_wet_change",
                                         "value": params.reverb_dry_wet_ratio.value().to_string(),
-                                    })
-                                );
-                                let _ = ctx.send_json(
-                                    json!({
+                                    },{
                                         "type": "reverb_type_changed",
                                         "value": params.reverb_type.value().to_string(),
-                                    })
-                                );
-                                let _ = ctx.send_json(
-                                    json!({
+                                    },{
                                         "type": "filter_type_changed",
                                         "value": params.filter_type.value().to_string(),
-                                    })
-                                );
-                                let _ = ctx.send_json(
-                                    json!({
+                                    },{
                                         "type": "output_gain_changed",
                                         "value": params.output_gain.modulated_normalized_value().to_string(),
-                                    })
+                                    }])
                                 );
                             }
                         }
@@ -642,11 +630,11 @@ impl Plugin for ToyboxC {
                 }
             });
 
-            #[cfg(windows)]
-            {
-                editor = editor.with_caption_color(0x00292728).with_browser_accelerator_keys(true);
-            }
-            
+        #[cfg(windows)]
+        {
+            editor = editor.with_caption_color(0x00292728).with_browser_accelerator_keys(true);
+        }
+
         Some(Box::new(editor))
     }
 

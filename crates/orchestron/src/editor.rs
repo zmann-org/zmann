@@ -1,7 +1,8 @@
 use nih_plug::prelude::Editor;
+use nih_plug::prelude::Param;
 use nih_plug_webview::{ http::{ header::CONTENT_TYPE, Response }, HTMLSource, WebViewEditor };
 use rust_embed::RustEmbed;
-use std::sync::Arc;
+use std::sync::{ atomic::Ordering, Arc };
 use serde::Deserialize;
 use serde_json::json;
 use crate::Presets;
@@ -14,6 +15,9 @@ enum Action {
     SetPreset {
         preset: Presets,
     },
+    SetGain {
+        value: f32,
+    },
 }
 
 #[derive(RustEmbed)]
@@ -21,6 +25,9 @@ enum Action {
 struct WebAssets;
 
 pub(crate) fn create(params: Arc<OrchestronParams>) -> Option<Box<dyn Editor>> {
+    let gain_change = params.gain_change.clone();
+    let preset_change = params.preset_change.clone();
+
     let mut editor = WebViewEditor::new(HTMLSource::URL("zmann://localhost/index.html"), (800, 350))
         .with_custom_protocol("zmann".into(), move |request| {
             let path = request.uri().path();
@@ -66,14 +73,40 @@ pub(crate) fn create(params: Arc<OrchestronParams>) -> Option<Box<dyn Editor>> {
                         }
                         Action::Init => {
                             let _ = ctx.send_json(
-                                json!({
+                                json!([{
                                     "type": "preset_change",
                                     "value": params.preset.value().to_string(),
-                                })
+                                }, {
+                                    "type": "gain_change",
+                                    "value": params.gain.modulated_normalized_value().to_string(),
+                                }])
                             );
+                        }
+                        Action::SetGain { value } => {
+                            setter.begin_set_parameter(&params.gain);
+                            setter.set_parameter_normalized(&params.gain, value);
+                            setter.end_set_parameter(&params.gain);
                         }
                     }
                 }
+            }
+
+            if preset_change.swap(false, Ordering::Relaxed) {
+                let _ = ctx.send_json(
+                    json!({
+                        "type": "preset_change",
+                        "value": params.preset.value().to_string(),
+                    })
+                );
+            }
+
+            if gain_change.swap(false, Ordering::Relaxed) {
+                let _ = ctx.send_json(
+                    json!({
+                        "type": "gain_change",
+                        "value": params.gain.modulated_normalized_value().to_string(),
+                    })
+                );
             }
         });
 

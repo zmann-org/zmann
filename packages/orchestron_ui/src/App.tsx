@@ -29,9 +29,7 @@ const sendToPlugin = (msg: any) => {
 
 function App() {
   const [preset, setPreset] = useState<string>("");
-  const [output, setOutput] = useState<number>(0.5);
-  const [reverbType, setReverbType] = useState<string>("");
-  const [filterType, setFilterType] = useState<string>("");
+  const [gain, setGain] = useState<number>(0.5);
 
   useEffect(() => {
     window.sendToPlugin = sendToPlugin;
@@ -41,24 +39,23 @@ function App() {
     };
 
     window.onPluginMessage = (msg: any) => {
-      console.log(msg);
+      if (Array.isArray(msg)) {
+        msg.forEach((item) => {
+          handlePluginMessage(item);
+        });
+      } else {
+        handlePluginMessage(msg);
+      }
+    };
+
+    const handlePluginMessage = (msg: any) => {
       switch (msg.type) {
-        case "preset_change": {
+        case "preset_change":
           setPreset(msg.value);
           break;
-        }
-        case "output_gain_changed": {
-          setOutput(msg.value);
+        case "gain_change":
+          setGain(msg.value);
           break;
-        }
-        case "reverb_type_changed": {
-          setReverbType(msg.value);
-          break;
-        }
-        case "filter_type_changed": {
-          setFilterType(msg.value);
-          break;
-        }
       }
     };
 
@@ -98,9 +95,9 @@ function App() {
             max={1.0}
             min={0}
             onChange={(value) => {
-              sendToPlugin({ type: "SetOutputGain", value: value });
+              sendToPlugin({ type: "SetGain", value: value });
             }}
-            value={output}
+            value={gain}
             step={0.01}
           />
         </HeaderRight>
@@ -125,7 +122,7 @@ function App() {
                       margin={0.2}
                       scale={0.1}
                       width={"98%"}
-                      value={filterType}
+                      // value={filterType}
                       onChange={(value) =>
                         sendToPlugin({
                           type: "SetFilterType",
@@ -165,7 +162,7 @@ function App() {
                       width={"126px"}
                       margin={0.2}
                       scale={0.1}
-                      value={reverbType}
+                      // value={reverbType}
                       onChange={(value) =>
                         sendToPlugin({
                           type: "SetReverbType",

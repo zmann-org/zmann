@@ -81,6 +81,7 @@ impl Plugin for Orchestron {
         if self.instrument.f0.is_empty() {
             self.load_preset(self.params.preset.value());
         }
+        
         true
     }
 
@@ -95,7 +96,7 @@ impl Plugin for Orchestron {
         context: &mut impl ProcessContext<Self>
     ) -> ProcessStatus {
         let mut next_event = context.next_event();
-        let preset_value_changed = self.params.preset_changed.clone();
+        let preset_change = self.params.preset_change.clone();
 
         for (sample_id, channel_samples) in buffer.iter_samples().enumerate() {
             while let Some(event) = next_event {
@@ -103,7 +104,8 @@ impl Plugin for Orchestron {
                     break;
                 }
                 match event {
-                    NoteEvent::NoteOn { timing: _, voice_id: _, channel: _, note, velocity } => {
+                    NoteEvent::NoteOn { timing: _, voice_id: _, channel: _, note, mut velocity } => {
+                        velocity = velocity * 1.5;
                         if note >= 12 && note <= 84 {
                             if note >= 12 && note <= 52 {
                                 self.buffer.push(
@@ -192,7 +194,7 @@ impl Plugin for Orchestron {
             }
         }
 
-        if preset_value_changed.swap(false, Ordering::Relaxed) {
+        if preset_change.load(Ordering::Relaxed) {
             if self.instrument.name != self.params.preset.value().to_string() {
                 self.load_preset(self.params.preset.value());
             }

@@ -1,4 +1,4 @@
-use std::sync::{atomic::{AtomicBool, Ordering}, Arc};
+use std::sync::{ atomic::{ AtomicBool, Ordering }, Arc };
 
 use nih_plug::prelude::*;
 use crate::presets::Presets;
@@ -7,10 +7,12 @@ use crate::presets::Presets;
 pub struct OrchestronParams {
     #[id = "gain"]
     pub gain: FloatParam,
+    #[allow(dead_code)]
+    pub gain_change: Arc<AtomicBool>,
     #[id = "preset"]
     pub preset: EnumParam<Presets>,
     #[allow(dead_code)]
-    pub preset_changed: Arc<AtomicBool>,
+    pub preset_change: Arc<AtomicBool>,
 }
 
 fn create_callback<T: 'static + Send + Sync>(
@@ -27,7 +29,8 @@ fn create_callback<T: 'static + Send + Sync>(
 
 impl Default for OrchestronParams {
     fn default() -> Self {
-        let (preset_changed, preset_callback) = create_callback(|_: Presets| {});
+        let (preset_change, preset_callback) = create_callback(|_: Presets| {});
+        let (gain_change, gain_callback) = create_callback(|_: f32| {});
         Self {
             gain: FloatParam::new("Gain", util::db_to_gain(0.0), FloatRange::Skewed {
                 min: util::db_to_gain(-30.0),
@@ -37,10 +40,13 @@ impl Default for OrchestronParams {
                 .with_smoother(SmoothingStyle::Logarithmic(50.0))
                 .with_unit(" dB")
                 .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
-                .with_string_to_value(formatters::s2v_f32_gain_to_db()),
-            preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback),
-            // .hide(),
-            preset_changed,
+                .with_string_to_value(formatters::s2v_f32_gain_to_db())
+                .with_callback(gain_callback),
+            gain_change,
+            preset: EnumParam::new("Preset", Presets::default())
+                .with_callback(preset_callback)
+                .hide(),
+            preset_change: preset_change,
         }
     }
 }
