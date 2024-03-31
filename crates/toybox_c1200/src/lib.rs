@@ -21,7 +21,7 @@ use std::sync::{ atomic::{ AtomicBool, Ordering }, Arc };
 mod presets;
 
 #[derive(RustEmbed)]
-#[folder = "$TOYBOX_C1200_UI_DIST"]
+#[folder = "$TOYBOX_C1200_UI/dist/"]
 struct WebAssets;
 #[derive(RustEmbed)]
 #[folder = "$CARGO_MANIFEST_DIR/../../samples/Toybox_c1200/"]
