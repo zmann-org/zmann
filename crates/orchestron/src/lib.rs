@@ -9,7 +9,6 @@ use rust_embed::RustEmbed;
 
 mod params;
 mod presets;
-mod resources;
 mod resampler;
 
 #[derive(RustEmbed)]
@@ -100,18 +99,62 @@ impl Plugin for Orchestron {
                 }
                 match event {
                     NoteEvent::NoteOn { timing: _, voice_id: _, channel: _, note, velocity } => {
-                        if note >= 12 && note <= 60 {
-                            self.buffer.push(
-                                Sample::new(
-                                    resample(
-                                        &self.instrument.c3.to_vec(),
-                                        44100.0,
-                                        calc_hertz(self.sample_rate, 60 - (note as i32))
-                                    ),
-                                    note,
-                                    velocity
-                                )
-                            );
+                        if note >= 12 && note <= 84 {
+                            if note >= 12 && note <= 52 {
+                                self.buffer.push(
+                                    Sample::new(
+                                        resample(
+                                            &self.instrument.f0.to_vec(),
+                                            44100.0,
+                                            calc_hertz(self.sample_rate, 41 - (note as i32))
+                                        ),
+                                        note,
+                                        velocity
+                                    )
+                                );
+                            }
+
+                            if note >= 53 && note <= 59 {
+                                self.buffer.push(
+                                    Sample::new(
+                                        resample(
+                                            &self.instrument.f1.to_vec(),
+                                            44100.0,
+                                            calc_hertz(self.sample_rate, 53 - (note as i32))
+                                        ),
+                                        note,
+                                        velocity
+                                    )
+                                );
+                            }
+
+                            if note >= 60 && note <= 71 {
+                                self.buffer.push(
+                                    Sample::new(
+                                        resample(
+                                            &self.instrument.c2.to_vec(),
+                                            44100.0,
+                                            calc_hertz(self.sample_rate, 60 - (note as i32))
+                                        ),
+                                        note,
+                                        velocity
+                                    )
+                                );
+                            }
+
+                            if note >= 72 && note <= 84 {
+                                self.buffer.push(
+                                    Sample::new(
+                                        resample(
+                                            &self.instrument.c3.to_vec(),
+                                            44100.0,
+                                            calc_hertz(self.sample_rate, 72 - (note as i32))
+                                        ),
+                                        note,
+                                        velocity
+                                    )
+                                );
+                            }
                         }
                     }
                     NoteEvent::NoteOff {
