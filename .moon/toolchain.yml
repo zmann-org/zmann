@@ -1,4 +1,0 @@
-rust: {}
-
-node:
-  packageManager: "yarn"

@@ -1,0 +1,29 @@
+name: Toybox C1200
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - run: mkdir ./samples/Toybox_c1200/ # Create empty artifacts folder for Toybox_C1200 not to fail
+      - run: cargo xtask bundle toybox_c1200 --release
