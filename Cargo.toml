@@ -7,6 +7,7 @@ members = [
     "crates/fx",
     "crates/nih_plug_webview",
     "crates/xtask",
+    "crates/build_function",
 ]
 resolver = "2"
 
@@ -21,9 +22,12 @@ nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0"
 serde_derive = "1.0.190"
-rust-embed = { version = "8.2.0", features = ["interpolate-folder-path"] } # set in the future to "debug-embed", for now we can leave it as is
+rust-embed = { version = "8.2.0", features = [
+    "interpolate-folder-path",
+] } # set in the future to "debug-embed", for now we can leave it as is
 strum = { version = "0.26", features = ["derive"] }
 rkyv = "0.7.44"
+cargo-emit = "0.2.1"
 
 [profile.release]
 lto = "thin"

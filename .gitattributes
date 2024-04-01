@@ -2,4 +2,6 @@
 * text=auto eol=lf
 
 # Normalized and converts to native line endings on checkout.
-*.rs text
+*.rs       text diff=rust
+*.toml     text diff=toml
+Cargo.lock text

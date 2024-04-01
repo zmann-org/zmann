@@ -1,5 +1,6 @@
 [package]
 name = "orchestron"
+build = "build.rs"
 authors.workspace = true
 version.workspace = true
 edition.workspace = true
@@ -8,12 +9,20 @@ license.workspace = true
 [lib]
 crate-type = ["cdylib"]
 
+[build-dependencies]
+cargo-emit.workspace = true
+build_function = { path = "../build_function" }
+
 [dependencies]
 nih_plug = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 rust-embed = { workspace = true }
-dasp = { version = "0.11", features = ["signal", "interpolate-linear", "interpolate"] }
+dasp = { version = "0.11", features = [
+    "signal",
+    "interpolate-linear",
+    "interpolate",
+] }
 instrument = { path = "../instrument" }
 nih_plug_webview = { path = "../nih_plug_webview" }
 strum = { workspace = true }
