@@ -1,5 +1,4 @@
-use build_function::build;
-use cargo_emit::{ rerun_if_changed, warning };
+use build_function::{ build, cargo_emit::{ rerun_if_changed, warning } };
 
 fn main() {
     rerun_if_changed!(format!("{}/src/", env!("ORCHESTRON_UI")), "build.rs");

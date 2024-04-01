@@ -1,16 +1,15 @@
 [package]
 name = "orchestron"
-build = "build.rs"
 authors.workspace = true
 version.workspace = true
 edition.workspace = true
 license.workspace = true
+build = "build.rs"
 
 [lib]
 crate-type = ["cdylib"]
 
 [build-dependencies]
-cargo-emit.workspace = true
 build_function = { path = "../build_function" }
 
 [dependencies]

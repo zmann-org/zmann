@@ -1,6 +1,8 @@
 use npm_rs::{ NodeEnv, NpmEnv };
 use std::{ env::VarError, process::ExitStatus };
 
+pub use cargo_emit;
+
 pub fn build(path: &str, profile: Result<String, VarError>) -> Result<ExitStatus, std::io::Error> {
     let node_env = match profile {
         Ok(profile) =>

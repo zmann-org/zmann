@@ -7,3 +7,4 @@ edition.workspace = true
 
 [dependencies]
 npm_rs = "1.0.0"
+cargo-emit = "0.2.1"

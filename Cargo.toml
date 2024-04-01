@@ -27,7 +27,6 @@ rust-embed = { version = "8.2.0", features = [
 ] } # set in the future to "debug-embed", for now we can leave it as is
 strum = { version = "0.26", features = ["derive"] }
 rkyv = "0.7.44"
-cargo-emit = "0.2.1"
 
 [profile.release]
 lto = "thin"
