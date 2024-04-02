@@ -26,4 +26,5 @@ jobs:
           node-version: "18"
 
       - run: mkdir ./samples/Toybox_c1200/ # Create empty artifacts folder for Toybox_C1200 not to fail
+      - run: npm ci
       - run: cargo xtask bundle toybox_c1200 --release
