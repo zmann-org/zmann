@@ -11,7 +11,7 @@ parking_lot = "0.12.1"
 serde_json = { workspace = true }
 wry = { version = "0.35.2" }
 baseview = { git = "https://github.com/RustAudio/baseview" }
-raw-window-handle = "0.5"
+raw-window-handle = "0.6"
 crossbeam = "0.8.2"
 keyboard-types = "0.6.2"
 
