@@ -24,5 +24,5 @@ jobs:
 
       - run: mkdir ./samples/Orchestron/ # Create empty artifacts folder for Orchestron not to fail
       - run: cd ./packages/orchestron_ui/ && ls
-      - run: npm ci && npm run && npm run build
+      - run: npm install && npm run && npm run build
       - run: cargo xtask bundle orchestron --release
