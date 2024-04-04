@@ -14,11 +14,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          components: rustfmt, clippy
+      - name: Setup Rust
+      - uses: dtolnay/rust-toolchain@stable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -26,6 +23,6 @@ jobs:
           node-version: "18"
 
       - run: mkdir ./samples/Orchestron/ # Create empty artifacts folder for Orchestron not to fail
-      - run: cd packages/orchestron_ui/
-      - run: npm ci && npm run build
+      - run: cd ./packages/orchestron_ui/ && ls
+      - run: npm ci && npm run && npm run build
       - run: cargo xtask bundle orchestron --release
