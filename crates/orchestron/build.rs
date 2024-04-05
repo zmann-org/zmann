@@ -1,3 +1,5 @@
+use std::fs::canonicalize;
+
 use build_function::{ build, cargo_emit::{ rerun_if_changed, warning } };
 
 fn main() {
@@ -11,4 +13,6 @@ fn main() {
             panic!("Build failed, {}", e);
         }
     }
+
+    warning!("path: {:?}", canonicalize(env!("ORCHESTRON_UI")).unwrap());
 }

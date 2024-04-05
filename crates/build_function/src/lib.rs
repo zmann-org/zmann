@@ -17,7 +17,6 @@ pub fn build(path: &str, profile: Result<String, VarError>) -> Result<ExitStatus
         }
     };
 
-    warning!("path: {:?}", canonicalize(path).unwrap());
     return NpmEnv::default()
         .with_node_env(&node_env)
         .set_path(canonicalize(path).unwrap())
