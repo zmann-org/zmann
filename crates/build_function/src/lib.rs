@@ -1,5 +1,5 @@
 use npm_rs::{ NodeEnv, NpmEnv };
-use std::{ env::VarError, process::ExitStatus };
+use std::{ env::VarError, fs::canonicalize, process::ExitStatus };
 
 pub use cargo_emit;
 
@@ -18,7 +18,7 @@ pub fn build(path: &str, profile: Result<String, VarError>) -> Result<ExitStatus
 
     return NpmEnv::default()
         .with_node_env(&node_env)
-        .set_path(path)
+        .set_path(canonicalize(path).unwrap())
         .init_env()
         .install(None)
         .run("build")
