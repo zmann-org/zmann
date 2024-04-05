@@ -1,4 +1,3 @@
-use cargo_emit::warning;
 use npm_rs::{ NodeEnv, NpmEnv };
 use std::{ env::VarError, fs::canonicalize, process::ExitStatus };
 
