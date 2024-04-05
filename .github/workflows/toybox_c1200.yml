@@ -27,4 +27,5 @@ jobs:
 
       - run: mkdir ./samples/Toybox_c1200/ # Create empty artifacts folder for Toybox_C1200 not to fail
       - run: npm ci
+      - run: cd ./packages/toybox_c1200_ui/ && npm run build
       - run: cargo xtask bundle toybox_c1200 --release

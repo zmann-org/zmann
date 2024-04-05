@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: "18"
 
-      - run: mkdir ./samples/Orchestron/ # Create empty artifacts folder for Orchestron not to fail
+      - run: mkdir ./samples/Orchestron/
       - run: npm ci
+      - run: cd ./packages/orchestron_ui/ && npm run build
       - run: cargo xtask bundle orchestron --release
