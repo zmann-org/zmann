@@ -24,7 +24,8 @@ serde_json = "1.0"
 serde_derive = "1.0.190"
 rust-embed = { version = "8.2.0", features = [
     "interpolate-folder-path",
-] } # set in the future to "debug-embed", for now we can leave it as is
+    "debug-embed"
+] }
 strum = { version = "0.26", features = ["derive"] }
 rkyv = "0.7.44"
 

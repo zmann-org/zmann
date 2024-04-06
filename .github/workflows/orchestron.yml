@@ -1,0 +1,28 @@
+name: Orchestron
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - run: mkdir ./samples/Orchestron/
+      - run: npm ci
+      - run: cd ./packages/orchestron_ui/ && npm run build
+      - run: cargo xtask bundle orchestron --release

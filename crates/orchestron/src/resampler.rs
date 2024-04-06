@@ -1,9 +1,10 @@
+use dasp::{interpolate::linear::Linear, signal, Signal};
+
 pub fn resample(
     data: &[f32],
     sample_rate0: f32,
     sample_rate: f32,
 ) -> Vec<f32> {
-    use dasp::{interpolate::linear::Linear, signal, Signal};
     let n = data.len() / (2 as usize);
     let n = n * sample_rate as usize / sample_rate0 as usize;
         let mut source = signal::from_interleaved_samples_iter::<_, [_; 2]>(data.iter().cloned());
@@ -21,6 +22,6 @@ pub fn resample(
         data
 }
 
-pub fn calc_hertz(hz: f32 ,difference: i32) -> f32 {
+pub fn calc_hertz(hz: f32, difference: i32) -> f32 {
     hz * f32::powf(2.0, (difference as f32) / 12.0)
 }
