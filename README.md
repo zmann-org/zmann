@@ -47,7 +47,7 @@ As defined in [bundler.toml](./bundler.toml), the following plugins are included
 ## Table of Contents
 - [Plugins](#plugins)
 - [Installation](#installation)
-- [Demonstration](#demonstration)
+- [Demo](#demo)
 - [Documentation](#documentation)
 - [Building](#building)
   - [Prerequisites](#prerequisites)
