@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="101"
+    height="28" role="img" aria-label="DOWNLOAD">
+    <title>DOWNLOAD</title>
+    <g shape-rendering="crispEdges">
+        <rect width="101" height="28" fill="#42413e" />
+    </g>
+    <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif"
+        text-rendering="geometricPrecision" font-size="100">
+        <text transform="scale(.1)" x="505" y="175" textLength="770" fill="#fff" font-weight="bold">
+            DOWNLOAD</text>
+    </g>
+    <script xmlns="" id="bw-fido2-page-script" />
+</svg>
