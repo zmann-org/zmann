@@ -10,4 +10,4 @@ zstd = "0.13.0"
 serde_derive = { workspace = true }
 serde = { workspace = true }
 rkyv = { workspace = true }
-rustc-hash = "1.1.0"
+rustc-hash = "2.0.0"
