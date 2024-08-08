@@ -47,7 +47,7 @@ After downloading the *.vst3* file, move it to your VST3 directory. The default 
   - [Prerequisites](#prerequisites)
   - [Building the plugins](#building-the-plugins)
   - [Cross-compiling](#cross-compiling)
-- [Acknowledgments](#acknowledgments)
+- [License](#license)
 
 ## Building
 > [!WARNING]  
