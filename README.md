@@ -112,20 +112,7 @@ Finally, you can build the plugins by running the following command:
 $ cargo xtask bundle plugin_name
 ```
 
-## Acknowledgments
-- [**nih-plug-webview**](./crates/nih_plug_webview/) (Modified)
-  - Original Library: [nih-plug-webview](https://github.com/maxjvh/nih-plug-webview)
-  - License: ISC
-
-- [**fx**](./crates/fx/) (Modified)
-  - Original Library: [renzol2/fx](https://github.com/renzol2/fx)
-  - License: GPLv3
-
-- **nih-plug** (Integrated)
-  - Original Library: [nih-plug](https://github.com/robbert-vdh/nih-plug)
-    - The framework is licensed under the ISC license.
-    - The VST3 bindings used by `nih_export_vst3!()` are licensed under the GPLv3 license. This implies that unless you replace these bindings with your own bindings made from scratch, any VST3 plugins built in this repository need to comply with the terms of the GPLv3 license.
-
+## License
 The code in this repository is licensed under the GNU General Public License v3.0 or later. You can find a copy of the license in the [LICENSE](./LICENSE) file.
 
 The samples included in this repository are owned by their respective owners. Please refer to the individual sample files for their specific licensing information.
