@@ -3,11 +3,13 @@ use std::f32::consts::E;
 const AVERAGE_FACTOR: f32 = 0.9999;
 
 /// FIXME: Use with extreme caution and low volumes.
-/// I probably implemented this wrong, because Juan Gil's JUCE version sounds fine but this does not.
+/// I probably implemented this wrong, because Juan Gil's JUCE version sounds
+/// fine but this does not.
 ///
 /// A dynamic range processor capable of compression and expansion.
 ///
-/// Code ported from Juan Gil's compressor-expander implementation, which is licensed under GNU:
+/// Code ported from Juan Gil's compressor-expander implementation, which is
+/// licensed under GNU:
 // https://github.com/juandagilc/Audio-Effects/blob/master/Compressor-Expander/Source/PluginProcessor.cpp
 pub struct DynamicRangeProcessor {
     sample_rate: usize,
@@ -47,12 +49,14 @@ impl DynamicRangeProcessor {
     /// Update the parameters of the dynamic range processor.
     ///
     /// # Arguments
-    /// * `threshold` - the threshold at what level to enact dynamic range processing, in dBFS
-    /// * `ratio` - the amount of attenuation after the input signal crosses the threshold
+    /// * `threshold` - the threshold at what level to enact dynamic range
+    ///   processing, in dBFS
+    /// * `ratio` - the amount of attenuation after the input signal crosses the
+    ///   threshold
     /// * `attack` - the amount of time to reach full attenuation, in seconds
     /// * `release` - the amount of time to stop attenuation, in seconds
-    /// * `is_expander` - when false, compress when input exceeds threshold; otherwise, expand when input falls below threshold
-    ///
+    /// * `is_expander` - when false, compress when input exceeds threshold;
+    ///   otherwise, expand when input falls below threshold
     pub fn set_parameters(
         &mut self,
         threshold: f32,
@@ -82,7 +86,6 @@ impl DynamicRangeProcessor {
 
     ///
     /// Convert stereo (2-channel) buffer to mono
-    ///
     pub fn mix_down_input(buffer: &Vec<(f32, f32)>) -> Vec<f32> {
         let mixed_down: Vec<f32> = buffer.into_iter().map(|x| (x.0 + x.1) / 2.).collect();
         mixed_down
@@ -94,7 +97,6 @@ impl DynamicRangeProcessor {
     /// # Arguments
     /// * `input` - a single input sample
     /// * `makeup_gain` - the makeup gain to apply after compression
-    ///
     pub fn calculate_control_voltage(&mut self, input: f32, makeup_gain: f32) -> f32 {
         // Get internal parameters
         let threshold = self.threshold;
@@ -152,7 +154,8 @@ impl DynamicRangeProcessor {
         control_voltage
     }
 
-    /// Calculate control voltage signal for a stereo input buffer with static makeup gain
+    /// Calculate control voltage signal for a stereo input buffer with static
+    /// makeup gain
     pub fn calculate_cv_signal(&mut self, buffer: &Vec<(f32, f32)>, makeup_gain: f32) -> Vec<f32> {
         let mixed_down_input = DynamicRangeProcessor::mix_down_input(buffer);
         mixed_down_input
@@ -167,7 +170,6 @@ impl DynamicRangeProcessor {
     /// # Arguments
     /// * `input_frame` - a stereo frame of input
     /// * `makeup_gain` - the makeup gain to apply after processing, in dB
-    ///
     pub fn process_input_frame(&mut self, input_frame: (f32, f32), makeup_gain: f32) -> (f32, f32) {
         // Get internal parameters
         let threshold = self.threshold;

@@ -37,7 +37,8 @@ pub fn get_saturating_hard_clipper_output(drive: f32, input_sample: f32) -> f32 
 }
 
 /// Processes an input sample through a fuzz inducing rectifier.
-/// Drive parameter linearly changes waveshaper from a half-wave rectifier to a full-wave rectifier.
+/// Drive parameter linearly changes waveshaper from a half-wave rectifier to a
+/// full-wave rectifier.
 ///
 /// Desmos visualization of parameterization: https://www.desmos.com/calculator/hzttouljdp
 pub fn get_fuzzy_rectifier_output(drive: f32, input_sample: f32) -> f32 {
@@ -50,11 +51,11 @@ pub fn get_fuzzy_rectifier_output(drive: f32, input_sample: f32) -> f32 {
     get_saturator_output(drive, output)
 }
 
-/// Processes an input sample through a rectifying curve modeled after a Shockley-Diode circuit.
-/// Drive parameter changes the intensity of the curve.
+/// Processes an input sample through a rectifying curve modeled after a
+/// Shockley-Diode circuit. Drive parameter changes the intensity of the curve.
 ///
-/// Based off Chowdhury's Shockley Diode rectifier equation, modeled from William Shockley's work:
-/// https://ccrma.stanford.edu/~jatin/papers/Complex_NLs.pdf
+/// Based off Chowdhury's Shockley Diode rectifier equation, modeled from
+/// William Shockley's work: https://ccrma.stanford.edu/~jatin/papers/Complex_NLs.pdf
 ///
 /// Desmos visualization of parameterization: https://www.desmos.com/calculator/wduyw6huen
 pub fn get_shockley_diode_rectifier_output(drive: f32, input_sample: f32) -> f32 {
@@ -64,8 +65,8 @@ pub fn get_shockley_diode_rectifier_output(drive: f32, input_sample: f32) -> f32
     get_saturating_hard_clipper_output(drive, shockley_diode_output)
 }
 
-/// Processes an input sample through a dropout curve modeled after analog circuit response, where
-/// lower input levels snap to zero.
+/// Processes an input sample through a dropout curve modeled after analog
+/// circuit response, where lower input levels snap to zero.
 /// Drive parameter changes the threshold of dropout.
 ///
 /// Based off Chowdhury's Dropout equation:
@@ -105,8 +106,9 @@ fn lower_waveshaper(x: f32, lower_skew_param: f32) -> f32 {
     }
 }
 
-/// Processes an input sample through an asymmetrical, "double soft clipper" waveshaper algorithm.
-/// The drive parameter changes the upper limit of positive inputs and the skew of negative inputs.
+/// Processes an input sample through an asymmetrical, "double soft clipper"
+/// waveshaper algorithm. The drive parameter changes the upper limit of
+/// positive inputs and the skew of negative inputs.
 ///
 /// Based off Chowdhury's double soft clipper:
 /// https://ccrma.stanford.edu/~jatin/papers/Complex_NLs.pdf
@@ -131,7 +133,8 @@ pub fn get_double_soft_clipper_output(drive: f32, input_sample: f32) -> f32 {
 }
 
 /// Processes an input sample through a sinusoidal wavefolder.
-/// The drive parameter increases the frequency of the sine curve, causing more distortion.
+/// The drive parameter increases the frequency of the sine curve, causing more
+/// distortion.
 ///
 /// Desmos: https://www.desmos.com/calculator/zwffvndj7j
 pub fn get_wavefolder_output(drive: f32, input_sample: f32) -> f32 {

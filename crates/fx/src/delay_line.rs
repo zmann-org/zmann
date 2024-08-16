@@ -10,7 +10,6 @@ use std::f32::consts::PI;
 /// * `x0` - value corresponding to `x[n]`
 /// * `x1` - value corresponding to `x[n+1]`
 /// * `x2` - value corresponding to `x[n+2]`
-///
 fn get_cubic_interpolated_value(fpos: f32, xm1: f32, x0: f32, x1: f32, x2: f32) -> f32 {
     let a = (3. * (x0 - x1) - xm1 + x2) / 2.;
     let b = 2. * x1 + xm1 - (5. * x0 + x2) / 2.;
@@ -32,7 +31,6 @@ impl StereoDelay {
     /// # Arguments
     /// * `max_delay_time` - the maximum delay time in seconds
     /// * `sample_rate` - the sample rate in samples per seconds
-    ///
     pub fn new(max_delay_time: f32, sample_rate: usize) -> StereoDelay {
         let buffer_size = (max_delay_time * sample_rate as f32) as usize;
 
@@ -58,7 +56,6 @@ impl StereoDelay {
     /// # Arguments
     /// - `max_delay_time`: the max delay time, in seconds
     /// - `sample_rate`: the new sample rate, in samples/second
-    ///
     pub fn resize_buffers(&mut self, max_delay_time: f32, sample_rate: usize) {
         let new_size = (max_delay_time * sample_rate as f32) as usize;
         self.buffer_l.resize(new_size, 0.0);
@@ -67,7 +64,6 @@ impl StereoDelay {
 
     ///
     /// Calculates value at time `t` using cubic interpolation.
-    ///
     fn get_cubic_interpolated_value_from_buffer(&self, t: f32, buffer: &Vec<f32>) -> f32 {
         let time = t % buffer.len() as f32;
         let inpos = time.floor() as usize;
@@ -84,7 +80,6 @@ impl StereoDelay {
 
     ///
     /// Get fractional read time into buffer
-    ///
     fn get_read_time(&self, lfo_phase: f32, lfo_width: f32) -> f32 {
         let phase_component = 2.0 * PI * lfo_phase;
         let current_delay = lfo_width * (0.5 + 0.5 * phase_component.sin());
@@ -97,7 +92,6 @@ impl StereoDelay {
     ///
     /// Calculate samples from buffer given LFO width in samples.
     /// Phase shift offsets right read pointer for stereo width.
-    ///
     fn read_interpolated_samples(&self, lfo_width: f32, phase_shift: f32) -> (f32, f32) {
         // Recalculate read pointer with respect to write pointer
         let mut lfo_phase = self.lfo_phase;
@@ -220,7 +214,6 @@ impl DelayLine {
     /// # Arguments
     /// * `delay_time` - The desired delay time, in milliseconds
     /// * `sample_rate` - The sample rate of the system
-    ///
     pub fn set_delay_time(&mut self, delay_time: f32, sample_rate: f32) {
         let wp = self.write_pointer as f32;
         let buffer_length = self.circular_buffer.len();
@@ -243,7 +236,6 @@ impl DelayLine {
     ///
     /// # Arguments
     /// - `new_size`: the new size of the circular buffer, in samples
-    ///
     pub fn resize_buffer(&mut self, new_size: usize) {
         self.circular_buffer.resize(new_size, 0.0);
     }
@@ -254,7 +246,6 @@ impl DelayLine {
     /// # Arguments
     /// - `new_size`: the new size of the circular buffer, in samples
     /// - `sample_rate`: the new sample rate
-    ///
     pub fn resize_buffer_with_sample_rate(&mut self, new_size: usize, sample_rate: usize) {
         self.sample_rate = sample_rate;
         self.circular_buffer.resize(new_size, 0.0);
@@ -262,7 +253,6 @@ impl DelayLine {
 
     ///
     /// Calculates value at time `t` using cubic interpolation.
-    ///
     fn get_cubic_interpolated_value_from_buffer(&self, t: f32) -> f32 {
         let buffer = &self.circular_buffer;
         let time = t % buffer.len() as f32;
@@ -317,8 +307,8 @@ impl DelayLine {
     }
 
     ///
-    /// I don't know what happened here, but the effect was cool enough that I want to try using it.
-    ///
+    /// I don't know what happened here, but the effect was cool enough that I
+    /// want to try using it.
     pub fn process_with_glitch(
         &mut self,
         input: f32,

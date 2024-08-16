@@ -11,9 +11,10 @@ pub enum BiquadFilterType {
     HighShelf,
 }
 
-/// A biquad filter implementation that supports 7 filter types: low pass, high pass,
-/// band pass, notch, parametric (peaking), low shelf, and high shelf. This implementation is
-/// written in transposed direct form II, with two unit delays.
+/// A biquad filter implementation that supports 7 filter types: low pass, high
+/// pass, band pass, notch, parametric (peaking), low shelf, and high shelf.
+/// This implementation is written in transposed direct form II, with two unit
+/// delays.
 ///
 /// Biquad filter code from: https://www.earlevel.com/main/2012/11/26/biquad-c-source-code/
 pub struct BiquadFilter {

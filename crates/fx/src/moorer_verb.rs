@@ -7,7 +7,6 @@ use crate::filters::Comb;
 ///
 /// Computes number of samples in an old sampling rate to
 /// the number of samples in a new sampling rate.
-///
 fn adjust_length(length: usize, old_sr: usize, new_sr: usize) -> usize {
     (length as f32 * new_sr as f32 / old_sr as f32) as usize
 }

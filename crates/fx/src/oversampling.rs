@@ -1,7 +1,7 @@
 /// A second-order allpass filter.
 ///
-/// Adapted for non-SIMD from Fredemus in va-filter, which is licensed under GPL 3.0:
-/// https://github.com/Fredemus/va-filter
+/// Adapted for non-SIMD from Fredemus in va-filter, which is licensed under GPL
+/// 3.0: https://github.com/Fredemus/va-filter
 #[derive(Clone, Copy)]
 pub struct AllpassFilter {
     pub a: f32,
@@ -49,8 +49,8 @@ impl AllpassFilter {
 
 /// A cascading allpass filter chain.
 ///
-/// Adapted for non-SIMD from Fredemus in va-filter, which is licensed under GPL 3.0:
-/// https://github.com/Fredemus/va-filter
+/// Adapted for non-SIMD from Fredemus in va-filter, which is licensed under GPL
+/// 3.0: https://github.com/Fredemus/va-filter
 #[derive(Clone, Copy)]
 struct AllpassFilterCascade {
     allpass_filters: [AllpassFilter; 6],
@@ -69,8 +69,8 @@ impl AllpassFilterCascade {
 
 /// A half band filter.
 ///
-/// Adapted for non-SIMD from Fredemus in va-filter, which is licensed under GPL 3.0:
-/// https://github.com/Fredemus/va-filter
+/// Adapted for non-SIMD from Fredemus in va-filter, which is licensed under GPL
+/// 3.0: https://github.com/Fredemus/va-filter
 #[derive(Clone, Copy)]
 pub struct HalfbandFilter {
     filter_a: AllpassFilterCascade,

@@ -1,9 +1,9 @@
 [alias]
 xtask = "run --package xtask --release --"
 
-[build]
-jobs = 1
+# [build]
+# jobs = 1
 
-[env]
-ORCHESTRON_UI = { value = "packages/orchestron_ui", relative = true }
-TOYBOX_C1200_UI = { value = "packages/toybox_c1200_ui", relative = true }
+# [env]
+# ORCHESTRON_UI = { value = "packages/orchestron_ui", relative = true }
+# TOYBOX_C1200_UI = { value = "packages/toybox_c1200_ui", relative = true }

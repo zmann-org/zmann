@@ -4,8 +4,8 @@
 # [package_name]
 # name = "Human Readable Plugin Name"  # defaults to <package_name>
 
-[toybox_c1200]
-name = "Toybox_C1200"
+# [toybox_c1200]
+# name = "Toybox_C1200"
 
-[orchestron]
-name = "Orchestron"
+# [orchestron]
+# name = "Orchestron"
