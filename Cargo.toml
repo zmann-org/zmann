@@ -1,14 +1,5 @@
 resolver = "2"
 
-[profile.release]
-lto = "thin"
-strip = "symbols"
-
-[profile.profiling]
-inherits = "release"
-debug = true
-strip = "none"
-
 [workspace]
 members = ["crates/*"]
 
@@ -22,3 +13,12 @@ homepage = "https://zmann.org"
 [workspace.dependencies]
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 rkyv = "0.7.44"
+
+[profile.release]
+lto = "thin"
+strip = "symbols"
+
+[profile.profiling]
+inherits = "release"
+debug = true
+strip = "none"
