@@ -1,5 +1,6 @@
 [alias]
 xtask = "run --package xtask --release --"
+ci = "run --package xtask --release -- -p"
 
 # [build]
 # jobs = 1
