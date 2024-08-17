@@ -85,7 +85,7 @@ impl StereoDelay {
         let current_delay = lfo_width * (0.5 + 0.5 * phase_component.sin());
         let buffer_len = self.buffer_l.len() as f32;
 
-        self.write_pointer as f32 - (current_delay * self.sample_rate as f32) as f32 + buffer_len
+        self.write_pointer as f32 - (current_delay * self.sample_rate as f32) + buffer_len
             - 3.0
     }
 
@@ -277,7 +277,7 @@ impl DelayLine {
         let phase_component = 2.0 * PI * lfo_phase;
         let current_delay = lfo_width * (0.5 + 0.5 * phase_component.sin());
         let buffer_len = self.circular_buffer.len() as f32;
-        let t = self.write_pointer as f32 - (current_delay * sample_rate) as f32 + buffer_len - 3.0;
+        let t = self.write_pointer as f32 - (current_delay * sample_rate) + buffer_len - 3.0;
 
         self.get_cubic_interpolated_value_from_buffer(t)
     }

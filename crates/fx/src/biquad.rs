@@ -36,6 +36,12 @@ pub struct BiquadFilter {
     z2: f32,
 }
 
+impl Default for BiquadFilter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl BiquadFilter {
     pub fn new() -> BiquadFilter {
         let mut bqf = BiquadFilter {
@@ -198,6 +204,12 @@ pub struct StereoBiquadFilter {
     filter_r: BiquadFilter,
 }
 
+impl Default for StereoBiquadFilter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl StereoBiquadFilter {
     pub fn new() -> StereoBiquadFilter {
         StereoBiquadFilter {
@@ -208,15 +220,15 @@ impl StereoBiquadFilter {
 
     /// Sets filter type and recalculates coefficients.
     pub fn set_filter_type(&mut self, filter_type: BiquadFilterType) {
-        self.filter_l.set_filter_type(filter_type.clone());
-        self.filter_r.set_filter_type(filter_type.clone());
+        self.filter_l.set_filter_type(filter_type);
+        self.filter_r.set_filter_type(filter_type);
     }
 
     pub fn set_biquads(&mut self, filter_type: BiquadFilterType, fc: f32, q: f32, peak_gain: f32) {
         self.filter_l
-            .set_biquad(filter_type.clone(), fc, q, peak_gain);
+            .set_biquad(filter_type, fc, q, peak_gain);
         self.filter_r
-            .set_biquad(filter_type.clone(), fc, q, peak_gain);
+            .set_biquad(filter_type, fc, q, peak_gain);
     }
 
     /// Sets Q value and recalculates coefficients.

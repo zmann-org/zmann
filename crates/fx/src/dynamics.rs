@@ -87,7 +87,7 @@ impl DynamicRangeProcessor {
     ///
     /// Convert stereo (2-channel) buffer to mono
     pub fn mix_down_input(buffer: &Vec<(f32, f32)>) -> Vec<f32> {
-        let mixed_down: Vec<f32> = buffer.into_iter().map(|x| (x.0 + x.1) / 2.).collect();
+        let mixed_down: Vec<f32> = buffer.iter().map(|x| (x.0 + x.1) / 2.).collect();
         mixed_down
     }
 

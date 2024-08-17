@@ -117,7 +117,7 @@ pub fn get_double_soft_clipper_output(drive: f32, input_sample: f32) -> f32 {
     let x = input_sample;
     let upper_limit_param = 1. - 0.4 * drive;
     let lower_skew_param = 2. * drive + 1.;
-    if -1. <= x && x <= 0. {
+    if (-1. ..=0.).contains(&x) {
         let output = lower_waveshaper(2. * x + 1., lower_skew_param) - 0.5;
         get_saturator_output(drive, output)
     } else if 0. < x && x <= 1. {
