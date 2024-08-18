@@ -14,15 +14,14 @@ impl Instrument {
             sample: Vec::new(),
         }
     }
-}
 
-#[allow(dead_code)]
-pub fn encode(instr: Instrument) -> Vec<u8> {
-    let encoded: &[u8] = &rkyv::to_bytes::<_, 256>(&instr).unwrap();
-    encode_all(encoded, 1).unwrap()
-}
+    pub fn encode(instr: Instrument) -> Vec<u8> {
+        let encoded: &[u8] = &rkyv::to_bytes::<_, 256>(&instr).unwrap();
+        encode_all(encoded, 1).unwrap()
+    }
 
-pub fn decode(bin: Vec<u8>) -> Instrument {
-    let decoded: Vec<u8> = decode_all(bin.as_slice()).unwrap();
-    unsafe { rkyv::from_bytes_unchecked(&decoded[..]).unwrap() }
+    pub fn decode(bin: Vec<u8>) -> Instrument {
+        let decoded: Vec<u8> = decode_all(bin.as_slice()).unwrap();
+        unsafe { rkyv::from_bytes_unchecked(&decoded[..]).unwrap() }
+    }
 }

@@ -1,5 +1,5 @@
 [package]
-name = "toybox"
+name = "orchestron"
 authors.workspace = true
 version.workspace = true
 edition.workspace = true
@@ -14,3 +14,10 @@ fx = { workspace = true }
 common = { workspace = true }
 rkyv = { workspace = true }
 zstd = { workspace = true }
+strum = { workspace = true }
+
+dasp = { version = "0.11", features = [
+    "signal",
+    "interpolate-linear",
+    "interpolate",
+] }

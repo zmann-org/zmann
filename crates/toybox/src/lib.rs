@@ -3,7 +3,7 @@ use std::sync::Arc;
 use common::buffer::Sample;
 use nih_plug::prelude::*;
 
-pub mod instrument;
+// pub mod instrument;
 mod resources;
 
 struct Toybox {
@@ -116,7 +116,7 @@ impl Plugin for Toybox {
 
 impl ClapPlugin for Toybox {
     const CLAP_ID: &'static str = "com.zmann.toybox";
-    const CLAP_DESCRIPTION: Option<&'static str> = Some(env!("CARGO_PKG_DESCRIPTION"));
+    const CLAP_DESCRIPTION: Option<&'static str> = None;
     const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
     const CLAP_SUPPORT_URL: Option<&'static str> = Some(Self::URL);
 
