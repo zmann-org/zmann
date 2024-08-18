@@ -1,0 +1,17 @@
+[package]
+name = "toybox"
+authors.workspace = true
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+nih_plug = { workspace = true }
+fx = { workspace = true }
+common = { workspace = true }
+rkyv = { workspace = true }
+rustc-hash = { workspace = true }
+zstd = { workspace = true }

@@ -225,10 +225,8 @@ impl StereoBiquadFilter {
     }
 
     pub fn set_biquads(&mut self, filter_type: BiquadFilterType, fc: f32, q: f32, peak_gain: f32) {
-        self.filter_l
-            .set_biquad(filter_type, fc, q, peak_gain);
-        self.filter_r
-            .set_biquad(filter_type, fc, q, peak_gain);
+        self.filter_l.set_biquad(filter_type, fc, q, peak_gain);
+        self.filter_r.set_biquad(filter_type, fc, q, peak_gain);
     }
 
     /// Sets Q value and recalculates coefficients.

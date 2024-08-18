@@ -124,19 +124,9 @@ impl HalfbandFilter {
             }
             // rejection=69dB, transition band=0.01
             else if order == 8 {
-                a_coefficients = vec![
-                    0.077_115_08,
-                    0.482_070_62,
-                    0.796_820_46,
-                    0.941_251_46,
-                ];
+                a_coefficients = vec![0.077_115_08, 0.482_070_62, 0.796_820_46, 0.941_251_46];
 
-                b_coefficients = vec![
-                    0.265_968_53,
-                    0.665_104_15,
-                    0.884_101_5,
-                    0.982_005_4,
-                ];
+                b_coefficients = vec![0.265_968_53, 0.665_104_15, 0.884_101_5, 0.982_005_4];
             }
             // rejection=51dB, transition band=0.01
             else if order == 6 {
@@ -196,19 +186,9 @@ impl HalfbandFilter {
             }
             // rejection=106dB, transition band=0.05
             else if order == 8 {
-                a_coefficients = vec![
-                    0.035_832_79,
-                    0.272_040_13,
-                    0.572_057_2,
-                    0.827_124_8,
-                ];
+                a_coefficients = vec![0.035_832_79, 0.272_040_13, 0.572_057_2, 0.827_124_8];
 
-                b_coefficients = vec![
-                    0.134_090_14,
-                    0.424_324_87,
-                    0.706_292_15,
-                    0.941_503_1,
-                ];
+                b_coefficients = vec![0.134_090_14, 0.424_324_87, 0.706_292_15, 0.941_503_1];
             }
             // rejection=80dB, transition band=0.05
             else if order == 6 {
@@ -260,19 +240,23 @@ impl HalfbandFilter {
 
 impl Default for HalfbandFilter {
     fn default() -> HalfbandFilter {
-        let a_coefficients = [0.016_774_667,
+        let a_coefficients = [
+            0.016_774_667,
             0.139_021_49,
             0.332_501_1,
             0.537_661_1,
             0.721_418_4,
-            0.882_185_8];
+            0.882_185_8,
+        ];
 
-        let b_coefficients = [0.065_013_19,
+        let b_coefficients = [
+            0.065_013_19,
             0.230_941_3,
             0.436_494_23,
             0.632_961, //0.06329609551399348
             0.803_780_85,
-            0.959_968_75];
+            0.959_968_75,
+        ];
         let mut allpasses_a = [AllpassFilter::default(); 6];
         let default_order = 12;
         for i in 0..default_order / 2 {

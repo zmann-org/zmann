@@ -9,3 +9,6 @@
 
 # [orchestron]
 # name = "Orchestron"
+
+[toybox]
+name = "Toybox"

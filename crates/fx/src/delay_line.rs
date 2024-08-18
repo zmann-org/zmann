@@ -64,7 +64,7 @@ impl StereoDelay {
 
     ///
     /// Calculates value at time `t` using cubic interpolation.
-    fn get_cubic_interpolated_value_from_buffer(&self, t: f32, buffer: &Vec<f32>) -> f32 {
+    fn get_cubic_interpolated_value_from_buffer(&self, t: f32, buffer: &[f32]) -> f32 {
         let time = t % buffer.len() as f32;
         let inpos = time.floor() as usize;
         let finpos = time.fract();
@@ -85,8 +85,7 @@ impl StereoDelay {
         let current_delay = lfo_width * (0.5 + 0.5 * phase_component.sin());
         let buffer_len = self.buffer_l.len() as f32;
 
-        self.write_pointer as f32 - (current_delay * self.sample_rate as f32) + buffer_len
-            - 3.0
+        self.write_pointer as f32 - (current_delay * self.sample_rate as f32) + buffer_len - 3.0
     }
 
     ///

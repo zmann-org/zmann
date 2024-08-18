@@ -86,7 +86,7 @@ impl DynamicRangeProcessor {
 
     ///
     /// Convert stereo (2-channel) buffer to mono
-    pub fn mix_down_input(buffer: &Vec<(f32, f32)>) -> Vec<f32> {
+    pub fn mix_down_input(buffer: &[(f32, f32)]) -> Vec<f32> {
         let mixed_down: Vec<f32> = buffer.iter().map(|x| (x.0 + x.1) / 2.).collect();
         mixed_down
     }
@@ -156,7 +156,7 @@ impl DynamicRangeProcessor {
 
     /// Calculate control voltage signal for a stereo input buffer with static
     /// makeup gain
-    pub fn calculate_cv_signal(&mut self, buffer: &Vec<(f32, f32)>, makeup_gain: f32) -> Vec<f32> {
+    pub fn calculate_cv_signal(&mut self, buffer: &[(f32, f32)], makeup_gain: f32) -> Vec<f32> {
         let mixed_down_input = DynamicRangeProcessor::mix_down_input(buffer);
         mixed_down_input
             .iter()
