@@ -9,10 +9,10 @@ use nih_plug::prelude::*;
 use presets::Presets;
 use resampler::{calc_hertz, resample};
 
-pub mod instrument;
 mod buffer;
-mod resampler;
+pub mod instrument;
 mod presets;
+mod resampler;
 
 struct Orchestron {
     params: Arc<OrchestronParams>,
@@ -72,8 +72,7 @@ impl Default for OrchestronParams {
             .with_unit(" dB")
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db()),
-            preset: EnumParam::new("Preset", Presets::default())
-                .with_callback(preset_callback),
+            preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback),
             preset_change: preset_change,
         }
     }
@@ -154,7 +153,7 @@ impl Plugin for Orchestron {
                             resample(
                                 &self.instrument.sample.to_vec(),
                                 44100.0,
-                                calc_hertz(self.sample_rate, 41 - (note as i32)),
+                                calc_hertz(self.sample_rate, 53 - (note as i32)),
                             ),
                             note,
                             velocity,

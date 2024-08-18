@@ -5,7 +5,8 @@ pub struct Sample {
     current_sample_index: usize,
 }
 
-/// Represents a sample with associated data, note, velocity, and current sample index.
+/// Represents a sample with associated data, note, velocity, and current sample
+/// index.
 impl Sample {
     /// Creates a new `Sample` instance.
     ///
@@ -60,7 +61,8 @@ impl Sample {
         self.velocity
     }
 
-    /// Checks if the sample should be removed based on the current sample index.
+    /// Checks if the sample should be removed based on the current sample
+    /// index.
     ///
     /// # Returns
     ///
