@@ -16,7 +16,7 @@ use dasp::{interpolate::linear::Linear, signal, Signal};
 ///
 /// This function will panic if the input data length is not a multiple of 2.
 pub fn resample(data: &[f32], sample_rate0: f32, sample_rate: f32) -> Vec<f32> {
-    let n = data.len() / (2 as usize);
+    let n = data.len() / (2_usize);
     let n = n * sample_rate as usize / sample_rate0 as usize;
     let mut source = signal::from_interleaved_samples_iter::<_, [_; 2]>(data.iter().cloned());
     let a = source.next();

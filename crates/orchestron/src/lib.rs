@@ -73,7 +73,7 @@ impl Default for OrchestronParams {
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db()),
             preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback),
-            preset_change: preset_change,
+            preset_change,
         }
     }
 }
@@ -190,10 +190,10 @@ impl Plugin for Orchestron {
             }
         }
 
-        if preset_change.load(Ordering::Relaxed) {
-            if self.instrument.name != self.params.preset.value().to_string() {
-                self.load_preset(self.params.preset.value());
-            }
+        if preset_change.load(Ordering::Relaxed)
+            && self.instrument.name != self.params.preset.value().to_string()
+        {
+            self.load_preset(self.params.preset.value());
         }
         ProcessStatus::Normal
     }

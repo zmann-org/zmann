@@ -22,7 +22,7 @@ impl Sample {
     pub fn new(data: Vec<f32>, note: u8, velocity: f32) -> Self {
         Self {
             root: data,
-            velocity: velocity,
+            velocity,
             current_note: note,
             current_sample_index: 0,
         }
