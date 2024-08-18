@@ -1,6 +1,7 @@
 use nih_plug::prelude::Enum;
 use strum::Display;
 
+/// An enumeration of available presets.
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Enum, Display)]
 pub enum Presets {
     Cello,
@@ -23,10 +24,20 @@ pub const SAXOPHONE: &[u8] = include_bytes!(concat!(env!("SAMPLES"), "orchestron
 pub const VIOLINS: &[u8] = include_bytes!(concat!(env!("SAMPLES"), "orchestron/violins"));
 
 impl Presets {
+    /// Returns the default preset, which is `Cello`.
+    ///
+    /// # Returns
+    ///
+    /// The default preset.
     pub fn default() -> Self {
         Presets::Cello
     }
 
+    /// Returns the byte content associated with the preset.
+    ///
+    /// # Returns
+    ///
+    /// A slice of bytes representing the preset content.
     pub fn content(&self) -> &[u8] {
         match self {
             Presets::Cello => CELLO,
