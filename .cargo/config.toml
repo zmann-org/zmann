@@ -5,6 +5,7 @@ ci = "run --package xtask --release -- -p"
 # [build]
 # jobs = 1
 
-# [env]
+[env]
+SAMPLES = { value = "samples/", relative = true }
 # ORCHESTRON_UI = { value = "packages/orchestron_ui", relative = true }
 # TOYBOX_C1200_UI = { value = "packages/toybox_c1200_ui", relative = true }

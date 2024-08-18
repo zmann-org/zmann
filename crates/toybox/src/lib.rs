@@ -3,7 +3,8 @@ use std::sync::Arc;
 use common::buffer::Sample;
 use nih_plug::prelude::*;
 
-mod instrument;
+pub mod instrument;
+mod resources;
 
 struct Toybox {
     params: Arc<ToyboxParams>,

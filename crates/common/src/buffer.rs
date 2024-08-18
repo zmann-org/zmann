@@ -27,4 +27,3 @@ impl Sample {
         self.current_sample_index >= self.root.len()
     }
 }
-
