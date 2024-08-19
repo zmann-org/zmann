@@ -1,11 +1,9 @@
 [alias]
 xtask = "run --package xtask --release --"
-ci = "run --package xtask --release -- -p"
+ci = "xtask bundle -p toybox -p orchestron"
 
-# [build]
-# jobs = 1
+[build]
+jobs = 1
 
 [env]
 SAMPLES = { value = "samples/", relative = true }
-# ORCHESTRON_UI = { value = "packages/orchestron_ui", relative = true }
-# TOYBOX_C1200_UI = { value = "packages/toybox_c1200_ui", relative = true }
