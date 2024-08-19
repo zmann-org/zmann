@@ -4,15 +4,14 @@ use std::sync::{
 };
 
 use buffer::Sample;
+use common::resampler::{calc_hertz, resample};
 use instrument::Instrument;
 use nih_plug::prelude::*;
 use presets::Presets;
-use resampler::{calc_hertz, resample};
 
 mod buffer;
 pub mod instrument;
 mod presets;
-mod resampler;
 
 struct Orchestron {
     params: Arc<OrchestronParams>,

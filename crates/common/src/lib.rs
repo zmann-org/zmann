@@ -1,4 +1,5 @@
 pub mod buffer;
+pub mod resampler;
 pub mod wav;
 
 mod test;

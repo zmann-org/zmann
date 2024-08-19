@@ -8,3 +8,8 @@ homepage.workspace = true
 
 [dependencies]
 hound = "3.5"
+dasp = { version = "0.11", features = [
+    "signal",
+    "interpolate-linear",
+    "interpolate",
+] }
