@@ -11,7 +11,7 @@ homepage = "https://zmann.org"
 
 [workspace.dependencies]
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
-rkyv = "0.7.44"
+rkyv = "0.7.45"
 zstd = "0.13.0"
 strum = { version = "0.26", features = ["derive"] }
 
