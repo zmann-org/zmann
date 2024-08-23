@@ -200,6 +200,7 @@ impl Plugin for Orchestron {
 
 impl Orchestron {
     pub fn load_preset(&mut self, preset: Presets) {
+        self.buffer.clear();
         self.instrument = Instrument::decode(preset.content().to_vec());
     }
 }
