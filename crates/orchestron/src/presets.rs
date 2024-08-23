@@ -24,13 +24,13 @@ pub const SAXOPHONE: &[u8] = include_bytes!(concat!(env!("SAMPLES"), "orchestron
 pub const VIOLINS: &[u8] = include_bytes!(concat!(env!("SAMPLES"), "orchestron/violins"));
 
 impl Presets {
-    /// Returns the default preset, which is `Cello`.
+    /// Returns the default preset, which is `Organ`.
     ///
     /// # Returns
     ///
     /// The default preset.
     pub fn default() -> Self {
-        Presets::Cello
+        Presets::Organ
     }
 
     /// Returns the byte content associated with the preset.
