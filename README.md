@@ -1,6 +1,5 @@
 ![zmann logo](.github/icons/logo-dark.png#gh-dark-mode-only)
 ![zmann logo](.github/icons/logo-light.png#gh-light-mode-only) 
-**ZMANN**
 =======
 ###### **Explore a range of instruments, designed to elevate your audio production experience.**
 <h1 align="center">
