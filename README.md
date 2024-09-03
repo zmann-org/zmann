@@ -84,7 +84,7 @@ Cargo will now build the *toybox_c1200_ui* before building the plugin itself. Af
 
 Or to build all projects inside of the repository, run to build all the ui and plugins in the repository:
 ```bash
-$ cargo xtask bundle -p toybox_c1200 -p orchestron 
+$ cargo ci
 ```
 
 
@@ -107,7 +107,7 @@ xtask = "run --package xtask --target x86_64-pc-windows-gnu --release --"
 ```
 Finally, you can build the plugins by running the following command:
 ```bash
-$ cargo xtask bundle plugin_name
+$ cargo ci
 ```
 
 ## License
