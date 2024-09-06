@@ -2,14 +2,15 @@
 ![zmann logo](.github/icons/logo-light.png#gh-light-mode-only) 
 =======
 ###### **Explore a range of instruments, designed to elevate your audio production experience.**
+> [!IMPORTANT]  
+> We're working on a restructure of the repository, and planning on switching to a different GUI for the plugins. Read more at [#477](https://github.com/zmann-org/zmann/issues/477)
+
 <h1 align="center">
 
 ![gh-banner](https://raw.githubusercontent.com/zmann-org/zmann/main/.github/marketing/header-transparent-crop.png)
 
 </h1>
 
-> [!IMPORTANT]  
-> We're working on a restructure of the repository, and planning on switching to a different GUI for the plugins. Read more at [#477](https://github.com/zmann-org/zmann/issues/477)
 
 ![GitHub License](https://img.shields.io/github/license/zmann-org/zmann?style=for-the-badge&labelColor=000)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/zmann-org/zmann/total?style=for-the-badge&labelColor=000)
