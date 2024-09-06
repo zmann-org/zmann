@@ -18,15 +18,15 @@
 ## Plugins
 As defined in [bundler.toml](./bundler.toml), the following plugins are included in this repository, for more information on each plugin, please refer to their respective product pages on **zmann.org**.
 
-|Product|CI/CD|TYPE||
+|Product|Status|||
 |---|---|---|---|
-|Toybox C1200|![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zmann-org/zmann/toybox_c1200.yml?style=for-the-badge&labelColor=000)|![Series 1](https://img.shields.io/badge/Series%201-0072f5?style=for-the-badge)||
-|Orchestron|![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/zmann-org/zmann/orchestron.yml?style=for-the-badge&labelColor=000)|![Series 1](https://img.shields.io/badge/Series%201-0072f5?style=for-the-badge)||
-|Bilhorn Reed||![Series 1](https://img.shields.io/badge/Series%201-0072f5?style=for-the-badge)||
-|Hohner Melodica||![Series 1](https://img.shields.io/badge/Series%201-0072f5?style=for-the-badge)||
-|Mellotron||![Series 1](https://img.shields.io/badge/Series%201-0072f5?style=for-the-badge)||
+|Toybox C1200||![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
+|Orchestron|WIP|![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
+|Bilhorn Reed||![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
+|Hohner Melodica||![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
+|Mellotron||![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
 |   |   |   |
-|NoiseG8|   |![Tool](https://img.shields.io/badge/DAW%20Tool-orange?style=for-the-badge)||
+|NoiseG8||![Tool](https://img.shields.io/badge/DAW%20Tool-orange?style=for-the-badge)||
 
 
 ## Installation
