@@ -81,7 +81,7 @@ impl Plugin for Orchestron {
     const NAME: &'static str = "Orchestron";
     const VENDOR: &'static str = "ZMANN";
     const URL: &'static str = env!("CARGO_PKG_HOMEPAGE");
-    const EMAIL: &'static str = "your@email.com";
+    const EMAIL: &'static str = env!("PKG_EMAIL");
 
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
@@ -206,7 +206,7 @@ impl Orchestron {
 }
 
 impl ClapPlugin for Orchestron {
-    const CLAP_ID: &'static str = "com.your-domain.orchestron";
+    const CLAP_ID: &'static str = "com.zmann.orchestron";
     const CLAP_DESCRIPTION: Option<&'static str> = None;
     const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
     const CLAP_SUPPORT_URL: Option<&'static str> = Some(Self::URL);

@@ -1,9 +1,10 @@
 [alias]
 xtask = "run --package xtask --release --"
-ci = "xtask bundle -p toybox -p orchestron"
+ci = "xtask bundle -p toybox -p orchestron -p bells --release"
 
 [build]
 jobs = 1
 
 [env]
 SAMPLES = { value = "samples/", relative = true }
+PKG_EMAIL = { value = "info@zmann.org" }
