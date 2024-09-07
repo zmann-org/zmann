@@ -146,7 +146,6 @@ impl Plugin for Bells {
                         velocity,
                     } => {
                         if let Some(data) = self.instrument.samples.get(&note) {
-                            nih_log!("Note: {}, Velocity: {}, Data {}", note, velocity, data.len());
                             self.buffer.push(Sample::new(
                                 resample(
                                     data,
