@@ -1,17 +1,18 @@
 use rkyv::{Archive, Deserialize, Serialize};
 use zstd::{decode_all, encode_all};
+use rustc_hash::FxHashMap;
 
 #[derive(Archive, Deserialize, Serialize, Debug)]
 pub struct Instrument {
     pub name: String,
-    pub sample: Vec<f32>,
+    pub samples: FxHashMap<u8, Vec<f32>>,
 }
 
 impl Instrument {
     pub fn default() -> Self {
         Instrument {
             name: String::new(),
-            sample: Vec::new(),
+            samples: FxHashMap::default(),
         }
     }
 
