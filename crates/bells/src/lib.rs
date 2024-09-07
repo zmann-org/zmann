@@ -1,10 +1,15 @@
-use std::sync::Arc;
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
 
-use common::resampler::{calc_hertz, resample};
-use common::buffer::Sample;
+use buffer::Sample;
+use common::resampler::resample;
 use instrument::Instrument;
 use nih_plug::prelude::*;
+use presets::Presets;
 
+mod buffer;
 pub mod instrument;
 mod presets;
 
@@ -19,6 +24,9 @@ struct Bells {
 struct BellsParams {
     #[id = "gain"]
     pub gain: FloatParam,
+    #[id = "preset"]
+    pub preset: EnumParam<Presets>,
+    pub preset_change: Arc<AtomicBool>,
 }
 
 impl Default for Bells {
@@ -32,8 +40,21 @@ impl Default for Bells {
     }
 }
 
+fn create_callback<T: 'static + Send + Sync>(
+    f: impl Fn(T) + 'static + Send + Sync,
+) -> (Arc<AtomicBool>, Arc<dyn Fn(T) + Send + Sync>) {
+    let flag = Arc::new(AtomicBool::new(false));
+    let flag_clone = Arc::clone(&flag);
+    let callback = Arc::new(move |value: T| {
+        f(value);
+        flag_clone.store(true, Ordering::Relaxed);
+    });
+    (flag, callback)
+}
+
 impl Default for BellsParams {
     fn default() -> Self {
+        let (preset_change, preset_callback) = create_callback(|_: Presets| {});
         Self {
             gain: FloatParam::new(
                 "Gain",
@@ -41,8 +62,6 @@ impl Default for BellsParams {
                 FloatRange::Skewed {
                     min: util::db_to_gain(-30.0),
                     max: util::db_to_gain(30.0),
-                    // This makes the range appear as if it was linear when displaying the values as
-                    // decibels
                     factor: FloatRange::gain_skew_factor(-30.0, 30.0),
                 },
             )
@@ -50,6 +69,8 @@ impl Default for BellsParams {
             .with_unit(" dB")
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+            preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback),
+            preset_change,
         }
     }
 }
@@ -92,6 +113,9 @@ impl Plugin for Bells {
         _context: &mut impl InitContext<Self>,
     ) -> bool {
         self.sample_rate = buffer_config.sample_rate;
+        if self.instrument.samples.is_empty() {
+            self.load_preset(self.params.preset.value());
+        }
         true
     }
 
@@ -103,17 +127,82 @@ impl Plugin for Bells {
         &mut self,
         buffer: &mut Buffer,
         _aux: &mut AuxiliaryBuffers,
-        _context: &mut impl ProcessContext<Self>,
+        context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
-        for channel_samples in buffer.iter_samples() {
+        let mut next_event = context.next_event();
+        let preset_change = self.params.preset_change.clone();
+
+        for (sample_id, channel_samples) in buffer.iter_samples().enumerate() {
+            while let Some(event) = next_event {
+                if event.timing() > (sample_id as u32) {
+                    break;
+                }
+                match event {
+                    NoteEvent::NoteOn {
+                        timing: _,
+                        voice_id: _,
+                        channel: _,
+                        note,
+                        velocity,
+                    } => {
+                        if let Some(data) = self.instrument.samples.get(&note) {
+                            nih_log!("Note: {}, Velocity: {}, Data {}", note, velocity, data.len());
+                            self.buffer.push(Sample::new(
+                                resample(
+                                    data,
+                                    44100.0,
+                                    self.sample_rate,
+                                ),
+                                note,
+                                velocity,
+                            ));
+                        }
+                    }
+                    NoteEvent::NoteOff {
+                        timing: _,
+                        voice_id: _,
+                        channel: _,
+                        note,
+                        velocity: _,
+                    } => {
+                        if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note))
+                        {
+                            self.buffer.remove(index);
+                        }
+                    }
+                    _ => (),
+                }
+
+                next_event = context.next_event();
+            }
+
             let gain = self.params.gain.smoothed.next();
 
             for sample in channel_samples {
+                for playing_sample in &mut self.buffer {
+                    *sample += playing_sample.get_next_sample() * playing_sample.get_velocity();
+                }
+
                 *sample *= gain;
+
+                self.buffer.retain(|e| !e.should_be_removed());
             }
         }
 
+        if preset_change.load(Ordering::Relaxed)
+            && self.instrument.name != self.params.preset.value().to_string()
+        {
+            self.load_preset(self.params.preset.value());
+        }
+
         ProcessStatus::Normal
+    }
+}
+
+impl Bells {
+    pub fn load_preset(&mut self, preset: Presets) {
+        self.buffer.clear();
+        self.instrument = Instrument::decode(preset.content().to_vec());
     }
 }
 
