@@ -1,10 +1,12 @@
 use std::sync::Arc;
 
+use common::resampler::{calc_hertz, resample};
 use common::buffer::Sample;
 use instrument::Instrument;
 use nih_plug::prelude::*;
 
 pub mod instrument;
+mod presets;
 
 struct Bells {
     params: Arc<BellsParams>,
