@@ -27,7 +27,7 @@ rust-embed = { version = "8.2.0", features = [
     "debug-embed"
 ] }
 strum = { version = "0.26", features = ["derive"] }
-rkyv = "0.7.44"
+rkyv = "0.8.0"
 
 [profile.release]
 lto = "thin"
