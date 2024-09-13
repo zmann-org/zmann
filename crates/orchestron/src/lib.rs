@@ -79,7 +79,7 @@ impl Default for OrchestronParams {
 
 impl Plugin for Orchestron {
     const NAME: &'static str = "Orchestron";
-    const VENDOR: &'static str = "ZMANN";
+    const VENDOR: &'static str = env!("PKG_VENDOR");
     const URL: &'static str = env!("CARGO_PKG_HOMEPAGE");
     const EMAIL: &'static str = env!("PKG_EMAIL");
 

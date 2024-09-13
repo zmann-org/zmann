@@ -77,7 +77,7 @@ impl Default for BellsParams {
 
 impl Plugin for Bells {
     const NAME: &'static str = "Bells";
-    const VENDOR: &'static str = "ZMANN";
+    const VENDOR: &'static str = env!("PKG_VENDOR");
     const URL: &'static str = env!("CARGO_PKG_HOMEPAGE");
     const EMAIL: &'static str = env!("PKG_EMAIL");
 

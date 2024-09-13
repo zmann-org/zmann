@@ -8,3 +8,4 @@ jobs = 1
 [env]
 SAMPLES = { value = "samples/", relative = true }
 PKG_EMAIL = { value = "info@zmann.org" }
+PKG_VENDOR = { value = "ZMANN" }
