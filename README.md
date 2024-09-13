@@ -1,7 +1,9 @@
 ![zmann logo](.github/icons/logo-dark.png#gh-dark-mode-only)
-![zmann logo](.github/icons/logo-light.png#gh-light-mode-only) 
-=======
-###### **Explore a range of instruments, designed to elevate your audio production experience.**
+![zmann logo](.github/icons/logo-light.png#gh-light-mode-only)
+
+![GitHub License](https://img.shields.io/github/license/zmann-org/zmann?style=for-the-badge&labelColor=000)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/zmann-org/zmann/total?style=for-the-badge&labelColor=000)
+![Static Badge](https://img.shields.io/badge/VST3-C90827?style=for-the-badge&logo=steinberg&labelColor=000)
 > [!IMPORTANT]  
 > We're working on a restructure of the repository, and planning on switching to a different GUI for the plugins. Read more at [#477](https://github.com/zmann-org/zmann/issues/477)
 
@@ -12,9 +14,6 @@
 </h1>
 
 
-![GitHub License](https://img.shields.io/github/license/zmann-org/zmann?style=for-the-badge&labelColor=000)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/zmann-org/zmann/total?style=for-the-badge&labelColor=000)
-![Static Badge](https://img.shields.io/badge/VST3-C90827?style=for-the-badge&logo=steinberg&labelColor=000)
 
 ## Plugins
 As defined in [bundler.toml](./bundler.toml), the following plugins are included in this repository, for more information on each plugin, please refer to their respective product pages on **zmann.org**.
@@ -23,7 +22,7 @@ As defined in [bundler.toml](./bundler.toml), the following plugins are included
 |---|---|---|---|
 |Toybox C1200||![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
 |Orchestron|WIP|![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
-|Bilhorn Reed||![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
+|Bells||![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
 |Hohner Melodica||![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
 |Mellotron||![Series 1](https://img.shields.io/badge/Series%202-0072f5?style=for-the-badge)||
 |   |   |   |
