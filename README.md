@@ -31,10 +31,12 @@ As defined in [bundler.toml](./bundler.toml), the following plugins are included
 
 ## Installation
 
-After downloading the *.vst3* file, move it to your VST3 directory. The default VST3 directory is located at `C:\Program Files\Common Files\VST3` on Windows. If you are unsure where your VST3 directory is located, you can check the VST3 directory in your DAW's settings.
+For VST3 plugins, unzip and move the folder ending in `.vst3` into the VST3 directory. Normally this is set to `C:\Program Files\Common Files\VST3` on Windows. If you are unsure where your VST3 directory is located, you can check the VST3 directory in your DAW's settings.
 
 > [!TIP]
-> Create a dedicated folder within your VST3 directory, e.g., `ZMANN`, for better organization.
+> You can create a dedicated folder within the VST3 directory, e.g., `ZMANN`, for better organization.
+
+For CLAP plugins download and move the `.clap` file into `C:\Program Files\Common Files\CLAP`. (or the custom folder that you have set up in your DAW)
 
 ## Table of Contents
 - [Plugins](#plugins)
@@ -47,11 +49,13 @@ After downloading the *.vst3* file, move it to your VST3 directory. The default 
   - [Cross-compiling](#cross-compiling)
 - [License](#license)
 
+## Demo
+
+
 ## Building
 > [!WARNING]  
-> As of writing, only Windows is supported for building. Linux cross-compilation might work, but is not stable at this time. Currently we don't have any motivation in supporting Mac OS, although the plugins should be compatible without many modifications. [Read more about cross-compilation](#cross-compiling).
+> Currently we don't have any plans to support Mac OS, although the plugins should work after compiling to a Mac OS target. [Read more about cross-compilation.](#cross-compiling).
 ### Prerequisites
-- [Node.js 18.17](https://nodejs.org/en/) or later
 - [Rust](https://www.rust-lang.org/tools/install)
 
 #### Windows
@@ -60,33 +64,17 @@ Before building, make sure that rustup is installed with **msvc** if building on
 $ rustup default stable-x86_64-pc-windows-msvc
 ```
 
-### Adding the artifacts
-As of writing, we aren't including the samples (for example *.binv5* or *.microbin*) in the repository due to the git file limit. For the builds not to fail, supply a `/samples/plugin_name` folder, where `plugin_name` is the [name of the plugin](#plugins) you are building. You can create the folder by running:
-```bash
-$ mkdir /samples/plugin_name
-```
-Then, add the samples to the folder. The folder structure should look like this:
-
-<!--use css formatting to demonstrate file extension-->
-```css
-/samples
-  /Toybox_C1200
-    /Cello.binv5
-```
-Release builds will be built with the samples included in the plugin bundle.
-
 ### Building the plugins
-Plugins are required to be built separately from each other. Run the *xtask build* command with the [plugin name](./bundler.toml) and `--release` at the end to target a release build. For example:
+Plugins are required to be built separately from each other. Run `cargo xtask build` with the [plugin name](./bundler.toml) and `--release` at the end to target a release build. For example:
 ```bash
-$ cargo xtask bundle toybox_c1200 --release
+$ cargo xtask bundle orchestron --release
 ```
-Cargo will now build the *toybox_c1200_ui* before building the plugin itself. After successfully building, each plugin will make their own *.vst3* bundle inside of the `/target/bundled/` folder. 
+After successfully building, each plugin will make their own VST3 and CLAP bundle inside of the `/target/bundled/` folder. 
 
-Or to build all projects inside of the repository, run to build all the ui and plugins in the repository:
+Alternatively, build all plugins inside of the repository by running:
 ```bash
 $ cargo ci
 ```
-
 
 Optionally by running mklink on Windows, a simlink will be created from the locally generated artifacts folder to the standard vst3 folder to streamline development. This will allow you to test the plugins in your DAW without having to move the files manually. Run the following command in the root of the repository:
 ```bash
