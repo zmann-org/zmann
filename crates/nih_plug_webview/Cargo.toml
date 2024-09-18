@@ -9,7 +9,7 @@ license = "ISC"
 nih_plug = { workspace = true }
 parking_lot = "0.12.1"
 serde_json = { workspace = true }
-wry = { version = "0.35.2" }
+wry = { version = "0.44.0" }
 baseview = { git = "https://github.com/RustAudio/baseview" }
 raw-window-handle = "0.5"
 crossbeam = "0.8.2"
