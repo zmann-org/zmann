@@ -3,13 +3,12 @@ use std::sync::{
     Arc,
 };
 
-use buffer::Sample;
+use common::buffer::Sample;
 use common::resampler::resample;
 use instrument::Instrument;
 use nih_plug::prelude::*;
 use presets::Presets;
 
-mod buffer;
 pub mod instrument;
 mod presets;
 
@@ -147,11 +146,7 @@ impl Plugin for Bells {
                     } => {
                         if let Some(data) = self.instrument.samples.get(&note) {
                             self.buffer.push(Sample::new(
-                                resample(
-                                    data,
-                                    44100.0,
-                                    self.sample_rate,
-                                ),
+                                resample(data, 44100.0, self.sample_rate),
                                 note,
                                 velocity,
                             ));

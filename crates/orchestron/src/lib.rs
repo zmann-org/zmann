@@ -3,13 +3,12 @@ use std::sync::{
     Arc,
 };
 
-use buffer::Sample;
+use common::buffer::Sample;
 use common::resampler::{calc_hertz, resample};
 use instrument::Instrument;
 use nih_plug::prelude::*;
 use presets::Presets;
 
-mod buffer;
 pub mod instrument;
 mod presets;
 

@@ -1,6 +1,6 @@
 use rkyv::{Archive, Deserialize, Serialize};
-use zstd::{decode_all, encode_all};
 use rustc_hash::FxHashMap;
+use zstd::{decode_all, encode_all};
 
 #[derive(Archive, Deserialize, Serialize, Debug)]
 pub struct Instrument {
