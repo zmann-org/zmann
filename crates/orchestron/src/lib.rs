@@ -1,20 +1,17 @@
+#![allow(non_snake_case, non_upper_case_globals)]
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
+
+use common::buffer::Sample;
+use common::resampler::{calc_hertz, resample};
+use instrument::Instrument;
 use nih_plug::prelude::*;
 use presets::Presets;
-use std::sync::{ atomic::Ordering, Arc };
-use crate::params::OrchestronParams;
-use instrument::microbuffer::Sample;
-use crate::resampler::{ calc_hertz, resample };
-use instrument::microbin::{ self, Instrument };
-use rust_embed::RustEmbed;
 
-mod params;
+pub mod instrument;
 mod presets;
-mod resampler;
-mod editor;
-
-#[derive(RustEmbed)]
-#[folder = "$CARGO_MANIFEST_DIR/../../samples/Orchestron/"]
-struct Assets;
 
 struct Orchestron {
     params: Arc<OrchestronParams>,
@@ -23,36 +20,80 @@ struct Orchestron {
     sample_rate: f32,
 }
 
+#[derive(Params)]
+struct OrchestronParams {
+    #[id = "gain"]
+    pub gain: FloatParam,
+    #[id = "preset"]
+    pub preset: EnumParam<Presets>,
+    pub preset_change: Arc<AtomicBool>,
+}
+
 impl Default for Orchestron {
     fn default() -> Self {
         Self {
             params: Arc::new(OrchestronParams::default()),
-            buffer: vec![],
+            buffer: Vec::new(),
             instrument: Instrument::default(),
             sample_rate: 44100.0,
         }
     }
 }
 
+fn create_callback<T: 'static + Send + Sync>(
+    f: impl Fn(T) + 'static + Send + Sync,
+) -> (Arc<AtomicBool>, Arc<dyn Fn(T) + Send + Sync>) {
+    let flag = Arc::new(AtomicBool::new(false));
+    let flag_clone = Arc::clone(&flag);
+    let callback = Arc::new(move |value: T| {
+        f(value);
+        flag_clone.store(true, Ordering::Relaxed);
+    });
+    (flag, callback)
+}
+
+impl Default for OrchestronParams {
+    fn default() -> Self {
+        let (preset_change, preset_callback) = create_callback(|_: Presets| {});
+        Self {
+            gain: FloatParam::new(
+                "Gain",
+                util::db_to_gain(0.0),
+                FloatRange::Skewed {
+                    min: util::db_to_gain(-30.0),
+                    max: util::db_to_gain(30.0),
+                    // This makes the range appear as if it was linear when displaying the values as
+                    // decibels
+                    factor: FloatRange::gain_skew_factor(-30.0, 30.0),
+                },
+            )
+            .with_smoother(SmoothingStyle::Logarithmic(50.0))
+            .with_unit(" dB")
+            .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
+            .with_string_to_value(formatters::s2v_f32_gain_to_db()),
+            preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback),
+            preset_change,
+        }
+    }
+}
+
 impl Plugin for Orchestron {
     const NAME: &'static str = "Orchestron";
-    const VENDOR: &'static str = "ZMANN";
+    const VENDOR: &'static str = env!("PKG_VENDOR");
     const URL: &'static str = env!("CARGO_PKG_HOMEPAGE");
-    const EMAIL: &'static str = "info@zmann.org";
+    const EMAIL: &'static str = env!("PKG_EMAIL");
 
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
-    const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[
-        AudioIOLayout {
-            main_input_channels: NonZeroU32::new(2),
-            main_output_channels: NonZeroU32::new(2),
+    const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[AudioIOLayout {
+        main_input_channels: NonZeroU32::new(2),
+        main_output_channels: NonZeroU32::new(2),
 
-            aux_input_ports: &[],
-            aux_output_ports: &[],
+        aux_input_ports: &[],
+        aux_output_ports: &[],
 
-            names: PortNames::const_default(),
-        },
-    ];
+        names: PortNames::const_default(),
+    }];
 
     const MIDI_INPUT: MidiConfig = MidiConfig::Basic;
     const MIDI_OUTPUT: MidiConfig = MidiConfig::None;
@@ -67,21 +108,17 @@ impl Plugin for Orchestron {
         self.params.clone()
     }
 
-    fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> { 
-        editor::create(self.params.clone())
-    }
-
     fn initialize(
         &mut self,
         _audio_io_layout: &AudioIOLayout,
         buffer_config: &BufferConfig,
-        _context: &mut impl InitContext<Self>
+        _context: &mut impl InitContext<Self>,
     ) -> bool {
         self.sample_rate = buffer_config.sample_rate;
-        if self.instrument.f0.is_empty() {
+        if self.instrument.sample.is_empty() {
             self.load_preset(self.params.preset.value());
         }
-        
+
         true
     }
 
@@ -93,7 +130,7 @@ impl Plugin for Orchestron {
         &mut self,
         buffer: &mut Buffer,
         _aux: &mut AuxiliaryBuffers,
-        context: &mut impl ProcessContext<Self>
+        context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
         let mut next_event = context.next_event();
         let preset_change = self.params.preset_change.clone();
@@ -104,65 +141,22 @@ impl Plugin for Orchestron {
                     break;
                 }
                 match event {
-                    NoteEvent::NoteOn { timing: _, voice_id: _, channel: _, note, mut velocity } => {
-                        velocity = velocity * 1.5;
-                        if note >= 12 && note <= 84 {
-                            if note >= 12 && note <= 52 {
-                                self.buffer.push(
-                                    Sample::new(
-                                        resample(
-                                            &self.instrument.f0.to_vec(),
-                                            44100.0,
-                                            calc_hertz(self.sample_rate, 41 - (note as i32))
-                                        ),
-                                        note,
-                                        velocity
-                                    )
-                                );
-                            }
-
-                            if note >= 53 && note <= 59 {
-                                self.buffer.push(
-                                    Sample::new(
-                                        resample(
-                                            &self.instrument.f1.to_vec(),
-                                            44100.0,
-                                            calc_hertz(self.sample_rate, 53 - (note as i32))
-                                        ),
-                                        note,
-                                        velocity
-                                    )
-                                );
-                            }
-
-                            if note >= 60 && note <= 71 {
-                                self.buffer.push(
-                                    Sample::new(
-                                        resample(
-                                            &self.instrument.c2.to_vec(),
-                                            44100.0,
-                                            calc_hertz(self.sample_rate, 60 - (note as i32))
-                                        ),
-                                        note,
-                                        velocity
-                                    )
-                                );
-                            }
-
-                            if note >= 72 && note <= 84 {
-                                self.buffer.push(
-                                    Sample::new(
-                                        resample(
-                                            &self.instrument.c3.to_vec(),
-                                            44100.0,
-                                            calc_hertz(self.sample_rate, 72 - (note as i32))
-                                        ),
-                                        note,
-                                        velocity
-                                    )
-                                );
-                            }
-                        }
+                    NoteEvent::NoteOn {
+                        timing: _,
+                        voice_id: _,
+                        channel: _,
+                        note,
+                        velocity,
+                    } => {
+                        self.buffer.push(Sample::new(
+                            resample(
+                                &self.instrument.sample.to_vec(),
+                                44100.0,
+                                calc_hertz(self.sample_rate, 53 - (note as i32)),
+                            ),
+                            note,
+                            velocity,
+                        ));
                     }
                     NoteEvent::NoteOff {
                         timing: _,
@@ -171,7 +165,8 @@ impl Plugin for Orchestron {
                         note,
                         velocity: _,
                     } => {
-                        if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note)) {
+                        if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note))
+                        {
                             self.buffer.remove(index);
                         }
                     }
@@ -194,36 +189,43 @@ impl Plugin for Orchestron {
             }
         }
 
-        if preset_change.load(Ordering::Relaxed) {
-            if self.instrument.name != self.params.preset.value().to_string() {
-                self.load_preset(self.params.preset.value());
-            }
+        if preset_change.load(Ordering::Relaxed)
+            && self.instrument.name != self.params.preset.value().to_string()
+        {
+            self.load_preset(self.params.preset.value());
         }
-
         ProcessStatus::Normal
     }
 }
 
 impl Orchestron {
     pub fn load_preset(&mut self, preset: Presets) {
-        if
-            let Some(input_file) = <Assets as rust_embed::RustEmbed>::get(
-                &format!("{}.microbin", preset.to_string())
-            )
-        {
-            self.instrument = microbin::decode(input_file.data.to_vec());
-        }
+        self.buffer.clear();
+        let instrument_data = preset.content().to_vec();
+        let instrument = std::thread::spawn(move || {
+            Instrument::decode(instrument_data)
+        }).join().expect("Failed to load preset on a different thread");
+        self.instrument = instrument;
     }
+}
+
+impl ClapPlugin for Orchestron {
+    const CLAP_ID: &'static str = "com.zmann.orchestron";
+    const CLAP_DESCRIPTION: Option<&'static str> = None;
+    const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
+    const CLAP_SUPPORT_URL: Option<&'static str> = Some(Self::URL);
+
+    // Don't forget to change these features
+    const CLAP_FEATURES: &'static [ClapFeature] = &[ClapFeature::Sampler, ClapFeature::Instrument];
 }
 
 impl Vst3Plugin for Orchestron {
     const VST3_CLASS_ID: [u8; 16] = *b"zmann.orchestron";
 
     // And also don't forget to change these categories
-    const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[
-        Vst3SubCategory::Sampler,
-        Vst3SubCategory::Instrument,
-    ];
+    const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
+        &[Vst3SubCategory::Sampler, Vst3SubCategory::Instrument];
 }
 
+nih_export_clap!(Orchestron);
 nih_export_vst3!(Orchestron);

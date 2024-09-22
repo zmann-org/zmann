@@ -1,9 +1,11 @@
 [alias]
 xtask = "run --package xtask --release --"
+ci = "xtask bundle -p toybox -p orchestron -p bells --release"
 
 [build]
 jobs = 1
 
 [env]
-ORCHESTRON_UI = { value = "packages/orchestron_ui", relative = true }
-TOYBOX_C1200_UI = { value = "packages/toybox_c1200_ui", relative = true }
+SAMPLES = { value = "samples/", relative = true }
+PKG_EMAIL = { value = "info@zmann.org" }
+PKG_VENDOR = { value = "ZMANN" }

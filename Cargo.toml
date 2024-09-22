@@ -1,33 +1,22 @@
 [workspace]
-members = [
-    "crates/toybox_c1200",
-    "crates/orchestron",
-    "crates/wavekit",
-    "crates/instrument",
-    "crates/fx",
-    "crates/nih_plug_webview",
-    "crates/xtask",
-    "crates/build_function",
-]
 resolver = "2"
+members = ["crates/*"]
 
 [workspace.package]
+edition = "2021"
 version = "0.0.0"
 authors = ["ZMANN <info@zmann.org>"]
 license = "GPL-3.0-or-later"
-edition = "2021"
+homepage = "https://zmann.org"
 
 [workspace.dependencies]
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
-serde = { version = "1.0.190", features = ["derive"] }
-serde_json = "1.0"
-serde_derive = "1.0.190"
-rust-embed = { version = "8.2.0", features = [
-    "interpolate-folder-path",
-    "debug-embed"
-] }
+rkyv = "0.7.45"
+zstd = "0.13.0"
 strum = { version = "0.26", features = ["derive"] }
-rkyv = "0.7.44"
+
+common = { path = "crates/common" }
+fx = { path = "crates/fx" }
 
 [profile.release]
 lto = "thin"

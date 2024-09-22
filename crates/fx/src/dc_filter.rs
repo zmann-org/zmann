@@ -1,13 +1,15 @@
 /// A basic DC filter for correcting DC offset.
 ///
-/// Adapted for non-SIMD from Fredemus in va-filter, which is licensed under GPL 3.0:
-/// https://github.com/Fredemus/va-filter
+/// Adapted for non-SIMD from Fredemus in va-filter, which is licensed under GPL
+/// 3.0: https://github.com/Fredemus/va-filter
 ///
-/// Originally copied from Understanding Digital Signal Processing by Richard Lyons
+/// Originally copied from Understanding Digital Signal Processing by Richard
+/// Lyons
 pub struct DcFilter {
     y0: f32,
     x0: f32,
-    // Higher alpha moves the cutoff lower, but also makes it settle slower. See if it's reasonable to make it higher
+    // Higher alpha moves the cutoff lower, but also makes it settle slower. See if it's reasonable
+    // to make it higher
     alpha: f32,
 }
 

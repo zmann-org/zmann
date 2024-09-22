@@ -11,9 +11,10 @@ pub enum BiquadFilterType {
     HighShelf,
 }
 
-/// A biquad filter implementation that supports 7 filter types: low pass, high pass,
-/// band pass, notch, parametric (peaking), low shelf, and high shelf. This implementation is
-/// written in transposed direct form II, with two unit delays.
+/// A biquad filter implementation that supports 7 filter types: low pass, high
+/// pass, band pass, notch, parametric (peaking), low shelf, and high shelf.
+/// This implementation is written in transposed direct form II, with two unit
+/// delays.
 ///
 /// Biquad filter code from: https://www.earlevel.com/main/2012/11/26/biquad-c-source-code/
 pub struct BiquadFilter {
@@ -33,6 +34,12 @@ pub struct BiquadFilter {
     // Unit delays
     z1: f32,
     z2: f32,
+}
+
+impl Default for BiquadFilter {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl BiquadFilter {
@@ -197,6 +204,12 @@ pub struct StereoBiquadFilter {
     filter_r: BiquadFilter,
 }
 
+impl Default for StereoBiquadFilter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl StereoBiquadFilter {
     pub fn new() -> StereoBiquadFilter {
         StereoBiquadFilter {
@@ -207,15 +220,13 @@ impl StereoBiquadFilter {
 
     /// Sets filter type and recalculates coefficients.
     pub fn set_filter_type(&mut self, filter_type: BiquadFilterType) {
-        self.filter_l.set_filter_type(filter_type.clone());
-        self.filter_r.set_filter_type(filter_type.clone());
+        self.filter_l.set_filter_type(filter_type);
+        self.filter_r.set_filter_type(filter_type);
     }
 
     pub fn set_biquads(&mut self, filter_type: BiquadFilterType, fc: f32, q: f32, peak_gain: f32) {
-        self.filter_l
-            .set_biquad(filter_type.clone(), fc, q, peak_gain);
-        self.filter_r
-            .set_biquad(filter_type.clone(), fc, q, peak_gain);
+        self.filter_l.set_biquad(filter_type, fc, q, peak_gain);
+        self.filter_r.set_biquad(filter_type, fc, q, peak_gain);
     }
 
     /// Sets Q value and recalculates coefficients.

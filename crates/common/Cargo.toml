@@ -1,0 +1,15 @@
+[package]
+name = "common"
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+homepage.workspace = true
+
+[dependencies]
+hound = "3.5"
+dasp = { version = "0.11", features = [
+    "signal",
+    "interpolate-linear",
+    "interpolate",
+] }

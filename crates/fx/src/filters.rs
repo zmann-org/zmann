@@ -49,7 +49,6 @@ impl Allpass {
     /// Process an input value with output and feedback
     /// calculated in the style of Schroeder's allpass filter.
     /// See Fig. 2: https://hajim.rochester.edu/ece/sites/zduan/teaching/ece472/reading/Schroeder_1962.pdf
-    ///
     pub fn tick(&mut self, input: f32) -> f32 {
         let delayed = self.delay_line.read();
         let output = -input + delayed;
@@ -63,7 +62,6 @@ impl Allpass {
 
 ///
 /// A low pass feedback comb filter implemented with a single delay line.
-///
 #[derive(Debug)]
 pub struct Comb {
     delay_line: DelayLine,

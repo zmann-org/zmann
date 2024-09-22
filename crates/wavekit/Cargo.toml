@@ -1,9 +1,0 @@
-[package]
-name = "wavekit"
-version.workspace = true
-edition.workspace = true
-license.workspace = true
-authors.workspace = true
-
-[dependencies]
-hound = "3.5"

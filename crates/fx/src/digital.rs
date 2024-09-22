@@ -16,7 +16,7 @@ mod tests {
 
     #[test]
     fn bitcrush_is_correct_4bits() {
-        let inputs = vec![0., 0.1, 0.2, 0.5, 0.87, 1.0];
+        let inputs = [0., 0.1, 0.2, 0.5, 0.87, 1.0];
         let bits = 4.;
         let outputs: Vec<f32> = inputs.iter().map(|x| bitcrush_sample(*x, bits)).collect();
         let expected: Vec<f32> = vec![0.0, 0.125, 0.1875, 0.5, 0.875, 1.0];
@@ -25,7 +25,7 @@ mod tests {
 
     #[test]
     fn bitcrush_is_correct_2bits() {
-        let inputs = vec![0., 0.1, 0.2, 0.5, 0.87, 1.0];
+        let inputs = [0., 0.1, 0.2, 0.5, 0.87, 1.0];
         let bits = 2.;
         let outputs: Vec<f32> = inputs.iter().map(|x| bitcrush_sample(*x, bits)).collect();
         let expected: Vec<f32> = vec![0.0, 0.0, 0.25, 0.5, 0.75, 1.0];
@@ -34,7 +34,7 @@ mod tests {
 
     #[test]
     fn bitcrush_is_correct_7bits() {
-        let inputs = vec![0., 0.1, 0.2, 0.5, 0.87, 1.0];
+        let inputs = [0., 0.1, 0.2, 0.5, 0.87, 1.0];
         let bits = 7.;
         let outputs: Vec<f32> = inputs.iter().map(|x| bitcrush_sample(*x, bits)).collect();
         let expected: Vec<f32> = vec![0.0, 0.1015625, 0.203125, 0.5, 0.8671875, 1.0];
