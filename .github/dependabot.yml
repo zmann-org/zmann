@@ -7,10 +7,3 @@ updates:
     commit-message:
       prefix: "bump; "
       include: "scope"
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "bump; "
-      include: "scope"

@@ -1,0 +1,19 @@
+[package]
+name = "bells"
+authors.workspace = true
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+nih_plug = { workspace = true }
+fx = { workspace = true }
+common = { workspace = true }
+rkyv = { workspace = true }
+zstd = { workspace = true }
+strum = { workspace = true }
+
+rustc-hash = "2.0.0"
