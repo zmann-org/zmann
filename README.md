@@ -101,6 +101,10 @@ $ cargo ci
 ## License
 The code in this repository is licensed under the GNU General Public License v3.0 or later. You can find a copy of the license in the [LICENSE](./LICENSE) file.
 
-The samples included in this repository are owned by their respective owners. Please refer to the individual sample files for their specific licensing information.
+**Exceptions:**
+<!-- - The crate located in `./crates/common_v2` is licensed under the [MIT License](./crates/common/LICENSE) and is **exempt from the GPL-3 terms** of this repository. -->
+- Any private submodules included in this repository are proprietary and **exempt from the GPL-3 terms**.
+
+All sample files in this repository are owned by their respective copyright holders. Please consult each file for its applicable licensing terms.
 
 VST® is a trademark of Steinberg Media Technologies GmbH, registered in Europe and other countries. Other company names, product names and logos are the trademarks or registered trademarks of their respective owners.
