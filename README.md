@@ -4,6 +4,7 @@
 ![GitHub License](https://img.shields.io/github/license/zmann-org/zmann?style=for-the-badge&labelColor=000)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/zmann-org/zmann/total?style=for-the-badge&labelColor=000)
 ![Static Badge](https://img.shields.io/badge/VST3-C90827?style=for-the-badge&logo=steinberg&labelColor=000)
+![Static Badge](https://img.shields.io/badge/CLAP-FFFFFF?style=for-the-badge&logo=clap&labelColor=000)
 > [!IMPORTANT]  
 > We're working on a restructure of the repository, and planning on switching to a different GUI for the plugins. Read more at [#477](https://github.com/zmann-org/zmann/issues/477)
 
