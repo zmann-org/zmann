@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/*", "ci", "xtask"]
+members = ["ci", "crates/*", "xtask"]
 
 [workspace.package]
 edition = "2021"
@@ -10,12 +10,13 @@ license = "GPL-3.0-or-later"
 homepage = "https://zmann.org"
 
 [workspace.dependencies]
-nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
-rkyv = "=0.7.45"
-zstd = "0.13.3"
-strum = { version = "0.27", features = ["derive"] }
 common = { path = "crates/common" }
 fx = { path = "crates/fx" }
+nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+nih_plug_xtask = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+rkyv = "=0.7.45"
+strum = { version = "0.27", features = ["derive"] }
+zstd = "0.13.3"
 
 [profile.release]
 lto = "thin"

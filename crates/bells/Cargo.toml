@@ -9,11 +9,11 @@ license.workspace = true
 crate-type = ["cdylib"]
 
 [dependencies]
-nih_plug = { workspace = true }
-fx = { workspace = true }
 common = { workspace = true }
+fx = { workspace = true }
+nih_plug = { workspace = true }
 rkyv = { workspace = true }
-zstd = { workspace = true }
-strum = { workspace = true }
 
 rustc-hash = "2.0.0"
+strum = { workspace = true }
+zstd = { workspace = true }

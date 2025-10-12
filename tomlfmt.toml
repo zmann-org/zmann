@@ -19,6 +19,6 @@ table_order = [
     "lints",
     "patch",
     "replace",
-    "profile",
     "workspace",
+    "profile",
 ]

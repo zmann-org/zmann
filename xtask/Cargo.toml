@@ -3,4 +3,4 @@ name = "xtask"
 edition.workspace = true
 
 [dependencies]
-nih_plug_xtask = { git = "https://github.com/robbert-vdh/nih-plug.git" }
+nih_plug_xtask = { workspace = true }

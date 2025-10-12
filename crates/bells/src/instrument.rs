@@ -2,7 +2,7 @@ use rkyv::{Archive, Deserialize, Serialize};
 use rustc_hash::FxHashMap;
 use zstd::{decode_all, encode_all};
 
-#[derive(Archive, Deserialize, Serialize, Debug)]
+#[derive(Debug, Serialize, Deserialize, Archive)]
 pub struct Instrument {
     pub name: String,
     pub samples: FxHashMap<u8, Vec<f32>>,

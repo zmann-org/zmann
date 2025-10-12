@@ -198,9 +198,9 @@ impl Bells {
     pub fn load_preset(&mut self, preset: Presets) {
         self.buffer.clear();
         let instrument_data = preset.content().to_vec();
-        let instrument = std::thread::spawn(move || {
-            Instrument::decode(instrument_data)
-        }).join().expect("Failed to load preset on a different thread");
+        let instrument = std::thread::spawn(move || Instrument::decode(instrument_data))
+            .join()
+            .expect("Failed to load preset on a different thread");
         self.instrument = instrument;
     }
 }

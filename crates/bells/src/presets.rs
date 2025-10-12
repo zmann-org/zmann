@@ -1,7 +1,7 @@
 use nih_plug::prelude::Enum;
 use strum::Display;
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash, Enum, Display)]
+#[derive(Clone, Debug, Display, Enum, Eq, Hash, PartialEq)]
 pub enum Presets {
     Brass,
     Plastic,

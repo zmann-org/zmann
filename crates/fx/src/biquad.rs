@@ -1,6 +1,6 @@
 use std::f32::consts::PI;
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Clone, Debug, Copy, Eq, PartialEq)]
 pub enum BiquadFilterType {
     LowPass,
     HighPass,

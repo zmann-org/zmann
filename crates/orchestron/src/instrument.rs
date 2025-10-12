@@ -1,7 +1,7 @@
 use rkyv::{Archive, Deserialize, Serialize};
 use zstd::{decode_all, encode_all};
 
-#[derive(Archive, Deserialize, Serialize, Debug)]
+#[derive(Debug, Serialize, Deserialize, Archive)]
 pub struct Instrument {
     pub name: String,
     pub sample: Vec<f32>,
