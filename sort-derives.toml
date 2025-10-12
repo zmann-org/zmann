@@ -1,0 +1,2 @@
+order = ["Clone", "Debug", "Serialize", "Deserialize", "FromRow", "ToSchema"]
+preserve = false

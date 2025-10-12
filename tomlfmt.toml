@@ -1,0 +1,24 @@
+always_trailing_comma = false
+multiline_trailing_comma = true
+table_order = [
+    "package",
+    # targets
+    "lib",
+    "bin",
+    "example",
+    "test",
+    "bench",
+    # dependencies
+    "dependencies",
+    "dev-dependencies",
+    "build-dependencies",
+    "target",
+    # misc
+    "badges",
+    "features",
+    "lints",
+    "patch",
+    "replace",
+    "profile",
+    "workspace",
+]

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/*", "xtask"]
+members = ["crates/*", "ci", "xtask"]
 
 [workspace.package]
 edition = "2021"
@@ -14,7 +14,6 @@ nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 rkyv = "=0.7.45"
 zstd = "0.13.3"
 strum = { version = "0.27", features = ["derive"] }
-
 common = { path = "crates/common" }
 fx = { path = "crates/fx" }
 
