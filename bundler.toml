@@ -12,4 +12,3 @@ name = "Orchestron"
 
 [bells]
 name = "Bells"
-private = true
