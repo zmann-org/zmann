@@ -20,5 +20,7 @@ table_order = [
     "patch",
     "replace",
     "workspace",
+    "patch",
+    "replace",
     "profile",
 ]

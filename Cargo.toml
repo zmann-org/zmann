@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["ci", "crates/*", "xtask"]
+members = ["crates/*", "xtask"]
 
 [workspace.package]
 edition = "2021"
@@ -17,6 +17,9 @@ nih_plug_xtask = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 rkyv = "=0.7.45"
 strum = { version = "0.27", features = ["derive"] }
 zstd = "0.13.3"
+
+[patch."https://github.com/robbert-vdh/vst3-sys.git"]
+vst3-sys = { git = "https://github.com/RustAudio/vst3-sys", optional = true }
 
 [profile.release]
 lto = "thin"
