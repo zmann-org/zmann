@@ -1,6 +1,6 @@
 [alias]
 xtask = "run --package xtask --release --"
-ci = "xtask bundle -p toybox -p orchestron -p bells --release"
+ci = "run --package ci --release --"
 
 [env]
 SAMPLES = { value = "samples/", relative = true }
