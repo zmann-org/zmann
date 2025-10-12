@@ -89,14 +89,9 @@ Make sure to install the following package and toolchain:
 $ sudo apt install build-essential
 $ rustup target add x86_64-pc-windows-gnu
 ```
-After installing the toolchain, modify [.cargo/config.toml](.cargo/config.toml) to use the `x86_64-pc-windows-gnu` toolchain:
-```toml
-[alias]
-xtask = "run --package xtask --target x86_64-pc-windows-gnu --release --"
-```
-Finally, you can build the plugins by running the following command:
+After installing the toolchain, you can build the plugins by running the following command:
 ```bash
-$ cargo ci
+$ cargo ci --target x86_64-pc-windows-gnu
 ```
 
 ## License
