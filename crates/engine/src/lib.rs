@@ -147,17 +147,25 @@ pub struct Voice {
     position: usize,
     velocity: f32,
     envelope: Envelope,
+    looping: bool,
 }
 
 impl Voice {
     /// Creates a new voice.
-    pub fn new(sample_data: Arc<Vec<f32>>, note: u8, velocity: f32, adsr: Adsr) -> Self {
+    pub fn new(
+        sample_data: Arc<Vec<f32>>,
+        note: u8,
+        velocity: f32,
+        adsr: Adsr,
+        looping: bool,
+    ) -> Self {
         Self {
             sample_data,
             note,
             position: 0,
             velocity,
             envelope: Envelope::new(adsr),
+            looping,
         }
     }
 
@@ -173,7 +181,11 @@ impl Voice {
 
     /// Returns `true` if the voice is still active.
     pub fn is_active(&self) -> bool {
-        self.envelope.is_active() && self.position < self.sample_data.len()
+        if self.looping {
+            self.envelope.is_active()
+        } else {
+            self.envelope.is_active() && self.position < self.sample_data.len()
+        }
     }
 
     /// Generates the next sample for this voice.
@@ -183,6 +195,11 @@ impl Voice {
         }
 
         let envelope_value = self.envelope.next_value();
+
+        if self.looping && !self.sample_data.is_empty() {
+            self.position %= self.sample_data.len();
+        }
+
         let sample_value = self.sample_data.get(self.position).copied().unwrap_or(0.0);
         self.position += 1;
 

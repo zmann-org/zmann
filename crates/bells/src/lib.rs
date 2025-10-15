@@ -200,8 +200,13 @@ impl Plugin for Bells {
                     NoteEvent::NoteOn { note, velocity, .. } => {
                         if let Some(data) = self.instrument.samples.get(&note) {
                             // Cloning the Arc is cheap (it just increments a reference count).
-                            let new_voice =
-                                Voice::new(Arc::clone(data), note, velocity, self.adsr.clone());
+                            let new_voice = Voice::new(
+                                Arc::clone(data),
+                                note,
+                                velocity,
+                                self.adsr.clone(),
+                                false,
+                            );
                             self.voices.push(new_voice);
                         }
                     }

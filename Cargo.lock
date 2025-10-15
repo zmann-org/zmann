@@ -147,7 +147,6 @@ dependencies = [
 name = "bells"
 version = "2.0.0"
 dependencies = [
- "common",
  "engine",
  "fx",
  "nih_plug",
@@ -848,6 +847,7 @@ name = "orchestron"
 version = "2.0.0"
 dependencies = [
  "common",
+ "engine",
  "fx",
  "nih_plug",
  "rkyv",

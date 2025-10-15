@@ -23,10 +23,6 @@ pub const SAXOPHONE: &[u8] = include_bytes!(concat!(env!("SAMPLES"), "orchestron
 pub const VIOLINS: &[u8] = include_bytes!(concat!(env!("SAMPLES"), "orchestron/violins"));
 
 impl Presets {
-    pub fn default() -> Self {
-        Presets::Organ
-    }
-
     pub fn content(&self) -> &[u8] {
         match self {
             Presets::Cello => CELLO,
@@ -38,5 +34,11 @@ impl Presets {
             Presets::Saxophone => SAXOPHONE,
             Presets::Violins => VIOLINS,
         }
+    }
+}
+
+impl Default for Presets {
+    fn default() -> Self {
+        Presets::Cello
     }
 }
