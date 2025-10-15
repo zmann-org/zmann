@@ -11,6 +11,7 @@ homepage = "https://zmann.org"
 
 [workspace.dependencies]
 common = { path = "crates/common" }
+engine = { path = "crates/engine" }
 fx = { path = "crates/fx" }
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 nih_plug_xtask = { git = "https://github.com/robbert-vdh/nih-plug.git" }

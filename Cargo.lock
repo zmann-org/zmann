@@ -148,6 +148,7 @@ name = "bells"
 version = "2.0.0"
 dependencies = [
  "common",
+ "engine",
  "fx",
  "nih_plug",
  "rkyv",
@@ -550,6 +551,10 @@ checksum = "b42b6fa04a440b495c8b04d0e71b707c585f83cb9cb28cf8cd0d976c315e31b4"
 dependencies = [
  "powerfmt",
 ]
+
+[[package]]
+name = "engine"
+version = "2.0.0"
 
 [[package]]
 name = "equivalent"

@@ -4,8 +4,7 @@ use std::sync::{
     Arc,
 };
 
-use common::buffer::Sample;
-use common::resampler::resample;
+use engine::{Adsr, Voice};
 use instrument::Instrument;
 use nih_plug::prelude::*;
 use presets::Presets;
@@ -13,48 +12,55 @@ use presets::Presets;
 pub mod instrument;
 mod presets;
 
+const DEFAULT_ATTACK_S: f32 = 0.01;
+const DEFAULT_DECAY_S: f32 = 0.1;
+const DEFAULT_SUSTAIN_LEVEL: f32 = 1.0;
+const DEFAULT_RELEASE_S: f32 = 0.2;
+
 struct Bells {
     params: Arc<BellsParams>,
-    pub buffer: Vec<Sample>,
+    voices: Vec<Voice>,
     instrument: Instrument,
     sample_rate: f32,
+    adsr: Adsr,
 }
 
 #[derive(Params)]
 struct BellsParams {
     #[id = "gain"]
     pub gain: FloatParam,
+    #[id = "attack"]
+    pub attack: FloatParam,
+    #[id = "decay"]
+    pub decay: FloatParam,
+    #[id = "sustain"]
+    pub sustain: FloatParam,
+    #[id = "release"]
+    pub release: FloatParam,
     #[id = "preset"]
     pub preset: EnumParam<Presets>,
+    // This flag is used to signal the audio thread that the preset has changed.
     pub preset_change: Arc<AtomicBool>,
 }
 
 impl Default for Bells {
     fn default() -> Self {
+        let sample_rate = 44100.0;
+
         Self {
             params: Arc::new(BellsParams::default()),
-            buffer: Vec::new(),
+            voices: Vec::new(),
             instrument: Instrument::default(),
-            sample_rate: 44100.0,
+            sample_rate,
+            adsr: Adsr::new(sample_rate),
         }
     }
 }
 
-fn create_callback<T: 'static + Send + Sync>(
-    f: impl Fn(T) + 'static + Send + Sync,
-) -> (Arc<AtomicBool>, Arc<dyn Fn(T) + Send + Sync>) {
-    let flag = Arc::new(AtomicBool::new(false));
-    let flag_clone = Arc::clone(&flag);
-    let callback = Arc::new(move |value: T| {
-        f(value);
-        flag_clone.store(true, Ordering::Relaxed);
-    });
-    (flag, callback)
-}
-
 impl Default for BellsParams {
     fn default() -> Self {
-        let (preset_change, preset_callback) = create_callback(|_: Presets| {});
+        let preset_change = Arc::new(AtomicBool::new(false));
+
         Self {
             gain: FloatParam::new(
                 "Gain",
@@ -69,7 +75,49 @@ impl Default for BellsParams {
             .with_unit(" dB")
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db()),
-            preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback),
+            attack: FloatParam::new(
+                "Attack",
+                DEFAULT_ATTACK_S,
+                FloatRange::Skewed {
+                    min: 0.0,
+                    max: 2.0,
+                    factor: 0.25,
+                },
+            )
+            .with_unit(" s"),
+            decay: FloatParam::new(
+                "Decay",
+                DEFAULT_DECAY_S,
+                FloatRange::Skewed {
+                    min: 0.0,
+                    max: 2.0,
+                    factor: 0.25,
+                },
+            )
+            .with_unit(" s"),
+            sustain: FloatParam::new(
+                "Sustain",
+                DEFAULT_SUSTAIN_LEVEL,
+                FloatRange::Linear { min: 0.0, max: 1.0 },
+            )
+            .with_unit(" level")
+            .with_value_to_string(formatters::v2s_f32_percentage(2)),
+            release: FloatParam::new(
+                "Release",
+                DEFAULT_RELEASE_S,
+                FloatRange::Skewed {
+                    min: 0.0,
+                    max: 5.0,
+                    factor: 0.25,
+                },
+            )
+            .with_unit(" s"),
+            preset: EnumParam::new("Preset", Presets::default()).with_callback({
+                let preset_change = preset_change.clone();
+                Arc::new(move |_| {
+                    preset_change.store(true, Ordering::Relaxed);
+                })
+            }),
             preset_change,
         }
     }
@@ -113,14 +161,17 @@ impl Plugin for Bells {
         _context: &mut impl InitContext<Self>,
     ) -> bool {
         self.sample_rate = buffer_config.sample_rate;
+        self.adsr = Adsr::new(self.sample_rate);
+
         if self.instrument.samples.is_empty() {
             self.load_preset(self.params.preset.value());
         }
+
         true
     }
 
     fn reset(&mut self) {
-        self.buffer.clear();
+        self.voices.clear();
     }
 
     fn process(
@@ -130,63 +181,61 @@ impl Plugin for Bells {
         context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
         let mut next_event = context.next_event();
-        let preset_change = self.params.preset_change.clone();
+
+        // Update ADSR parameters from the plugin's state.
+        self.adsr.set_parameters(
+            self.params.attack.value(),
+            self.params.decay.value(),
+            self.params.sustain.value(),
+            self.params.release.value(),
+        );
 
         for (sample_id, channel_samples) in buffer.iter_samples().enumerate() {
+            // Process MIDI events for this sample.
             while let Some(event) = next_event {
-                if event.timing() > (sample_id as u32) {
+                if event.timing() > sample_id as u32 {
                     break;
                 }
                 match event {
-                    NoteEvent::NoteOn {
-                        timing: _,
-                        voice_id: _,
-                        channel: _,
-                        note,
-                        velocity,
-                    } => {
+                    NoteEvent::NoteOn { note, velocity, .. } => {
                         if let Some(data) = self.instrument.samples.get(&note) {
-                            self.buffer.push(Sample::new(
-                                resample(data, 44100.0, self.sample_rate),
-                                note,
-                                velocity,
-                            ));
+                            // Cloning the Arc is cheap (it just increments a reference count).
+                            let new_voice =
+                                Voice::new(Arc::clone(data), note, velocity, self.adsr.clone());
+                            self.voices.push(new_voice);
                         }
                     }
-                    NoteEvent::NoteOff {
-                        timing: _,
-                        voice_id: _,
-                        channel: _,
-                        note,
-                        velocity: _,
-                    } => {
-                        if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note))
-                        {
-                            self.buffer.remove(index);
-                        }
+                    NoteEvent::NoteOff { note, .. } => {
+                        self.voices
+                            .iter_mut()
+                            .filter(|v| v.matches_note(note))
+                            .for_each(|v| v.note_off());
                     }
                     _ => (),
                 }
-
                 next_event = context.next_event();
             }
 
+            // Get the smoothed gain value.
             let gain = self.params.gain.smoothed.next();
 
+            // Sum the output of all active voices.
+            let mut output_sample = 0.0;
+            for voice in &mut self.voices {
+                output_sample += voice.next_sample();
+            }
+
+            // Write the final sample to all channels.
             for sample in channel_samples {
-                for playing_sample in &mut self.buffer {
-                    *sample += playing_sample.get_next_sample() * playing_sample.get_velocity();
-                }
-
-                *sample *= gain;
-
-                self.buffer.retain(|e| !e.should_be_removed());
+                *sample = output_sample * gain;
             }
         }
 
-        if preset_change.load(Ordering::Relaxed)
-            && self.instrument.name != self.params.preset.value().to_string()
-        {
+        // Remove voices that are no longer active.
+        self.voices.retain(|v| v.is_active());
+
+        // Check if the preset has been changed on the GUI thread.
+        if self.params.preset_change.swap(false, Ordering::Relaxed) {
             self.load_preset(self.params.preset.value());
         }
 
@@ -196,12 +245,13 @@ impl Plugin for Bells {
 
 impl Bells {
     pub fn load_preset(&mut self, preset: Presets) {
-        self.buffer.clear();
+        self.voices.clear();
+
         let instrument_data = preset.content().to_vec();
-        let instrument = std::thread::spawn(move || Instrument::decode(instrument_data))
+        // Spawning a thread to decode the instrument data.
+        self.instrument = std::thread::spawn(move || Instrument::decode(instrument_data))
             .join()
             .expect("Failed to load preset on a different thread");
-        self.instrument = instrument;
     }
 }
 

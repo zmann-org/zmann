@@ -15,6 +15,8 @@ impl Presets {
         Presets::Brass
     }
 
+    /// Returns the compressed instrument data for the selected preset.
+    /// with the corresponding `.bin` files.
     pub fn content(&self) -> &[u8] {
         match self {
             Presets::Brass => BRASS,
