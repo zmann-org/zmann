@@ -1,14 +1,14 @@
 [package]
-name = "config"
+name = "config_macro"
 edition.workspace = true
 authors.workspace = true
 license = "MIT"
 
+[lib]
+proc-macro = true
+
 [dependencies]
+quote = "1.0"
 serde = { workspace = true }
 toml = { workspace = true }
-
-config_macro = { path = "../config_macro", optional = true }
-
-[features]
-macro = ["dep:config_macro"]
+cargo_metadata = "0.23.0"

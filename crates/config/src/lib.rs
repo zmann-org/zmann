@@ -10,3 +10,6 @@ pub struct Package {
     pub private: Option<bool>,
     pub id: Option<String>,
 }
+
+#[cfg(feature = "macro")]
+pub use config_macro::{clap_id, vst3_id};

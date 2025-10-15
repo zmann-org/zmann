@@ -262,7 +262,7 @@ impl Orchestron {
 }
 
 impl ClapPlugin for Orchestron {
-    const CLAP_ID: &'static str = "com.zmann.orchestron";
+    const CLAP_ID: &'static str = config::clap_id!();
     const CLAP_DESCRIPTION: Option<&'static str> = None;
     const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
     const CLAP_SUPPORT_URL: Option<&'static str> = Some(Self::URL);
@@ -271,7 +271,7 @@ impl ClapPlugin for Orchestron {
 }
 
 impl Vst3Plugin for Orchestron {
-    const VST3_CLASS_ID: [u8; 16] = *b"zmann.orchestron";
+    const VST3_CLASS_ID: [u8; 16] = config::vst3_id!();
 
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
         &[Vst3SubCategory::Sampler, Vst3SubCategory::Instrument];

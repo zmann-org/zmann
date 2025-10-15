@@ -1,14 +1,18 @@
-# This provides metadata for NIH-plug's `cargo xtask bundle <foo>` plugin
-# bundler. This file's syntax is as follows:
+# This provides metadata for both NIH-plug's `cargo xtask bundle <foo>` plugin
+# bundler and the workspace build system. The file's syntax is as follows:
 #
 # [package_name]
-# name = "Human Readable Plugin Name"  # defaults to <package_name>
+# name = "Human Readable Plugin Name"   # defaults to <package_name>
+# id = "Optional fixed plugin ID"       # used for CLAP/VST3 IDs and other fixed identifiers
+# private = true                        # optional, marks the plugin as private
 
 [toybox]
 name = "Toybox"
 
 [orchestron]
 name = "Orchestron"
+id = "org.zmann.orchestron"
 
 [bells]
 name = "Bells"
+id = "org.zmann.bells"
