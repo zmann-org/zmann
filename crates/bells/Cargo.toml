@@ -13,6 +13,6 @@ engine = { workspace = true }
 fx = { workspace = true }
 nih_plug = { workspace = true }
 rkyv = { workspace = true }
-rustc-hash = "2.0.0"
+rustc-hash = "2.1.1"
 strum = { workspace = true }
 zstd = { workspace = true }
