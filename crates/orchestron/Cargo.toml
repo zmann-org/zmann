@@ -16,3 +16,4 @@ nih_plug = { workspace = true }
 rkyv = { workspace = true }
 strum = { workspace = true }
 zstd = { workspace = true }
+config = { workspace = true, features = ["macro"] }

@@ -147,6 +147,7 @@ dependencies = [
 name = "bells"
 version = "2.0.0"
 dependencies = [
+ "config",
  "engine",
  "fx",
  "nih_plug",
@@ -355,6 +356,17 @@ dependencies = [
 name = "config"
 version = "0.0.0"
 dependencies = [
+ "config_macro",
+ "serde",
+ "toml 0.9.8",
+]
+
+[[package]]
+name = "config_macro"
+version = "0.0.0"
+dependencies = [
+ "cargo_metadata 0.23.0",
+ "quote",
  "serde",
  "toml 0.9.8",
 ]
@@ -855,6 +867,7 @@ name = "orchestron"
 version = "2.0.0"
 dependencies = [
  "common",
+ "config",
  "engine",
  "fx",
  "nih_plug",
