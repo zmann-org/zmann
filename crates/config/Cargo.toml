@@ -1,0 +1,9 @@
+[package]
+name = "config"
+edition.workspace = true
+authors.workspace = true
+license = "MIT"
+
+[dependencies]
+serde = { workspace = true }
+toml = { workspace = true }

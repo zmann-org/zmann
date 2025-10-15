@@ -287,8 +287,8 @@ dependencies = [
  "anyhow",
  "cargo_metadata 0.23.0",
  "clap",
+ "config",
  "nih_plug_xtask",
- "serde",
  "toml 0.9.8",
 ]
 
@@ -349,6 +349,14 @@ version = "2.0.0"
 dependencies = [
  "dasp",
  "hound",
+]
+
+[[package]]
+name = "config"
+version = "0.0.0"
+dependencies = [
+ "serde",
+ "toml 0.9.8",
 ]
 
 [[package]]

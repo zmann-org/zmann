@@ -1,16 +1,9 @@
-use std::{collections::HashMap, fs, path::Path};
+use std::{fs, path::Path};
 
 use anyhow::Result;
-use serde::Deserialize;
+use config::Bundler;
 
-pub type BundlerConfig = HashMap<String, PackageConfig>;
-
-#[derive(Clone, Debug, Deserialize)]
-pub struct PackageConfig {
-    pub private: Option<bool>,
-}
-
-pub fn load_bundler_config() -> Result<Option<BundlerConfig>> {
+pub fn load_bundler_config() -> Result<Option<Bundler>> {
     let bundler_config_path = Path::new("bundler.toml");
     if !bundler_config_path.exists() {
         return Ok(None);
