@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use common::buffer::Sample;
 use nih_plug::prelude::*;
 
 // pub mod instrument;
@@ -8,7 +7,6 @@ mod resources;
 
 struct Toybox {
     params: Arc<ToyboxParams>,
-    pub buffer: Vec<Sample>,
 }
 
 #[derive(Params)]
@@ -21,7 +19,6 @@ impl Default for Toybox {
     fn default() -> Self {
         Self {
             params: Arc::new(ToyboxParams::default()),
-            buffer: Vec::new(),
         }
     }
 }
@@ -93,7 +90,6 @@ impl Plugin for Toybox {
         // Reset buffers and envelopes here. This can be called from the audio
         // thread and may not allocate. You can remove this function if
         // you do not need it.
-        self.buffer.clear();
     }
 
     fn process(

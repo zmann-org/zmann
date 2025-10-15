@@ -147,7 +147,7 @@ dependencies = [
 name = "bells"
 version = "2.0.0"
 dependencies = [
- "common",
+ "engine",
  "fx",
  "nih_plug",
  "rkyv",
@@ -552,6 +552,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "engine"
+version = "2.0.0"
+
+[[package]]
 name = "equivalent"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -843,6 +847,7 @@ name = "orchestron"
 version = "2.0.0"
 dependencies = [
  "common",
+ "engine",
  "fx",
  "nih_plug",
  "rkyv",

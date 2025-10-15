@@ -1,0 +1,8 @@
+[package]
+name = "engine"
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+license = "MIT"
+
+[dependencies]

@@ -4,8 +4,8 @@ use std::sync::{
     Arc,
 };
 
-use common::buffer::Sample;
 use common::resampler::{calc_hertz, resample};
+use engine::{Adsr, Voice};
 use instrument::Instrument;
 use nih_plug::prelude::*;
 use presets::Presets;
@@ -13,17 +13,31 @@ use presets::Presets;
 pub mod instrument;
 mod presets;
 
+const DEFAULT_ATTACK_S: f32 = 0.01;
+const DEFAULT_DECAY_S: f32 = 0.1;
+const DEFAULT_SUSTAIN_LEVEL: f32 = 1.0;
+const DEFAULT_RELEASE_S: f32 = 0.2;
+
 struct Orchestron {
     params: Arc<OrchestronParams>,
-    pub buffer: Vec<Sample>,
+    voices: Vec<Voice>,
     instrument: Instrument,
     sample_rate: f32,
+    adsr: Adsr,
 }
 
 #[derive(Params)]
 struct OrchestronParams {
     #[id = "gain"]
     pub gain: FloatParam,
+    #[id = "attack"]
+    pub attack: FloatParam,
+    #[id = "decay"]
+    pub decay: FloatParam,
+    #[id = "sustain"]
+    pub sustain: FloatParam,
+    #[id = "release"]
+    pub release: FloatParam,
     #[id = "preset"]
     pub preset: EnumParam<Presets>,
     pub preset_change: Arc<AtomicBool>,
@@ -31,30 +45,22 @@ struct OrchestronParams {
 
 impl Default for Orchestron {
     fn default() -> Self {
+        let sample_rate: f32 = 44100.0;
+
         Self {
             params: Arc::new(OrchestronParams::default()),
-            buffer: Vec::new(),
+            voices: Vec::new(),
             instrument: Instrument::default(),
-            sample_rate: 44100.0,
+            sample_rate,
+            adsr: Adsr::new(sample_rate),
         }
     }
 }
 
-fn create_callback<T: 'static + Send + Sync>(
-    f: impl Fn(T) + 'static + Send + Sync,
-) -> (Arc<AtomicBool>, Arc<dyn Fn(T) + Send + Sync>) {
-    let flag = Arc::new(AtomicBool::new(false));
-    let flag_clone = Arc::clone(&flag);
-    let callback = Arc::new(move |value: T| {
-        f(value);
-        flag_clone.store(true, Ordering::Relaxed);
-    });
-    (flag, callback)
-}
-
 impl Default for OrchestronParams {
     fn default() -> Self {
-        let (preset_change, preset_callback) = create_callback(|_: Presets| {});
+        let preset_change = Arc::new(AtomicBool::new(false));
+
         Self {
             gain: FloatParam::new(
                 "Gain",
@@ -71,7 +77,49 @@ impl Default for OrchestronParams {
             .with_unit(" dB")
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db()),
-            preset: EnumParam::new("Preset", Presets::default()).with_callback(preset_callback),
+            attack: FloatParam::new(
+                "Attack",
+                DEFAULT_ATTACK_S,
+                FloatRange::Skewed {
+                    min: 0.0,
+                    max: 2.0,
+                    factor: 0.25,
+                },
+            )
+            .with_unit(" s"),
+            decay: FloatParam::new(
+                "Decay",
+                DEFAULT_DECAY_S,
+                FloatRange::Skewed {
+                    min: 0.0,
+                    max: 2.0,
+                    factor: 0.25,
+                },
+            )
+            .with_unit(" s"),
+            sustain: FloatParam::new(
+                "Sustain",
+                DEFAULT_SUSTAIN_LEVEL,
+                FloatRange::Linear { min: 0.0, max: 1.0 },
+            )
+            .with_unit(" level")
+            .with_value_to_string(formatters::v2s_f32_percentage(2)),
+            release: FloatParam::new(
+                "Release",
+                DEFAULT_RELEASE_S,
+                FloatRange::Skewed {
+                    min: 0.0,
+                    max: 5.0,
+                    factor: 0.25,
+                },
+            )
+            .with_unit(" s"),
+            preset: EnumParam::new("Preset", Presets::default()).with_callback({
+                let preset_change = preset_change.clone();
+                Arc::new(move |_| {
+                    preset_change.store(true, Ordering::Relaxed);
+                })
+            }),
             preset_change,
         }
     }
@@ -123,7 +171,7 @@ impl Plugin for Orchestron {
     }
 
     fn reset(&mut self) {
-        self.buffer.clear();
+        self.voices.clear();
     }
 
     fn process(
@@ -133,63 +181,66 @@ impl Plugin for Orchestron {
         context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
         let mut next_event = context.next_event();
-        let preset_change = self.params.preset_change.clone();
+
+        self.adsr.set_parameters(
+            self.params.attack.value(),
+            self.params.decay.value(),
+            self.params.sustain.value(),
+            self.params.release.value(),
+        );
 
         for (sample_id, channel_samples) in buffer.iter_samples().enumerate() {
             while let Some(event) = next_event {
-                if event.timing() > (sample_id as u32) {
+                if event.timing() > sample_id as u32 {
                     break;
                 }
+
                 match event {
-                    NoteEvent::NoteOn {
-                        timing: _,
-                        voice_id: _,
-                        channel: _,
-                        note,
-                        velocity,
-                    } => {
-                        self.buffer.push(Sample::new(
-                            resample(
-                                &self.instrument.sample.to_vec(),
-                                44100.0,
-                                calc_hertz(self.sample_rate, 53 - (note as i32)),
-                            ),
+                    NoteEvent::NoteOn { note, velocity, .. } => {
+                        let playback_rate = calc_hertz(self.sample_rate, 53 - (note as i32));
+
+                        let resampled = resample(&self.instrument.sample, 44100.0, playback_rate);
+
+                        let new_voice = Voice::new(
+                            Arc::new(resampled),
                             note,
                             velocity,
-                        ));
+                            self.adsr.clone(),
+                            true,
+                        );
+
+                        self.voices.push(new_voice);
                     }
-                    NoteEvent::NoteOff {
-                        timing: _,
-                        voice_id: _,
-                        channel: _,
-                        note,
-                        velocity: _,
-                    } => {
-                        if let Some(index) = self.buffer.iter().position(|x| x.get_note_bool(note))
-                        {
-                            self.buffer.remove(index);
-                        }
+
+                    NoteEvent::NoteOff { note, .. } => {
+                        self.voices
+                            .iter_mut()
+                            .filter(|v| v.matches_note(note))
+                            .for_each(|v| v.note_off());
                     }
+
                     _ => (),
                 }
 
                 next_event = context.next_event();
             }
 
+            let mut output_sample = 0.0;
+            for voice in &mut self.voices {
+                output_sample += voice.next_sample();
+            }
+
             let gain = self.params.gain.smoothed.next();
+            output_sample *= gain;
 
             for sample in channel_samples {
-                for playing_sample in &mut self.buffer {
-                    *sample += playing_sample.get_next_sample() * playing_sample.get_velocity();
-                }
-
-                *sample *= gain;
-
-                self.buffer.retain(|e| !e.should_be_removed());
+                *sample = output_sample;
             }
+
+            self.voices.retain(|v| v.is_active());
         }
 
-        if preset_change.load(Ordering::Relaxed)
+        if self.params.preset_change.swap(false, Ordering::Relaxed)
             && self.instrument.name != self.params.preset.value().to_string()
         {
             self.load_preset(self.params.preset.value());
@@ -200,12 +251,13 @@ impl Plugin for Orchestron {
 
 impl Orchestron {
     pub fn load_preset(&mut self, preset: Presets) {
-        self.buffer.clear();
+        self.voices.clear();
+
         let instrument_data = preset.content().to_vec();
-        let instrument = std::thread::spawn(move || Instrument::decode(instrument_data))
+        // Spawning a thread to decode the instrument data.
+        self.instrument = std::thread::spawn(move || Instrument::decode(instrument_data))
             .join()
             .expect("Failed to load preset on a different thread");
-        self.instrument = instrument;
     }
 }
 
@@ -215,14 +267,12 @@ impl ClapPlugin for Orchestron {
     const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
     const CLAP_SUPPORT_URL: Option<&'static str> = Some(Self::URL);
 
-    // Don't forget to change these features
     const CLAP_FEATURES: &'static [ClapFeature] = &[ClapFeature::Sampler, ClapFeature::Instrument];
 }
 
 impl Vst3Plugin for Orchestron {
     const VST3_CLASS_ID: [u8; 16] = *b"zmann.orchestron";
 
-    // And also don't forget to change these categories
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
         &[Vst3SubCategory::Sampler, Vst3SubCategory::Instrument];
 }
