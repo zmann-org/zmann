@@ -9,8 +9,8 @@ license.workspace = true
 crate-type = ["cdylib"]
 
 [dependencies]
-engine = { workspace = true }
 common = { workspace = true }
+engine = { workspace = true }
 fx = { workspace = true }
 nih_plug = { workspace = true }
 rkyv = { workspace = true }

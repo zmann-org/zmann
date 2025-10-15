@@ -5,7 +5,7 @@ use rustc_hash::FxHashMap;
 use zstd::{decode_all, encode_all};
 
 // The serialized version on disk is still a plain FxHashMap<u8, Vec<f32>>.
-#[derive(Archive, Deserialize, Serialize, Debug, Default)]
+#[derive(Debug, Serialize, Deserialize, Archive, Default)]
 struct SerializableInstrument {
     name: String,
     samples: FxHashMap<u8, Vec<f32>>,
