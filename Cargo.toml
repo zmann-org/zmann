@@ -16,7 +16,7 @@ engine = { path = "crates/engine" }
 fx = { path = "crates/fx" }
 nih_plug = { git = "https://github.com/robbert-vdh/nih-plug.git" }
 nih_plug_xtask = { git = "https://github.com/robbert-vdh/nih-plug.git" }
-rkyv = "=0.7.45"
+rkyv = "=0.8.12"
 serde = { version = "1.0", features = ["derive"] }
 strum = { version = "0.27", features = ["derive"] }
 toml = "0.9.8"
