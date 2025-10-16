@@ -10,10 +10,10 @@ crate-type = ["cdylib"]
 
 [dependencies]
 common = { workspace = true }
+config = { workspace = true, features = ["macro"] }
 engine = { workspace = true }
 fx = { workspace = true }
 nih_plug = { workspace = true }
 rkyv = { workspace = true }
 strum = { workspace = true }
 zstd = { workspace = true }
-config = { workspace = true, features = ["macro"] }

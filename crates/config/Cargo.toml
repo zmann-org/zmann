@@ -5,10 +5,9 @@ authors.workspace = true
 license = "MIT"
 
 [dependencies]
+config_macro = { path = "../config_macro", optional = true }
 serde = { workspace = true }
 toml = { workspace = true }
-
-config_macro = { path = "../config_macro", optional = true }
 
 [features]
 macro = ["dep:config_macro"]

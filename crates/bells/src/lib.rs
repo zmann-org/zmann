@@ -16,6 +16,7 @@ const DEFAULT_ATTACK_S: f32 = 0.01;
 const DEFAULT_DECAY_S: f32 = 0.1;
 const DEFAULT_SUSTAIN_LEVEL: f32 = 1.0;
 const DEFAULT_RELEASE_S: f32 = 0.2;
+const ORIGINAL_SAMPLE_RATE: f32 = 44100.0;
 
 struct Bells {
     params: Arc<BellsParams>,
@@ -160,12 +161,12 @@ impl Plugin for Bells {
         buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>,
     ) -> bool {
-        self.sample_rate = buffer_config.sample_rate;
-        self.adsr = Adsr::new(self.sample_rate);
-
-        if self.instrument.samples.is_empty() {
+        if self.instrument.samples.is_empty() || self.sample_rate != buffer_config.sample_rate {
+            self.sample_rate = buffer_config.sample_rate;
             self.load_preset(self.params.preset.value());
         }
+
+        self.adsr = Adsr::new(self.sample_rate);
 
         true
     }
@@ -253,10 +254,30 @@ impl Bells {
         self.voices.clear();
 
         let instrument_data = preset.content().to_vec();
-        // Spawning a thread to decode the instrument data.
-        self.instrument = std::thread::spawn(move || Instrument::decode(instrument_data))
+
+        // Step 1: Decode the instrument data.
+        let mut instrument = std::thread::spawn(move || Instrument::decode(instrument_data))
             .join()
             .expect("Failed to load preset on a different thread");
+
+        if self.sample_rate != ORIGINAL_SAMPLE_RATE {
+            instrument.samples = instrument
+                .samples
+                .into_iter()
+                .map(|(k, v)| {
+                    (
+                        k,
+                        Arc::new(common::resampler::resample(
+                            &v,
+                            ORIGINAL_SAMPLE_RATE,
+                            self.sample_rate,
+                        )),
+                    )
+                })
+                .collect();
+        }
+
+        self.instrument = instrument;
     }
 }
 

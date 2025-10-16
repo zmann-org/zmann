@@ -9,6 +9,8 @@ license.workspace = true
 crate-type = ["cdylib"]
 
 [dependencies]
+common = { workspace = true }
+config = { workspace = true, features = ["macro"] }
 engine = { workspace = true }
 fx = { workspace = true }
 nih_plug = { workspace = true }
@@ -16,4 +18,3 @@ rkyv = { workspace = true }
 rustc-hash = "2.1.1"
 strum = { workspace = true }
 zstd = { workspace = true }
-config = { workspace = true, features = ["macro"] }
