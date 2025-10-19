@@ -18,3 +18,4 @@ rkyv = { workspace = true }
 rustc-hash = "2.1.1"
 strum = { workspace = true }
 zstd = { workspace = true }
+crossbeam = "0.8"
