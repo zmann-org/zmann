@@ -223,6 +223,7 @@ impl Plugin for Bells {
         // initialize()).
         if self.params.preset_change.swap(false, Ordering::Relaxed) {
             nih_log!("Preset change detected. Clearing voices and starting background load.");
+            self.instrument.clear();
             self.voices.clear();
             context.execute_background(Task::LoadPreset {
                 preset: self.params.preset.value(),

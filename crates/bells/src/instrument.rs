@@ -49,4 +49,10 @@ impl Instrument {
                 .collect(),
         }
     }
+
+    /// Clears the instrument's name and samples.
+    pub fn clear(&mut self) {
+        self.name.clear();
+        self.samples.clear();
+    }
 }
