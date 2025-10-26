@@ -1,4 +1,5 @@
 #![allow(non_snake_case, non_upper_case_globals)]
+use std::collections::HashMap;
 use std::sync::Arc;
 
 use common::resampler::{calc_hertz, resample};
@@ -20,6 +21,10 @@ const DEFAULT_SUSTAIN_LEVEL: f32 = 1.0;
 const DEFAULT_RELEASE_S: f32 = 0.2;
 const ORIGINAL_SAMPLE_RATE: f32 = 44100.0;
 
+enum Task {
+    LoadPreset { preset: Presets, sample_rate: f32 },
+}
+
 enum Command {
     LoadPreset(Presets),
 }
@@ -31,6 +36,8 @@ struct Orchestron {
     sample_rate: f32,
     adsr: Adsr,
     bus: Arc<MonoBus>,
+    /// Receives the loaded `Instrument` from the background task.
+    task_channel: (Sender<Instrument>, Receiver<Instrument>),
     /// Sends/Receives commands to/on the audio thread.
     command_channel: (Sender<Command>, Receiver<Command>),
 }
@@ -64,6 +71,7 @@ impl Default for Orchestron {
             sample_rate: ORIGINAL_SAMPLE_RATE,
             adsr: Adsr::new(ORIGINAL_SAMPLE_RATE),
             bus: Default::default(),
+            task_channel: unbounded(),
             command_channel,
         }
     }
@@ -159,7 +167,29 @@ impl Plugin for Orchestron {
 
     type SysExMessage = ();
 
-    type BackgroundTask = ();
+    type BackgroundTask = Task;
+
+    fn task_executor(&mut self) -> TaskExecutor<Self> {
+        let sender = self.task_channel.0.clone();
+        Box::new(move |task| match task {
+            Task::LoadPreset {
+                preset,
+                sample_rate,
+            } => {
+                nih_log!("Starting background task: LoadPreset for {:?}", preset);
+                let instrument = Orchestron::load_and_resample_instrument(preset, sample_rate);
+                nih_log!("Finished loading and resampling instrument in background task.");
+                if let Err(err) = sender.send(instrument) {
+                    nih_log!(
+                        "Failed to send loaded instrument from background task: {}",
+                        err
+                    );
+                } else {
+                    nih_log!("Successfully sent instrument to audio thread.");
+                }
+            }
+        })
+    }
 
     fn params(&self) -> Arc<dyn Params> {
         self.params.clone()
@@ -206,9 +236,23 @@ impl Plugin for Orchestron {
         while let Ok(command) = self.command_channel.1.try_recv() {
             match command {
                 Command::LoadPreset(preset) => {
-                    self.load_preset(preset);
+                    nih_log!(
+                        "Preset change command received. Clearing voices and starting background load."
+                    );
+                    self.instrument.clear();
+                    self.voices.clear();
+                    context.execute_background(Task::LoadPreset {
+                        preset,
+                        sample_rate: self.sample_rate,
+                    });
                 }
             }
+        }
+
+        if let Ok(new_instrument) = self.task_channel.1.try_recv() {
+            nih_log!("New instrument received. Swapping and clearing voices.");
+            self.instrument = new_instrument;
+            self.voices.clear();
         }
 
         let mut next_event = context.next_event();
@@ -228,19 +272,16 @@ impl Plugin for Orchestron {
 
                 match event {
                     NoteEvent::NoteOn { note, velocity, .. } => {
-                        let playback_rate = calc_hertz(self.sample_rate, 53 - (note as i32));
-
-                        let resampled = resample(&self.instrument.sample, 44100.0, playback_rate);
-
-                        let new_voice = Voice::new(
-                            Arc::new(resampled),
-                            note,
-                            velocity,
-                            self.adsr.clone(),
-                            true,
-                        );
-
-                        self.voices.push(new_voice);
+                        if let Some(data) = self.instrument.samples.get(&note) {
+                            let new_voice = Voice::new(
+                                Arc::clone(data),
+                                note,
+                                velocity,
+                                self.adsr.clone(),
+                                true,
+                            );
+                            self.voices.push(new_voice);
+                        }
                     }
 
                     NoteEvent::NoteOff { note, .. } => {
@@ -280,14 +321,26 @@ impl Plugin for Orchestron {
 }
 
 impl Orchestron {
-    pub fn load_preset(&mut self, preset: Presets) {
-        self.voices.clear();
-
+    fn load_and_resample_instrument(preset: Presets, sample_rate: f32) -> Instrument {
         let instrument_data = preset.content().to_vec();
-        // Spawning a thread to decode the instrument data.
-        self.instrument = std::thread::spawn(move || Instrument::decode(instrument_data))
-            .join()
-            .expect("Failed to load preset on a different thread");
+
+        nih_log!("Decoding instrument data for {:?}.", preset);
+        let base_sample = instrument::decode(instrument_data);
+        nih_log!("Finished decoding. Resampling for all notes...");
+
+        let mut samples = HashMap::new();
+
+        for note in 0..=127 {
+            let playback_rate = calc_hertz(sample_rate, 53 - (note as i32));
+
+            let resampled_note = resample(&base_sample, ORIGINAL_SAMPLE_RATE, playback_rate);
+
+            samples.insert(note, Arc::new(resampled_note));
+        }
+
+        nih_log!("Finished resampling all notes.");
+
+        Instrument { samples }
     }
 }
 
