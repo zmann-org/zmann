@@ -5,15 +5,18 @@ use std::sync::{
 };
 
 use crossbeam::channel::{unbounded, Receiver, Sender};
+use cyma::bus::{Bus, MonoBus};
 use engine::{Adsr, Voice};
 use instrument::Instrument;
 use nih_plug::prelude::*;
 use presets::Presets;
+use vizia_plug::ViziaState;
 
+mod editor;
 pub mod instrument;
 mod presets;
 
-const DEFAULT_ATTACK_S: f32 = 0.01;
+const DEFAULT_ATTACK_S: f32 = 0.0;
 const DEFAULT_DECAY_S: f32 = 0.1;
 const DEFAULT_SUSTAIN_LEVEL: f32 = 1.0;
 const DEFAULT_RELEASE_S: f32 = 0.2;
@@ -29,6 +32,7 @@ struct Bells {
     instrument: Instrument,
     sample_rate: f32,
     adsr: Adsr,
+    bus: Arc<MonoBus>,
     task_channel: (Sender<Instrument>, Receiver<Instrument>),
 }
 
@@ -48,6 +52,8 @@ struct BellsParams {
     pub preset: EnumParam<Presets>,
     // This flag is used to signal the audio thread that the preset has changed.
     pub preset_change: Arc<AtomicBool>,
+    #[persist = "editor-state"]
+    editor_state: Arc<ViziaState>,
 }
 
 impl Default for Bells {
@@ -58,6 +64,7 @@ impl Default for Bells {
             instrument: Instrument::default(),
             sample_rate: ORIGINAL_SAMPLE_RATE,
             adsr: Adsr::new(ORIGINAL_SAMPLE_RATE),
+            bus: Default::default(),
             task_channel: unbounded(),
         }
     }
@@ -125,6 +132,7 @@ impl Default for BellsParams {
                 })
             }),
             preset_change,
+            editor_state: editor::default_state(),
         }
     }
 }
@@ -182,6 +190,14 @@ impl Plugin for Bells {
         self.params.clone()
     }
 
+    fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
+        editor::create(
+            self.params.clone(),
+            self.params.editor_state.clone(),
+            self.bus.clone(),
+        )
+    }
+
     fn initialize(
         &mut self,
         _audio_io_layout: &AudioIOLayout,
@@ -190,6 +206,7 @@ impl Plugin for Bells {
     ) -> bool {
         nih_log!("Initializing Bells plugin.");
         self.sample_rate = buffer_config.sample_rate;
+        self.bus.set_sample_rate(self.sample_rate);
         self.adsr = Adsr::new(self.sample_rate);
 
         self.voices.clear();
@@ -288,6 +305,10 @@ impl Plugin for Bells {
 
         // Remove voices that are no longer active.
         self.voices.retain(|v| v.is_active());
+
+        if self.params.editor_state.is_open() {
+            self.bus.send_buffer_summing(buffer);
+        }
 
         ProcessStatus::Normal
     }
