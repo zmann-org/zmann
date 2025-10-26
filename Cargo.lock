@@ -2671,11 +2671,14 @@ version = "2.0.0"
 dependencies = [
  "common",
  "config",
+ "crossbeam",
+ "cyma",
  "engine",
  "fx",
  "nih_plug",
  "rkyv",
  "strum",
+ "vizia_plug",
  "zstd",
 ]
 

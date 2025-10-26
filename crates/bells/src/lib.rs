@@ -1,8 +1,5 @@
 #![allow(non_snake_case, non_upper_case_globals)]
-use std::sync::{
-    atomic::{AtomicBool, Ordering},
-    Arc,
-};
+use std::sync::Arc;
 
 use crossbeam::channel::{unbounded, Receiver, Sender};
 use cyma::bus::{Bus, MonoBus};
@@ -26,6 +23,10 @@ enum Task {
     LoadPreset { preset: Presets, sample_rate: f32 },
 }
 
+enum Command {
+    LoadPreset(Presets),
+}
+
 struct Bells {
     params: Arc<BellsParams>,
     voices: Vec<Voice>,
@@ -33,7 +34,10 @@ struct Bells {
     sample_rate: f32,
     adsr: Adsr,
     bus: Arc<MonoBus>,
+    /// Receives the loaded `Instrument` from the background task.
     task_channel: (Sender<Instrument>, Receiver<Instrument>),
+    /// Sends/Receives commands to/on the audio thread.
+    command_channel: (Sender<Command>, Receiver<Command>),
 }
 
 #[derive(Params)]
@@ -50,30 +54,29 @@ struct BellsParams {
     pub release: FloatParam,
     #[id = "preset"]
     pub preset: EnumParam<Presets>,
-    // This flag is used to signal the audio thread that the preset has changed.
-    pub preset_change: Arc<AtomicBool>,
     #[persist = "editor-state"]
     editor_state: Arc<ViziaState>,
 }
 
 impl Default for Bells {
     fn default() -> Self {
+        let command_channel = unbounded();
+
         Self {
-            params: Arc::new(BellsParams::default()),
+            params: Arc::new(BellsParams::new(command_channel.0.clone())),
             voices: Vec::new(),
             instrument: Instrument::default(),
             sample_rate: ORIGINAL_SAMPLE_RATE,
             adsr: Adsr::new(ORIGINAL_SAMPLE_RATE),
             bus: Default::default(),
             task_channel: unbounded(),
+            command_channel,
         }
     }
 }
 
-impl Default for BellsParams {
-    fn default() -> Self {
-        let preset_change = Arc::new(AtomicBool::new(false));
-
+impl BellsParams {
+    fn new(command_sender: Sender<Command>) -> Self {
         Self {
             gain: FloatParam::new(
                 "Gain",
@@ -125,13 +128,11 @@ impl Default for BellsParams {
                 },
             )
             .with_unit(" s"),
-            preset: EnumParam::new("Preset", Presets::default()).with_callback({
-                let preset_change = preset_change.clone();
-                Arc::new(move |_| {
-                    preset_change.store(true, Ordering::Relaxed);
-                })
-            }),
-            preset_change,
+            preset: EnumParam::new("Preset", Presets::default()).with_callback(Arc::new(
+                move |preset_value| {
+                    command_sender.send(Command::LoadPreset(preset_value)).ok();
+                },
+            )),
             editor_state: editor::default_state(),
         }
     }
@@ -211,9 +212,12 @@ impl Plugin for Bells {
 
         self.voices.clear();
 
-        // Signal the `process` function to load the initial preset. This is
-        // non-blocking.
-        self.params.preset_change.store(true, Ordering::Relaxed);
+        // Signal the `process` function to load the initial preset.
+        // This is non-blocking. Use the sender (index 0).
+        self.command_channel
+            .0
+            .send(Command::LoadPreset(self.params.preset.value()))
+            .ok();
         nih_log!("Initialization complete. Preset load task signaled for process loop.");
 
         true
@@ -229,6 +233,23 @@ impl Plugin for Bells {
         _aux: &mut AuxiliaryBuffers,
         context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
+        // Check for commands from the UI/param callback.
+        while let Ok(command) = self.command_channel.1.try_recv() {
+            match command {
+                Command::LoadPreset(preset) => {
+                    nih_log!(
+                        "Preset change command received. Clearing voices and starting background load."
+                    );
+                    self.instrument.clear();
+                    self.voices.clear();
+                    context.execute_background(Task::LoadPreset {
+                        preset,
+                        sample_rate: self.sample_rate,
+                    });
+                }
+            }
+        }
+
         // Check if a new instrument has been loaded by a background task.
         if let Ok(new_instrument) = self.task_channel.1.try_recv() {
             nih_log!("New instrument received. Swapping and clearing voices.");
@@ -236,17 +257,6 @@ impl Plugin for Bells {
             self.voices.clear();
         }
 
-        // Check if the preset has been changed (either from the GUI or from
-        // initialize()).
-        if self.params.preset_change.swap(false, Ordering::Relaxed) {
-            nih_log!("Preset change detected. Clearing voices and starting background load.");
-            self.instrument.clear();
-            self.voices.clear();
-            context.execute_background(Task::LoadPreset {
-                preset: self.params.preset.value(),
-                sample_rate: self.sample_rate,
-            });
-        }
         let mut next_event = context.next_event();
 
         // Update ADSR parameters from the plugin's state.
@@ -258,7 +268,6 @@ impl Plugin for Bells {
         );
 
         for (sample_id, channel_samples) in buffer.iter_samples().enumerate() {
-            // Process MIDI events for this sample.
             while let Some(event) = next_event {
                 if event.timing() > sample_id as u32 {
                     break;
@@ -318,7 +327,6 @@ impl Bells {
     fn load_instrument_data(preset: Presets, sample_rate: f32) -> Instrument {
         let instrument_data = preset.content().to_vec();
 
-        // This part is now executed on a background thread.
         nih_log!("Decoding instrument data for {:?}.", preset);
         let mut instrument = Instrument::decode(instrument_data);
         nih_log!("Finished decoding.");

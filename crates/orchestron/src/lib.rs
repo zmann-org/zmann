@@ -1,15 +1,16 @@
 #![allow(non_snake_case, non_upper_case_globals)]
-use std::sync::{
-    atomic::{AtomicBool, Ordering},
-    Arc,
-};
+use std::sync::Arc;
 
 use common::resampler::{calc_hertz, resample};
+use crossbeam::channel::{unbounded, Receiver, Sender};
+use cyma::bus::{Bus, MonoBus};
 use engine::{Adsr, Voice};
 use instrument::Instrument;
 use nih_plug::prelude::*;
 use presets::Presets;
+use vizia_plug::ViziaState;
 
+mod editor;
 pub mod instrument;
 mod presets;
 
@@ -17,6 +18,11 @@ const DEFAULT_ATTACK_S: f32 = 0.01;
 const DEFAULT_DECAY_S: f32 = 0.1;
 const DEFAULT_SUSTAIN_LEVEL: f32 = 1.0;
 const DEFAULT_RELEASE_S: f32 = 0.2;
+const ORIGINAL_SAMPLE_RATE: f32 = 44100.0;
+
+enum Command {
+    LoadPreset(Presets),
+}
 
 struct Orchestron {
     params: Arc<OrchestronParams>,
@@ -24,6 +30,9 @@ struct Orchestron {
     instrument: Instrument,
     sample_rate: f32,
     adsr: Adsr,
+    bus: Arc<MonoBus>,
+    /// Sends/Receives commands to/on the audio thread.
+    command_channel: (Sender<Command>, Receiver<Command>),
 }
 
 #[derive(Params)]
@@ -40,27 +49,28 @@ struct OrchestronParams {
     pub release: FloatParam,
     #[id = "preset"]
     pub preset: EnumParam<Presets>,
-    pub preset_change: Arc<AtomicBool>,
+    #[persist = "editor-state"]
+    editor_state: Arc<ViziaState>,
 }
 
 impl Default for Orchestron {
     fn default() -> Self {
-        let sample_rate: f32 = 44100.0;
+        let command_channel = unbounded();
 
         Self {
-            params: Arc::new(OrchestronParams::default()),
+            params: Arc::new(OrchestronParams::new(command_channel.0.clone())),
             voices: Vec::new(),
             instrument: Instrument::default(),
-            sample_rate,
-            adsr: Adsr::new(sample_rate),
+            sample_rate: ORIGINAL_SAMPLE_RATE,
+            adsr: Adsr::new(ORIGINAL_SAMPLE_RATE),
+            bus: Default::default(),
+            command_channel,
         }
     }
 }
 
-impl Default for OrchestronParams {
-    fn default() -> Self {
-        let preset_change = Arc::new(AtomicBool::new(false));
-
+impl OrchestronParams {
+    fn new(command_sender: Sender<Command>) -> Self {
         Self {
             gain: FloatParam::new(
                 "Gain",
@@ -114,13 +124,12 @@ impl Default for OrchestronParams {
                 },
             )
             .with_unit(" s"),
-            preset: EnumParam::new("Preset", Presets::default()).with_callback({
-                let preset_change = preset_change.clone();
-                Arc::new(move |_| {
-                    preset_change.store(true, Ordering::Relaxed);
-                })
-            }),
-            preset_change,
+            preset: EnumParam::new("Preset", Presets::default()).with_callback(Arc::new(
+                move |preset_value| {
+                    command_sender.send(Command::LoadPreset(preset_value)).ok();
+                },
+            )),
+            editor_state: editor::default_state(),
         }
     }
 }
@@ -156,16 +165,30 @@ impl Plugin for Orchestron {
         self.params.clone()
     }
 
+    fn editor(&mut self, _async_executor: AsyncExecutor<Self>) -> Option<Box<dyn Editor>> {
+        editor::create(
+            self.params.clone(),
+            self.params.editor_state.clone(),
+            self.bus.clone(),
+        )
+    }
+
     fn initialize(
         &mut self,
         _audio_io_layout: &AudioIOLayout,
         buffer_config: &BufferConfig,
         _context: &mut impl InitContext<Self>,
     ) -> bool {
+        nih_log!("Initializing Orchestron plugin.");
         self.sample_rate = buffer_config.sample_rate;
-        if self.instrument.sample.is_empty() {
-            self.load_preset(self.params.preset.value());
-        }
+        self.bus.set_sample_rate(self.sample_rate);
+        self.adsr = Adsr::new(self.sample_rate);
+
+        self.command_channel
+            .0
+            .send(Command::LoadPreset(self.params.preset.value()))
+            .ok();
+        nih_log!("Initialization complete. Preset load task signaled for process loop.");
 
         true
     }
@@ -180,6 +203,14 @@ impl Plugin for Orchestron {
         _aux: &mut AuxiliaryBuffers,
         context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
+        while let Ok(command) = self.command_channel.1.try_recv() {
+            match command {
+                Command::LoadPreset(preset) => {
+                    self.load_preset(preset);
+                }
+            }
+        }
+
         let mut next_event = context.next_event();
 
         self.adsr.set_parameters(
@@ -240,11 +271,10 @@ impl Plugin for Orchestron {
             self.voices.retain(|v| v.is_active());
         }
 
-        if self.params.preset_change.swap(false, Ordering::Relaxed)
-            && self.instrument.name != self.params.preset.value().to_string()
-        {
-            self.load_preset(self.params.preset.value());
+        if self.params.editor_state.is_open() {
+            self.bus.send_buffer_summing(buffer);
         }
+
         ProcessStatus::Normal
     }
 }

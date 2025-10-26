@@ -1,7 +1,7 @@
 use nih_plug::prelude::Enum;
-use strum::Display;
+use strum::{Display, VariantNames};
 
-#[derive(Clone, Debug, Display, Enum, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Display, Enum, Eq, Hash, PartialEq, VariantNames)]
 pub enum Presets {
     Cello,
     Choir,
