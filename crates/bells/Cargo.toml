@@ -11,10 +11,13 @@ crate-type = ["cdylib"]
 [dependencies]
 common = { workspace = true }
 config = { workspace = true, features = ["macro"] }
+crossbeam = "0.8"
+cyma = { git = "https://github.com/exa04/cyma.git", branch = "vizia_plug" }
 engine = { workspace = true }
 fx = { workspace = true }
 nih_plug = { workspace = true }
 rkyv = { workspace = true }
 rustc-hash = "2.1.1"
 strum = { workspace = true }
+vizia_plug = { git = "https://github.com/vizia/vizia-plug.git" }
 zstd = { workspace = true }

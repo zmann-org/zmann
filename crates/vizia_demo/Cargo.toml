@@ -1,0 +1,6 @@
+[package]
+name = "vizia_demo"
+edition.workspace = true
+
+[dependencies]
+vizia = { git = "https://github.com/vizia/vizia.git" }

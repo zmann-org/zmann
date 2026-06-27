@@ -25,6 +25,12 @@ zstd = "0.13.3"
 [patch."https://github.com/robbert-vdh/vst3-sys.git"]
 vst3-sys = { git = "https://github.com/RustAudio/vst3-sys", optional = true }
 
+# [patch."https://github.com/RustAudio/baseview.git"]
+# baseview = { git = "https://github.com/blepfx/baseview.git", branch = "x11-fix-mods" }
+
+# [patch."https://github.com/vizia/baseview.git"]
+# baseview = { git = "https://github.com/blepfx/baseview.git", branch = "x11-fix-mods" }
+
 [profile.release]
 lto = "thin"
 strip = "symbols"
